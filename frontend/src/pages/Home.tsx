@@ -1,12 +1,15 @@
 // src/pages/Home.tsx
 import React from 'react';
+import OnlyMain from '../components/OnlyMain';
+import BookList from '../components/BookList';
 
 const Home = () => {
   return (
-    <div>
-      <h1>Welcome to the Home Page!</h1>
-      <p>This is the main content for the home page.</p>
-    </div>
+    <>
+      <OnlyMain />
+      <BookList slides={[]} />
+      <BookList slides={[]} />
+    </>
   );
 };
 

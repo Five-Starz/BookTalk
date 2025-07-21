@@ -2,19 +2,35 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom'; // Link는 Header로 이동
 import './App.css';
-import Header from './components/Header'; // Header 컴포넌트 임포트
-import Home from './pages/Home';
+import Header from './components/Header';
 import Footer from './components/Footer';
+
+import Home from './pages/Home';
+import MyPage from './pages/MyPage';
+import Login from './pages/Login'
+import Regist from './pages/Regist';
+import Book from './pages/Book';
+import ReviewList from './pages/ReviewList';
+import SearchList from './pages/SearchList';
+import ReviewDetail from './pages/ReviewDetail';
+import WriteReview from './pages/WriteReview';
 
 function App() {
   return (
     <>
-      {/* Header는 모든 페이지에 표시될 것이므로 Routes 위에 배치합니다. */}
       <Header />
 
       {/* Routes는 앱 전체에서 한 번만 렌더링되어야 합니다. */}
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/mypage" element={<MyPage />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/regist" element={<Regist />} />
+        <Route path="/123" element={<Book />} />
+        <Route path="/234" element={<ReviewList />} />
+        <Route path="/2345" element={<ReviewDetail />} />
+        <Route path="/2346" element={<WriteReview />} />
+        <Route path="/345" element={<SearchList />} />
       </Routes>
       <Footer />
     </>
