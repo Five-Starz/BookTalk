@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -18,7 +17,7 @@ model Users{
   updatedAt DateTime @updatedAt 
 
   reviews Reviews[] //1:N관계 설정
-  comments Comments[]
+  comments Comments[] 
   likes Likes[]
 }
 

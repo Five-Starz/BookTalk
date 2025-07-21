@@ -1,3 +1,4 @@
+// 메인 서버 진입점(app.ts 별도 서버 구성 파일 없는 구조)
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -6,13 +7,12 @@ import userRouter from './routes/user.route';
 import mainRouter from './routes/main-router' // 메인페이지 라우터
 import axios from 'axios';
 
-
 const app=express();
 const PORT=process.env.PORT || 8000;
 
 app.use(express.json());
 app.use('/users',userRouter);
-
+app.use('/main', mainRouter);
 
 // let kakaoOptions = {
 //   url: 'https://dapi.kakao.com/v3/search/book?target=title',  // target에 해당하는 것을 적기
