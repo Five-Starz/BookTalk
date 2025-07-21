@@ -3,6 +3,7 @@ dotenv.config();
 
 import express,{Request,Response} from 'express';
 import userRouter from './routes/user.route';
+import mainRouter from './routes/main-router' // 메인페이지 라우터
 import axios from 'axios';
 
 
