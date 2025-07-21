@@ -1,3 +1,4 @@
+import {prisma} from './utils/prisma'
 // 메인 서버 진입점(app.ts 별도 서버 구성 파일 없는 구조)
 import dotenv from 'dotenv';
 dotenv.config();
@@ -93,3 +94,58 @@ app.get('/',async (req:Request,res:Response)=>{
 app.listen(PORT,()=>{
   console.log(`Server running ${PORT} port`);
 })
+
+async function main() {
+  // 유저 생성
+  const user = await prisma.users.create({
+    data: {
+      name: '홍길동',
+      email: 'test@example.com',
+      password: '1234',
+      nickname: '길동이',
+    },
+  });
+
+  // 책 생성
+  const book = await prisma.books.create({
+    data: {
+      isbn: '1234567890',
+      title: '더미책',
+      author: '작가A',
+      publisher: '출판사A',
+      thumbnail: '',
+      totalRating: 87,
+    },
+  });
+
+  // // 리뷰 여러 개 생성
+  // await prisma.reviews.createMany({
+  //   data: [
+  //     {
+  //       userId: user.userId,
+  //       isbn: book.isbn,
+  //       content: '좋은 책이에요!',
+  //       count: 5,
+  //       rating: 4,
+  //     },
+  //     {
+  //       userId: user.userId,
+  //       isbn: book.isbn,
+  //       content: '그냥 그래요.',
+  //       count: 3,
+  //       rating: 2,
+  //     },
+  //   ],
+  // });
+
+  console.log('🌱 Seed data inserted!');
+}
+
+main()
+  .catch((e) => {
+    console.error(e);
+    process.exit(1);
+  })
+  .finally(() => {
+    prisma.$disconnect();
+  });

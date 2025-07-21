@@ -1,6 +1,6 @@
 // 서비스 = 요청에 대한 처리 파일
 // 처리 흐름, 트랜잭션
-import { Reviews, Books } from '@prisma/client';
+import { Books, Reviews } from '@prisma/client';
 import MainRepository from '../repositories/main-repository'
 const mainRepository = new MainRepository();
 
@@ -26,7 +26,7 @@ class MainService {
   }
 
   // // 5. 보고싶어요 수가 많은 책 (want 10)
-  // async fetchMostWishedBooks(): Promise<Books[]> {
+  // static async fetchMostWishedBooks() {
   //   return await mainRepository.fetchMostWishedBooks();
   // }
 }

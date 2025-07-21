@@ -6,33 +6,33 @@ const mainService = new MainService();
 
 class MainController {
   // 1. 좋아요 수가 많은 리뷰
-  async getMostLikedReviews(req:Request, res:Response) {
+  async getMostLikedReviews(req:Request, res:Response): Promise<Response> {
     const reviews = await mainService.fetchMostLikedReviews();
-    res.json({ reviews });
+    return res.json({ reviews });
   }
 
   // 2. 오늘의 랜덤 리뷰
-  async getRandomReviewOfTheDay(req:Request, res:Response) {
+  async getRandomReviewOfTheDay(req:Request, res:Response): Promise<Response> {
     const review = await mainService.fetchRandomReview();
-    res.json({ review });
+    return res.json({ review });
   }
 
   // 3. 리뷰 수가 많은 책 (hot 10)
-  async getMostReviewed10Books(req:Request, res:Response) {
+  async getMostReviewed10Books(req:Request, res:Response): Promise<Response> {
     const books = await mainService.fetchMostReviewedBooks();
-    res.json({ books });
+    return res.json({ books });
   }
 
   // 4. 평점이 좋은 책 (good 10)
-  async getHighestRated10Books(req:Request, res:Response) {
+  async getHighestRated10Books(req:Request, res:Response): Promise<Response> {
     const books = await mainService.fetchTopRatedBooks();
-    res.json({ books });
+    return res.json({ books });
   }
 
   // // 5. 보고싶어요 수가 많은 책 (want 10)
-  // async getMostWished10Books(req:Request, res:Response) {
+  // async getMostWished10Books(req:Request, res:Response): Promise<Response> {
   //   const books = await mainService.fetchMostWishedBooks();
-  //   res.json({ books });
+  //   return res.json({ books });
   // }
 }
 export default MainController
