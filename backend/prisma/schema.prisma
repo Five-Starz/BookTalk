@@ -1,0 +1,83 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User{
+  userId   Int      @id @default(autoincrement()) 
+  name      String   
+  email     String   @unique 
+  password  String   
+  nickname  String   @unique
+  createdAt DateTime @default(now()) 
+  updatedAt DateTime @updatedAt 
+
+  reviews Reviews[] //1:N관계 설정
+  comments Comments[]
+  likes Likes[]
+}
+
+model Reviews {
+  reviewId Int      @id @default(autoincrement()) 
+  userId   Int      
+  isbn      String 
+  content   String   
+  count     Int   
+  rating    Int   
+  createdAt DateTime @default(now()) 
+  updatedAt DateTime @updatedAt 
+
+  user      User    @relation(fields: [userId], references: [userId], onDelete: Cascade) //onDelete: Cascade 자동삭제
+  books     Books   @relation(fields: [isbn], references: [isbn])
+  comments  Comments[]
+  likes Likes[]
+}
+
+model Books{
+  isbn          String  @id
+  title         String
+  author        String
+  publisher     String
+  thumbnail     String
+  createdAt    DateTime @default(now()) 
+  totalRating  Int
+
+  reviews Reviews[]
+}
+
+
+model Comments{
+  commentId Int      @id @default(autoincrement()) 
+  userId   Int 
+  reviewId Int
+  content   String 
+  createdAt DateTime @default(now()) 
+  updatedAt DateTime @updatedAt 
+
+  // 자기 참조: 이 댓글의 부모 댓글 (null이면 최상위 댓글)
+  parentComment Comments? @relation("CommentReplies", fields: [parentId], references: [commentId], onDelete: Cascade)
+  parentId Int? // null 허용 (최상위 댓글)
+
+  // 자기 참조: 이 댓글에 대한 대댓글들
+  replies       Comments[] @relation("CommentReplies")
+
+  user      User    @relation(fields: [userId], references: [userId], onDelete: Cascade) //onDelete: Cascade 자동삭제
+  reviews   Reviews   @relation(fields: [reviewId], references: [reviewId], onDelete: Cascade)
+}
+
+model Likes {
+  // 복합 기본 키 정의: user_id와 post_id의 조합이 고유해야 합니다.
+  @@id([userId, reviewId])
+  userId    Int
+  reviewId    Int
+  createdAt DateTime @default(now())
+
+  // 관계 정의
+  user      User     @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  reviews   Reviews     @relation(fields: [reviewId], references: [reviewId], onDelete: Cascade)
+}
