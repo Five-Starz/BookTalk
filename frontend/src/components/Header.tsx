@@ -6,7 +6,7 @@ const Header = () => {
   // const [count, setCount] = useState(0)
   return (
     <nav style={{ marginBottom: '1rem', padding: '1rem'}}>
-      <Link to="/" style={{ marginRight: '1rem', textDecoration: 'none', color: 'blue' }} className='logo'>Home</Link>
+      <Link to="/" style={{ marginRight: '1rem', textDecoration: 'none', color: 'blue' }} className='logo'>BOOKTALK</Link>
       {/* 필요한 다른 링크들을 여기에 추가하세요 */}
     </nav>
   )
