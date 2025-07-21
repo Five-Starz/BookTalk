@@ -1,19 +1,27 @@
-import {prisma} from './utils/prisma'
-// 메인 서버 진입점(app.ts 별도 서버 구성 파일 없는 구조)
 import dotenv from 'dotenv';
 dotenv.config();
 
 import express,{Request,Response} from 'express';
-import userRouter from './routes/user.route';
+import reviewRouter from './routes/review-router';
 import mainRouter from './routes/main-router' // 메인페이지 라우터
+import authRouter from './routes/auth-router'
 import axios from 'axios';
 
+//swagger
+import swaggerUi from 'swagger-ui-express';
+import swaggerJSDoc from 'swagger-jsdoc';
+import { swaggerOptions } from './swagger';
+
+
 const app=express();
+const swaggerSpec = swaggerJSDoc(swaggerOptions);
 const PORT=process.env.PORT || 8000;
 
 app.use(express.json());
-app.use('/users',userRouter);
-app.use('/main', mainRouter);
+app.use('/',[authRouter,reviewRouter]);
+
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // let kakaoOptions = {
 //   url: 'https://dapi.kakao.com/v3/search/book?target=title',  // target에 해당하는 것을 적기
@@ -94,58 +102,3 @@ app.get('/',async (req:Request,res:Response)=>{
 app.listen(PORT,()=>{
   console.log(`Server running ${PORT} port`);
 })
-
-async function main() {
-  // 유저 생성
-  const user = await prisma.users.create({
-    data: {
-      name: '홍길동',
-      email: 'test@example.com',
-      password: '1234',
-      nickname: '길동이',
-    },
-  });
-
-  // 책 생성
-  const book = await prisma.books.create({
-    data: {
-      isbn: '1234567890',
-      title: '더미책',
-      author: '작가A',
-      publisher: '출판사A',
-      thumbnail: '',
-      totalRating: 87,
-    },
-  });
-
-  // // 리뷰 여러 개 생성
-  // await prisma.reviews.createMany({
-  //   data: [
-  //     {
-  //       userId: user.userId,
-  //       isbn: book.isbn,
-  //       content: '좋은 책이에요!',
-  //       count: 5,
-  //       rating: 4,
-  //     },
-  //     {
-  //       userId: user.userId,
-  //       isbn: book.isbn,
-  //       content: '그냥 그래요.',
-  //       count: 3,
-  //       rating: 2,
-  //     },
-  //   ],
-  // });
-
-  console.log('🌱 Seed data inserted!');
-}
-
-main()
-  .catch((e) => {
-    console.error(e);
-    process.exit(1);
-  })
-  .finally(() => {
-    prisma.$disconnect();
-  });
