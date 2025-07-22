@@ -6,9 +6,19 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+/*
+model Token{
+  tokenId       Int      @id @default(autoincrement()) 
+  userId        Int      @unique
+  refreshToken  String   @unique
+  createAt      DateTime @default(now()) 
+
+  user Users    @relation(fields: [userId], references: [userId])
+}
+*/
 
 model Users{
-  userId   Int      @id @default(autoincrement()) 
+  userId    Int      @id @default(autoincrement()) 
   name      String   
   email     String   @unique 
   password  String   
@@ -19,14 +29,15 @@ model Users{
   reviews Reviews[] //1:N관계 설정
   comments Comments[] 
   likes Likes[]
+  //token Token? //1:1
 }
 
 model Reviews {
-  reviewId Int      @id @default(autoincrement()) 
-  userId   Int      
+  reviewId  Int      @id @default(autoincrement()) 
+  userId    Int      
   isbn      String 
   content   String   
-  count     Int   
+  count     Int?   
   rating    Int   
   createdAt DateTime @default(now()) 
   updatedAt DateTime @updatedAt 
@@ -38,11 +49,11 @@ model Reviews {
 }
 
 model Books{
-  isbn          String  @id
-  title         String
-  author        String
-  publisher     String
-  thumbnail     String
+  isbn         String  @id
+  title        String
+  author       String
+  publisher    String
+  thumbnail    String
   createdAt    DateTime @default(now()) 
   totalRating  Int
 
@@ -52,8 +63,8 @@ model Books{
 
 model Comments{
   commentId Int      @id @default(autoincrement()) 
-  userId   Int 
-  reviewId Int
+  userId    Int 
+  reviewId  Int
   content   String 
   createdAt DateTime @default(now()) 
   updatedAt DateTime @updatedAt 
@@ -65,7 +76,7 @@ model Comments{
   // 자기 참조: 이 댓글에 대한 대댓글들
   replies       Comments[] @relation("CommentReplies")
 
-  users      Users    @relation(fields: [userId], references: [userId], onDelete: Cascade) //onDelete: Cascade 자동삭제
+  users     Users    @relation(fields: [userId], references: [userId], onDelete: Cascade) //onDelete: Cascade 자동삭제
   reviews   Reviews   @relation(fields: [reviewId], references: [reviewId], onDelete: Cascade)
 }
 
@@ -73,10 +84,10 @@ model Likes {
   // 복합 기본 키 정의: user_id와 post_id의 조합이 고유해야 합니다.
   @@id([userId, reviewId])
   userId    Int
-  reviewId    Int
+  reviewId  Int
   createdAt DateTime @default(now())
 
   // 관계 정의
-  users      Users     @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  users     Users     @relation(fields: [userId], references: [userId], onDelete: Cascade)
   reviews   Reviews     @relation(fields: [reviewId], references: [reviewId], onDelete: Cascade)
 }
