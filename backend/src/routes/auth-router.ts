@@ -8,5 +8,11 @@ router.get('/register', (req:Request,res:Response)=>{
   authController.signUp('테스트5','테스트5','테스트5','테스트5')
 });
 
+/*
+router.post('/signup', authController.register);
+router.post('/login', authController.login);
+router.post('/refresh', authController.refresh);
+router.post('/logout', authController.logout);
+*/
 
 export default router 
