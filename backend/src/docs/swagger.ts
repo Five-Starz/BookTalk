@@ -4,7 +4,7 @@ export const swaggerOptions: swaggerJSDoc.Options = {
   definition: {
     openapi: '3.0.0',
     info: {
-      title: 'Team Project API',
+      title: '별이 다섯개 - BookTalk API',
       version: '1.0.0',
       description: '우리 팀 프로젝트의 Swagger 명세서',
     },
