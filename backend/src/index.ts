@@ -1,25 +1,24 @@
 import dotenv from 'dotenv';
 dotenv.config();
-
-import express,{Request,Response} from 'express';
-import reviewRouter from './routes/review-router';
-import mainRouter from './routes/main-router' // 메인페이지 라우터
-import authRouter from './routes/auth-router'
-import axios from 'axios';
+import express, { Request, Response } from 'express';
 
 //swagger
 import swaggerUi from 'swagger-ui-express';
 import swaggerJSDoc from 'swagger-jsdoc';
-import { swaggerOptions } from './swagger';
+import { swaggerOptions } from './docs/swagger'; // 옵션만 따로 불러옴
 
+import reviewRouter from './routes/review-router';
+import mainRouter from './routes/main-router'; // 메인페이지 라우터
+import authRouter from './routes/auth-router';
+import axios from 'axios';
 
-const app=express();
+const app = express();
 const swaggerSpec = swaggerJSDoc(swaggerOptions);
-const PORT=process.env.PORT || 8000;
+const PORT = process.env.PORT || 8000;
 
+// 미들웨어 및 라우터
 app.use(express.json());
-app.use('/',[authRouter,reviewRouter]);
-
+app.use('/', [authRouter, reviewRouter, mainRouter]);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
@@ -36,19 +35,18 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 //   encoding: 'UTF-8',
 //   }
 
-
 //kakaoApi
-app.get('/',async (req:Request,res:Response)=>{
-  console.log("클라이언트 요청 수신");
+app.get('/', async (req: Request, res: Response) => {
+  console.log('클라이언트 요청 수신');
 
   // Kakao API 요청을 위한 옵션 설정
   // Axios는 'headers'와 'params'를 별도로 관리하여 더 직관적입니다.
   const kakaoApiUrl = 'https://dapi.kakao.com/v3/search/book';
   const kakaoApiKey = process.env.KAKAO_API_KEY;
 
-  let title:String='title';
-  let query:String='강아지';
-  let size:Number=5;
+  let title: String = 'title';
+  let query: String = '강아지';
+  let size: Number = 5;
 
   try {
     // Axios를 사용하여 Kakao API에 GET 요청을 보냅니다.
@@ -56,13 +54,13 @@ app.get('/',async (req:Request,res:Response)=>{
     // 'headers'는 동일하게 사용됩니다.
     const kakaoApiResponse = await axios.get(kakaoApiUrl, {
       headers: {
-        'Authorization': `KakaoAK ${kakaoApiKey}` // 템플릿 리터럴을 사용하여 키 삽입
+        Authorization: `KakaoAK ${kakaoApiKey}`, // 템플릿 리터럴을 사용하여 키 삽입
       },
       params: {
         target: `${title}`,
         query: `${query}`,
-        size: `${size}`
-      }
+        size: `${size}`,
+      },
     });
 
     // Kakao API로부터 받은 응답의 HTTP 상태 코드 출력
@@ -75,7 +73,6 @@ app.get('/',async (req:Request,res:Response)=>{
     // 파싱된 데이터를 클라이언트에게 JSON 형태로 응답합니다.
     // 여기서 사용되는 'res'는 Express.js의 응답 객체입니다.
     res.json(parsedBody);
-
   } catch (error) {
     if (axios.isAxiosError(error)) {
       // Axios 요청 중 오류가 발생한 경우 (네트워크 오류, Kakao API의 2xx가 아닌 응답 등)
@@ -97,8 +94,8 @@ app.get('/',async (req:Request,res:Response)=>{
       }
     }
   }
-})
+});
 
-app.listen(PORT,()=>{
+app.listen(PORT, () => {
   console.log(`Server running ${PORT} port`);
-})
+});
