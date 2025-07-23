@@ -38,7 +38,7 @@ model Reviews {
   isbn      String 
   content   String   
   count     Int?   
-  rating    Int   
+  rating    Decimal  @db.Decimal(2,1)   
   createdAt DateTime @default(now()) 
   updatedAt DateTime @updatedAt 
 
@@ -57,7 +57,7 @@ model Books{
   description   String @db.Text
   publishedYear Int
   createdAt     DateTime @default(now()) 
-  totalRating   Int
+  totalRating   Decimal  @db.Decimal(3,2)
 
   reviews Reviews[]
 }
