@@ -15,7 +15,7 @@ export interface ReviewsDto{
   userId:Number
   isbn:String 
   content:String   
-  count:Number
+  count?:Number
   rating:Number   
   createdAt:Date
   updatedAt:Date
@@ -38,6 +38,7 @@ export interface CommentsDto{
   content:String 
   createdAt:Date
   updatedAt:Date
+  parentId?:Number
 };
 
 export interface LikesDto{

@@ -1,18 +1,29 @@
+// import { prisma } from './utils/prisma'; // Prisma 클라이언트 임포트
+// import { PrismaClient } from '@prisma/client';
+
 import dotenv from 'dotenv';
 dotenv.config();
+import express, { Request, Response } from 'express';
 
-import express,{Request,Response} from 'express';
-import userRouter from './routes/user.route';
-import mainRouter from './routes/main-router' // 메인페이지 라우터
+//swagger
+import swaggerUi from 'swagger-ui-express';
+import swaggerJSDoc from 'swagger-jsdoc';
+import { swaggerOptions } from './docs/swagger'; // 옵션만 따로 불러옴
+
+import reviewRouter from './routes/review-router';
+import mainRouter from './routes/main-router'; // 메인페이지 라우터
+import authRouter from './routes/auth-router';
 import axios from 'axios';
 
+const app = express();
+const swaggerSpec = swaggerJSDoc(swaggerOptions);
+const PORT = process.env.PORT || 8000;
 
-const app=express();
-const PORT=process.env.PORT || 8000;
-
+// 미들웨어 및 라우터
 app.use(express.json());
-app.use('/users',userRouter);
+app.use('/', [authRouter, reviewRouter, mainRouter]);
 
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // let kakaoOptions = {
 //   url: 'https://dapi.kakao.com/v3/search/book?target=title',  // target에 해당하는 것을 적기
@@ -27,19 +38,18 @@ app.use('/users',userRouter);
 //   encoding: 'UTF-8',
 //   }
 
-
 //kakaoApi
-app.get('/',async (req:Request,res:Response)=>{
-  console.log("클라이언트 요청 수신");
+app.get('/', async (req: Request, res: Response) => {
+  console.log('클라이언트 요청 수신');
 
   // Kakao API 요청을 위한 옵션 설정
   // Axios는 'headers'와 'params'를 별도로 관리하여 더 직관적입니다.
   const kakaoApiUrl = 'https://dapi.kakao.com/v3/search/book';
   const kakaoApiKey = process.env.KAKAO_API_KEY;
 
-  let title:String='title';
-  let query:String='강아지';
-  let size:Number=5;
+  let title: String = 'title';
+  let query: String = '강아지';
+  let size: Number = 5;
 
   try {
     // Axios를 사용하여 Kakao API에 GET 요청을 보냅니다.
@@ -47,13 +57,13 @@ app.get('/',async (req:Request,res:Response)=>{
     // 'headers'는 동일하게 사용됩니다.
     const kakaoApiResponse = await axios.get(kakaoApiUrl, {
       headers: {
-        'Authorization': `KakaoAK ${kakaoApiKey}` // 템플릿 리터럴을 사용하여 키 삽입
+        Authorization: `KakaoAK ${kakaoApiKey}`, // 템플릿 리터럴을 사용하여 키 삽입
       },
       params: {
         target: `${title}`,
         query: `${query}`,
-        size: `${size}`
-      }
+        size: `${size}`,
+      },
     });
 
     // Kakao API로부터 받은 응답의 HTTP 상태 코드 출력
@@ -66,7 +76,6 @@ app.get('/',async (req:Request,res:Response)=>{
     // 파싱된 데이터를 클라이언트에게 JSON 형태로 응답합니다.
     // 여기서 사용되는 'res'는 Express.js의 응답 객체입니다.
     res.json(parsedBody);
-
   } catch (error) {
     if (axios.isAxiosError(error)) {
       // Axios 요청 중 오류가 발생한 경우 (네트워크 오류, Kakao API의 2xx가 아닌 응답 등)
@@ -88,8 +97,64 @@ app.get('/',async (req:Request,res:Response)=>{
       }
     }
   }
-})
+});
 
-app.listen(PORT,()=>{
+app.listen(PORT, () => {
   console.log(`Server running ${PORT} port`);
-})
+});
+
+// // 더미데이터 넣고 main-router.ts에서 확인해보기
+// async function main() {
+//   // 유저 생성
+//   const user = await prisma.users.create({
+//     data: {
+//       name: '메인라우터 테스트',
+//       email: 'test@example.com',
+//       password: '1234',
+//       nickname: '메인라우터 테스트유저',
+//     },
+//   });
+
+//   // 책 생성
+//   const book = await prisma.books.create({
+//     data: {
+//       isbn: '1234567890',
+//       title: '더미책',
+//       author: '작가A',
+//       publisher: '출판사A',
+//       thumbnail: '',
+//       totalRating: 87,
+//     },
+//   });
+
+//   // 리뷰 여러 개 생성
+//   await prisma.reviews.createMany({
+//     data: [
+//       {
+//         userId: user.userId,
+//         isbn: book.isbn,
+//         content: '좋은 책이에요!',
+//         count: 5,
+//         rating: 4,
+//       },
+//       {
+//         userId: user.userId,
+//         isbn: book.isbn,
+//         content: '그냥 그래요.',
+//         count: 3,
+//         rating: 2,
+//       },
+//     ],
+//   });
+
+//   console.log('🌱 Seed data inserted!');
+// }
+
+// main()
+//   .catch((e) => {
+//     console.error(e);
+//     process.exit(1);
+//   })
+//   .finally(() => {
+//     prisma.$disconnect();
+//   });
