@@ -1,14 +1,22 @@
 // src/pages/Home.tsx
 import React from 'react';
-import OnlyMain from '../components/OnlyMain';
+import BestReview from '../components/main/BestReview';
+import RandomReview from '../components/main/RandomReview';
+import Hot10 from '../components/main/Hot10';
 import BookList from '../components/BookList';
 
 const Home = () => {
   return (
     <>
-      <OnlyMain />
-      <BookList slides={[]} />
-      <BookList slides={[]} />
+      <div>
+        <div>
+          <BestReview />
+          <RandomReview />
+        </div>
+        <Hot10 />
+      </div>
+      <BookList />
+      {/* <BookList /> */}
     </>
   );
 };

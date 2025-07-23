@@ -1,10 +1,11 @@
 import React from 'react'
+import BookCard from '../components/ui/BookCard'
 
 const Book = () => {
   return (
-    <div>
-      
-    </div>
+    <>
+      <BookCard />
+    </>
   )
 }
 

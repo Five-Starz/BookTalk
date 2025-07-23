@@ -17,8 +17,7 @@ import WriteReview from './pages/WriteReview';
 function App() {
   return (
     <>
-      <Header />
-
+      <Header />      
       {/* Routes는 앱 전체에서 한 번만 렌더링되어야 합니다. */}
       <Routes>
         <Route path="/" element={<Home />} />
