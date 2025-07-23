@@ -4,17 +4,17 @@ import {prisma} from '../utils/prisma/index';
 export class CommentsRepository{
 
   //특정 유저 검색
-  async findById(commentId:number):Promise<Comments|null>{
+  async findById(userId:number):Promise<Comments|null>{
     return await prisma.comments.findFirst({
-      where:{commentId}
+      where:{userId}
     })
   };
 
   //댓글 생성
-  async creatComment(userId:number,reviewId:number,content:string,parentId?:number):Promise<Comments>{
+  async creatComment(userId:number,reviewId:number,content:string,parentId?:number|null):Promise<Comments>{
 
       return await prisma.comments.create({
-      data:{userId,reviewId,content,parentId:parentId||null}
+      data:{userId,reviewId,content,parentId}
       })
     
   };

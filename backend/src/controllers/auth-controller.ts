@@ -6,23 +6,15 @@ import { Users } from '@prisma/client';
 
 
 export class AuthController{
-  // async signUp(req:Request,res:Response){
-  //   const {name,email,password,nickname}=req.body
-  //   AuthService.createUser()
-  // }
-   async signUp(name:string,email:string,password:string,nickname:string):Promise<Users>{
-    return await authService.createUser(name,email,password,nickname)
-  };
 
-
-  async register(req: Request, res: Response, next: NextFunction) {
+  async signUp(req: Request, res: Response, next: NextFunction) {
     try {
       const { name, email, password, nickname } = req.body;
       if (!name || !email || !password || !nickname) {
         return res.status(400).json({ message: 'All fields are required.' });
       }
-      const user = await authService.createUser(name, email, password, nickname);
-      res.status(201).json({ message: 'User registered successfully', user: { userId: user.userId, email: user.email, nickname: user.nickname } });
+        const user = await authService.createUser(name, email, password, nickname);
+        res.status(201).json({ message: 'User registered successfully', user: { userId: user.userId, email: user.email, nickname: user.nickname } });
     } catch (error) {
       next(error); // 에러 처리 미들웨어로 전달
     }
