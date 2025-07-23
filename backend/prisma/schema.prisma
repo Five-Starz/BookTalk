@@ -54,7 +54,7 @@ model Books{
   authors       String
   publisher     String
   thumbnail     String
-  description   String
+  description   String @db.Text
   publishedYear Int
   createdAt     DateTime @default(now()) 
   totalRating   Int
