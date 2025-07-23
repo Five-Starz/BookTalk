@@ -1,9 +1,8 @@
-// src/App.tsx
 import React from 'react';
 import { Routes, Route } from 'react-router-dom'; // Link는 Header로 이동
 import './App.css';
-import Header from './components/Header';
-import Footer from './components/Footer';
+import Header from './components/ui/Header';
+import Footer from './components/ui/Footer';
 
 import Home from './pages/Home';
 import MyPage from './pages/MyPage';
