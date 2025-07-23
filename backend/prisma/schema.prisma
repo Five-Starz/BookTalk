@@ -49,13 +49,15 @@ model Reviews {
 }
 
 model Books{
-  isbn         String  @id
-  title        String
-  author       String
-  publisher    String
-  thumbnail    String
-  createdAt    DateTime @default(now()) 
-  totalRating  Int
+  isbn          String  @id
+  title         String
+  authors       String
+  publisher     String
+  thumbnail     String
+  description   String
+  publishedYear Int
+  createdAt     DateTime @default(now()) 
+  totalRating   Int
 
   reviews Reviews[]
 }
