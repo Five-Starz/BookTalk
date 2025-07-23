@@ -12,6 +12,7 @@ import { swaggerOptions } from './docs/swagger'; // 옵션만 따로 불러옴
 
 import reviewRouter from './routes/review-router';
 import mainRouter from './routes/main-router'; // 메인페이지 라우터
+import bookRouter from './routes/book-router';
 import authRouter from './routes/auth-router';
 import axios from 'axios';
 
@@ -21,7 +22,7 @@ const PORT = process.env.PORT || 8000;
 
 // 미들웨어 및 라우터
 app.use(express.json());
-app.use('/', [authRouter, reviewRouter, mainRouter]);
+app.use('/', [authRouter, reviewRouter, mainRouter, bookRouter]);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
