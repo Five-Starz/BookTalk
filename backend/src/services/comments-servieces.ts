@@ -4,11 +4,11 @@ const commentsRepository=new CommentsRepository();
 
 export class CommentsServices{
 
-  async findById(commentId:number):Promise<Comments|null>{
-    return await commentsRepository.findById(commentId)
+  async findById(userId:number):Promise<Comments|null>{
+    return await commentsRepository.findById(userId)
   };
   
-  async creatComment(userId:number,reviewId:number,content:string,parentId?:number):Promise<Comments>{
+  async creatComment(userId:number,reviewId:number,content:string,parentId:number|null):Promise<Comments>{
     return await commentsRepository.creatComment(userId,reviewId,content,parentId)
   };
 
