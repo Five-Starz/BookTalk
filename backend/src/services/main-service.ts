@@ -1,5 +1,5 @@
-// 서비스 = 요청에 대한 처리 파일
-// 처리 흐름, 트랜잭션
+// 서비스 = 요청에 대한 처리 파일(중간 관리자 역할)
+// 조건 분기, 트랜잭션, 흐름 제어, 외부 API 호출하거나 여러 Repository를 조합할 수도 있음
 import { Books, Reviews } from '@prisma/client';
 import MainRepository from '../repositories/main-repository'
 const mainRepository = new MainRepository();
