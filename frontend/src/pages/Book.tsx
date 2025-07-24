@@ -1,10 +1,10 @@
 import React from 'react'
-import BookCard from '../components/ui/BookCard'
+import BookInfo from '../components/BookInfo'
 
 const Book = () => {
   return (
     <>
-      <BookCard />
+      <BookInfo />
     </>
   )
 }

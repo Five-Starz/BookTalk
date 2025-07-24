@@ -17,19 +17,20 @@ import WriteReview from './pages/WriteReview';
 function App() {
   return (
     <>
-      <Header />      
-      {/* Routes는 앱 전체에서 한 번만 렌더링되어야 합니다. */}
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/mypage" element={<MyPage />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/regist" element={<Regist />} />
-        <Route path="/123" element={<Book />} />
-        <Route path="/234" element={<ReviewList />} />
-        <Route path="/2345" element={<ReviewDetail />} />
-        <Route path="/2346" element={<WriteReview />} />
-        <Route path="/345" element={<SearchList />} />
-      </Routes>
+      <Header />
+      <main>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/mypage" element={<MyPage />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/regist" element={<Regist />} />
+          <Route path="/123" element={<Book />} />
+          <Route path="/234" element={<ReviewList />} />
+          <Route path="/2345" element={<ReviewDetail />} />
+          <Route path="/2346" element={<WriteReview />} />
+          <Route path="/345" element={<SearchList />} />
+        </Routes>
+      </main>
       <Footer />
     </>
   );
