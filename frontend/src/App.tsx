@@ -16,7 +16,7 @@ import WriteReview from './pages/WriteReview';
 
 function App() {
   return (
-    <>
+    <div className="flex flex-col min-h-screen">
       <Header />
 
       {/* Routes는 앱 전체에서 한 번만 렌더링되어야 합니다. */}
@@ -32,7 +32,7 @@ function App() {
         <Route path="/345" element={<SearchList />} />
       </Routes>
       <Footer />
-    </>
+    </div>
   );
 }
 
