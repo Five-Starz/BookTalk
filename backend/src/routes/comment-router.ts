@@ -3,11 +3,13 @@ const router:Router=express.Router();
 import { CommentsController } from '../controllers/comments-controller';
 const commentsController=new CommentsController();
 //여긴 테스트용으로 만든 라우터임 나중에 위치 수정 필요
+import { CommentsRepository } from '../repositories/comments-repository';
+const comment=new CommentsRepository()
 
 /**
  * @swagger
  *
- * /comment/{userId}:
+ * /comment/id/{userId}:
  *   get:
  *     summary: 유저 댓글 검색
  *     description: "특정 유저가 등록한 댓글을 검색합니다."
@@ -71,7 +73,7 @@ const commentsController=new CommentsController();
  *                   type: string
  *                   example: '유효하지 않은 userId 형식입니다.'
  */
-router.get('/comment:userid', commentsController.findById);
+router.get('/comment/id/:userId', commentsController.findById);
 
 
 /**
@@ -80,7 +82,7 @@ router.get('/comment:userid', commentsController.findById);
  * /comment/add:
  *   post:
  *     summary: 댓글 등록
- *     description: "리뷰에 댓글 등록"
+ *     description: "리뷰에 댓글 등록 (parentId는 대댓글을 달고 싶은 commentId를 입력하면 됨)"
  *     tags: [Comment]
  *     requestBody:
  *       required: true
@@ -162,7 +164,7 @@ router.post('/comment/add',commentsController.creatComment)
 /**
  * @swagger
  *
- * /comment{reviewId}:
+ * /comment/review/{reviewId}:
  *   get:
  *     summary: 리뷰 댓글 검색
  *     description: "특정 리뷰에 등록된 모든 댓글을 검색합니다."
@@ -226,7 +228,7 @@ router.post('/comment/add',commentsController.creatComment)
  *                   type: string
  *                   example: '유효하지 않은 reviewId 형식입니다.'
  */
-router.get('/comment:commentId',commentsController.findByReviewId)
+router.get('/comment/review/:reviewId',commentsController.findByReviewId)
 
 /**
  * @swagger
@@ -315,7 +317,7 @@ router.put('/comment/update',commentsController.updateComment)
   /**
    * @swagger
    *
-   * /comment{commentId}:
+   * /comment/{commentId}:
    *   delete:
    *     summary: 댓글 삭제
    *     description: "특정 댓글을 삭제합니다. (현재 기준으론 대댓글까지 삭제됨)"
@@ -387,6 +389,6 @@ router.put('/comment/update',commentsController.updateComment)
    *                   type: string
    *                   example: '댓글을 찾을 수 없습니다.'
    */
-  router.delete('/comment:commentId',commentsController.deleteComment)
+  router.delete('/comment/:commentId',commentsController.deleteComment)
 
 export default router   
