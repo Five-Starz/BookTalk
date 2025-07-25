@@ -2,11 +2,12 @@ import { User } from '@prisma/client'; // 유저 타입 정의 방식에 따라 
 
 declare global {
   namespace Express {
+    interface UserPayload {
+      id: number;
+      // name?: string; // 필요 시 확장
+    }
     interface Request {
-      user?: {
-        id: number;
-        // 필요한 속성 더 추가 가능
-      };
+      user?: UserPayload;
     }
   }
 }
