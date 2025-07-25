@@ -6,7 +6,7 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
-/*
+
 model Token{
   tokenId       Int      @id @default(autoincrement()) 
   userId        Int      @unique
@@ -15,7 +15,7 @@ model Token{
 
   user Users    @relation(fields: [userId], references: [userId])
 }
-*/
+
 
 model Users{
   userId    Int      @id @default(autoincrement()) 
@@ -29,7 +29,7 @@ model Users{
   reviews Reviews[] //1:N관계 설정
   comments Comments[] 
   likes Likes[]
-  //token Token? //1:1
+  token Token? //1:1
 }
 
 model Reviews {

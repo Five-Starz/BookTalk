@@ -1,38 +1,54 @@
 import React from 'react'
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation } from 'swiper/modules'; // 모듈 임포트
-import type { Swiper as SwiperClass } from 'swiper'; // Swiper 인스턴스에 대한 타입 임포트
-import '../../node_modules/swiper/swiper.css'
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
-interface MySwiperProps {
-  slides: string[];
-}
+// https://velog.io/@owlsuri/React-slick-Custom 참고할 것
 
-const BookList: React.FC<MySwiperProps> = ({ slides })  => {
+function BookList() {
+  const settings = {
+    arrows: true,
+    infinite: false,
+    speed: 500,
+    slidesToShow: 5,
+    slidesToScroll: 1
+  };
   return (
-    <div>
-      <h3>제목</h3>
-      <Swiper
-        modules={[Navigation]} // 사용할 모듈 지정
-        spaceBetween={20} // 슬라이드 간의 간격
-        slidesPerView={5} // 한 번에 보여줄 슬라이드 개수
-        navigation={true} // 좌우 화살표 표시
-        loop={false} // 무한 반복
-        onSlideChange={() => console.log('slide change')}
-        onSwiper={(swiper: SwiperClass) => console.log(swiper)}
-      >
-        {slides.map((slide, index) => (
-          <div>
-            <SwiperSlide key={index}>
-              <img src={slide} alt={`Slide ${index + 1}`} style={{ width: '100%', height: 'auto' }} />
-            </SwiperSlide>
-            <h4>책 제목</h4>
-            <p>저자명</p>
-          </div>
-        ))}
-      </Swiper>
+    <div className="slider-container w-200">
+      <Slider {...settings}>
+        <div>
+          <h3>1</h3>
+        </div>
+        <div>
+          <h3>2</h3>
+        </div>
+        <div>
+          <h3>3</h3>
+        </div>
+        <div>
+          <h3>4</h3>
+        </div>
+        <div>
+          <h3>5</h3>
+        </div>
+        <div>
+          <h3>6</h3>
+        </div>
+        <div>
+          <h3>7</h3>
+        </div>
+        <div>
+          <h3>8</h3>
+        </div>
+        <div>
+          <h3>9</h3>
+        </div>
+        <div>
+          <h3>10</h3>
+        </div>
+      </Slider>
     </div>
-  )
+  );
 }
 
-export default BookList
+export default BookList;
