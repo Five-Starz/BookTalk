@@ -1,11 +1,11 @@
 // [역할] req, res 처리 담당. 클라이언트 응답 전용
-import { Request, Response } from 'express';
+import express from 'express';
 import ReviewService from '../services/review-service'
 const reviewService = new ReviewService();
 
 class ReviewController {
   // 1. 리뷰 생성
-  async createReview(req:Request, res:Response): Promise<any> {
+  async createReview(req:express.Request, res:express.Response): Promise<any> {
     try {
       const {
         isbn,
