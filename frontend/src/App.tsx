@@ -14,9 +14,10 @@ import ReviewList from './pages/ReviewList';
 import SearchList from './pages/SearchList';
 import ReviewDetail from './pages/ReviewDetail';
 import WriteReview from './pages/WriteReview';
+import { ThumbsUpbutton } from './components/ui/Button';
 
 function App() {
-  axios.get('http://localhost:8000')
+  axios.get('http://localhost:8000/books/search')
   .then(response => {
     console.log(response.data); // 받아온 데이터 처리
   })
@@ -39,7 +40,9 @@ function App() {
           <Route path="/345" element={<SearchList />} />
         </Routes>
       </main>
+      <ThumbsUpbutton />
       <Footer />
+
     </div>
   );
 }
