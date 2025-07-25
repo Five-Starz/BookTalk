@@ -8,13 +8,12 @@ import axios from 'axios';
 import Home from './pages/Home';
 import MyPage from './pages/MyPage';
 import Login from './pages/Login'
-import Regist from './pages/Regist';
 import Book from './pages/Book';
 import ReviewList from './pages/ReviewList';
 import SearchList from './pages/SearchList';
 import ReviewDetail from './pages/ReviewDetail';
 import WriteReview from './pages/WriteReview';
-import { ThumbsUpbutton } from './components/ui/Button';
+import SignUp from './pages/SignUp';
 
 function App() {
   axios.get('http://localhost:8000/books/search')
@@ -32,7 +31,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/mypage" element={<MyPage />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/regist" element={<Regist />} />
+          <Route path="/signup" element={<SignUp />} />
           <Route path="/123" element={<Book />} />
           <Route path="/234" element={<ReviewList />} />
           <Route path="/2345" element={<ReviewDetail />} />
@@ -40,9 +39,7 @@ function App() {
           <Route path="/345" element={<SearchList />} />
         </Routes>
       </main>
-      <ThumbsUpbutton />
       <Footer />
-
     </div>
   );
 }

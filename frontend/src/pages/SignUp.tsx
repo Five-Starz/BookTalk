@@ -2,7 +2,7 @@ import React from 'react'
 import { EmailForm, NicknameForm, PasswordForm } from '../components/ui/Form'
 import { SignupButton } from '../components/ui/Button'
 
-const Regist = () => {
+const SignUp = () => {
   return (
     <>
       <div className="min-h-[80vh] pt-24 pb-24 flex flex-col justify-center items-center px-4">
@@ -26,4 +26,4 @@ const Regist = () => {
   )
 }
 
-export default Regist
+export default SignUp
