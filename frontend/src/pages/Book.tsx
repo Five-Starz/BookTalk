@@ -5,12 +5,12 @@ import ReviewCard from '../components/ui/ReviewCard'
 
 const Book = () => {
   return (
-    <div className='m-auto flex flex-col gap-12 md:gap-24'>
+    <div className='flex flex-col gap-12 md:gap-24'>
       <BookInfo />
       <div>
         <div className='flex justify-between mb-3 md:mb-6'>
           <h2>리뷰들</h2>
-          <button>더보기</button>
+          <button className='text-[#999]'>더보기</button>
         </div>
         <div className='hidden justify-between flex-wrap gap-2 lg:flex'>
           <ReviewCard width='[calc(33.3%-6px)]' />
@@ -26,9 +26,8 @@ const Book = () => {
           <ReviewCard width='[calc(50%-4px)]' />
           <ReviewCard width='[calc(50%-4px)]' />
         </div>
-        <div className='flex justify-between flex-wrap gap-2 sm:hidden'>
-          <ReviewCard width='[calc(50%-4px)]' />
-          <ReviewCard width='[calc(50%-4px)]' />
+        <div className='block justify-between flex-wrap gap-2 sm:hidden'>
+          <ReviewCard width='[calc(100%)]' />
         </div>
       </div>
       <div>

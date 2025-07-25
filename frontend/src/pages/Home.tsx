@@ -7,15 +7,15 @@ import BookList from '../components/BookList';
 
 const Home = () => {
   return (
-    <>
-      <div className='flex'>
+    <div className='flex flex-col gap-12 md:gap-24'>
+      <div className='flex flex-col gap-4 lg:flex-row'>
         <BestReview />
         <RandomReview />
       </div>
       <Hot10 />
       <BookList />
       <BookList />
-    </>
+    </div>
   );
 };
 
