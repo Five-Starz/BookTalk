@@ -1,5 +1,5 @@
 import { prisma } from "../utils/prisma";
-import { Users } from "@prisma/client";
+import { Users,Token } from "@prisma/client";
 
 export class AuthRepository{
 
@@ -30,4 +30,39 @@ export class AuthRepository{
       data:{name,email,password,nickname}
     });
   };
+
+  /**
+   * Refresh Token을 데이터베이스에 저장 또는 업데이트
+   * @param userId - 사용자 ID
+   * @param refreshToken - Refresh Token 문자열
+   * @returns 저장/업데이트된 Token 객체
+   */
+  async upsertRefreshToken(userId: number, refreshToken: string): Promise<Token> {
+      return prisma.token.upsert({
+          where: { userId },
+          update: { refreshToken },
+          create: { userId, refreshToken },
+      }) as Promise<Token>;
+  };
+
+  /**
+   * userId로 Refresh Token 찾기
+   * @param userId - 사용자 ID
+   * @returns Token | null
+   */
+  async findRefreshTokenByUserId(userId: number): Promise<Token | null> {
+      return prisma.token.findUnique({
+          where: { userId },
+      }) as Promise<Token | null>;
+  }
+
+  /**
+   * userId로 Refresh Token 삭제 (로그아웃 시)
+   * @param userId - 사용자 ID
+   */
+  async deleteRefreshToken(userId: number): Promise<void> {
+      await prisma.token.delete({
+          where: { userId },
+      });
+  }
 };
