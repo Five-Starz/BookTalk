@@ -39,6 +39,25 @@ export class LikesRepository{
       where: {
         reviewId
       }
-    })
+    });
+  };
+
+  //해당 리뷰에 좋아요를 누른 사람들만 가져옴(아직 미완)
+  async findByReviewIdForUserId(reviewId:number){
+    return await prisma.likes.findMany({
+      where:{reviewId},
+      select:{userId:true}
+    });
+    /* 
+    //이 부분은 리뷰 컨트롤러가 생기면 거기서 넣어야 함
+    //방식 : findByReviewIdForUserId을 실행해서 userId를 받아오고 리뷰 테이블에 userId가 있는 것만 찾은 뒤 5개든 뭐든 랜덤으로 가져오기
+    // 랜덤으로 요소 교환
+    for (let i = reviewIdNum.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [reviewIdNum[i], reviewIdNum[j]] = [reviewIdNum[j], reviewIdNum[i]]; 
+    };
+
+    return reviewIdNum.slice(0, 5); //0~5까지 돌려줌
+    */
   };
 };

@@ -19,7 +19,7 @@ class ReviewController {
         content,
       } = req.body; // 리뷰생성시 필수로 받아와야 할 body값들
 
-      const userId = req.user?.id;
+      const userId = req.user?.userId;
       if (!isbn || rating==null || !content || !userId) {
         return res.status(400).json({ message: '리뷰 등록 정보가 부족합니다.' });
       }
