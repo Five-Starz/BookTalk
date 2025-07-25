@@ -8,7 +8,7 @@ import axios from 'axios';  // Node.js 서버에서 외부 API 호출할 때 필
 class BookService {
   private KAKAO_API_URL = 'https://dapi.kakao.com/v3/search/book';
   private KAKAO_API_KEY = process.env.KAKAO_API_KEY;
-  // 1. 검색 결과
+  // 1. 도서 검색
   async searchBooksByQuery(query: string): Promise<Books | null> {
     const encodedQuery = encodeURIComponent(query); // URL에 넣기 안전한 문자열로 바꿈
 

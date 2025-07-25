@@ -15,6 +15,7 @@ import ReviewList from './pages/ReviewList';
 import SearchList from './pages/SearchList';
 import ReviewDetail from './pages/ReviewDetail';
 import WriteReview from './pages/WriteReview';
+import { ThumbsUpbutton } from './components/ui/Button';
 
 function App() {
   // 데이터 타입을 BookApiResponse 또는 null로 명확히 지정
@@ -57,7 +58,6 @@ function App() {
           <Route path="/345" element={<SearchList />} />
         </Routes>
       </main>
-
         {/* 로딩 중일 때 메시지 표시 */}
         {isLoading && <p>데이터를 불러오는 중입니다...</p>}
 
@@ -76,7 +76,9 @@ function App() {
           // 데이터가 없거나 documents 배열이 비어있을 때 (로딩 후)
           !isLoading && !error && <p>데이터를 찾을 수 없습니다.</p>
         )}
+      <ThumbsUpbutton />
       <Footer />
+
     </div>
   );
 }

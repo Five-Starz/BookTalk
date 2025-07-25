@@ -29,7 +29,6 @@ import { authenticateToken } from '../middlewares/auth-middleware';
  *             required:
  *               - email
  *               - password
- *               - name
  *               - nickname
  *             properties:
  *               email:
@@ -42,10 +41,6 @@ import { authenticateToken } from '../middlewares/auth-middleware';
  *                 format: password
  *                 description: 사용자의 비밀번호 (최소 6자)
  *                 example: strongpassword123
- *               name:
- *                 type: string
- *                 description: 사용자의 실명
- *                 example: 홍길동
  *               nickname:
  *                 type: string
  *                 description: 사용자의 고유 닉네임
@@ -86,10 +81,6 @@ import { authenticateToken } from '../middlewares/auth-middleware';
  *                       type: string
  *                       description: 사용자 닉네임
  *                       example: newuser_nick
- *                     name:
- *                       type: string
- *                       description: 사용자 이름
- *                       example: 홍길동
  *       400:
  *         description: 필수 필드 누락
  *         content:
@@ -185,9 +176,6 @@ router.post('/auth/signup',authController.signUp);
  *                     nickname:
  *                       type: string
  *                       example: testuser
- *                     name:
- *                       type: string
- *                       example: 테스트 사용자
  *       400:
  *         description: 이메일 또는 비밀번호 누락
  *         content:
@@ -276,9 +264,6 @@ router.post('/auth/login', authController.login);
  *                     nickname:
  *                       type: string
  *                       example: testuser
- *                     name:
- *                       type: string
- *                       example: 테스트 사용자
  *       401:
  *         description: Refresh Token 없음
  *         content:
@@ -414,10 +399,6 @@ router.post('/auth/logout', authController.logout);
  *                       type: string
  *                       description: 사용자 닉네임
  *                       example: testuser
- *                     name:
- *                       type: string
- *                       description: 사용자 이름
- *                       example: 테스트 사용자
  *                 data:
  *                   type: string
  *                   example: 이것은 민감한 데이터입니다!

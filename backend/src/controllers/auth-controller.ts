@@ -9,15 +9,15 @@ export class AuthController{
 
   async signUp(req: Request, res: Response, next: NextFunction) {
   
-    const { name, email, password, nickname } = req.body;
-    if (!name || !email || !password || !nickname) {
+    const { email, password, nickname } = req.body;
+    if (!email || !password || !nickname) {
       return res.status(400).json({ message: 'All fields are required.' });
     }
     // const user = await authService.createUser(name, email, password, nickname);
     // res.status(201).json({ message: 'User registered successfully', user: { userId: user.userId, email: user.email, nickname: user.nickname } });
 
     try {
-      const { accessToken, refreshToken, user } = await authService.signup(email, password, name, nickname);
+      const { accessToken, refreshToken, user } = await authService.signup(email, password, nickname);
       res.status(201).json({
           message: '회원가입 및 로그인 성공',
           accessToken,
