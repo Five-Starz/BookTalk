@@ -2,7 +2,7 @@ import React from 'react'
 
 const BestReview = () => {
   return (
-    <div className='flex flex-wrap gap-4 w-1/2'>
+    <div className='flex flex-col lg:w-3/5 gap-4'>
       <div className="flex gap-4">
         <img
           className='rounded-lg max-w-fit max-h-[240px] sm:max-h-[320px]'
@@ -13,8 +13,8 @@ const BestReview = () => {
           <p>ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ</p>
         </div>
       </div>
-      <div className='flex gap-4'>
-        <div className="card card-side bg-gray-200 h-20">
+      <div className='flex justify-between'>
+        <div className="card card-side w-[calc(50%-6px)] bg-gray-200 h-20">
           <figure>
             <img
               src="https://img.daisyui.com/images/stock/photo-1635805737707-575885ab0820.webp"
@@ -25,7 +25,7 @@ const BestReview = () => {
             <p>Click the button to watch on Jetflix app.</p>
           </div>
         </div>
-        <div className="card card-side bg-gray-200 h-20">
+        <div className="card card-side w-[calc(50%-6px)] bg-gray-200 h-20">
           <figure>
             <img
               src="https://img.daisyui.com/images/stock/photo-1635805737707-575885ab0820.webp"
