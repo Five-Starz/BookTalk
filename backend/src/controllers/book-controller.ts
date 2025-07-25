@@ -10,7 +10,7 @@ class BookController {
     try {
       const { query } = req.query;  // 검색도서명 저장
       if (!query || typeof query !== 'string') {
-        return res.status(400).json({ message: '검;색어(query)를 입력해주세요. '})
+        return res.status(400).json({ message: '검색어(query)를 입력해주세요. '})
       }
       const books = await bookService.searchBooksByQuery(query);  // 검색결과 책 목록들 받아와
       return res.status(400).json(books); // 결과 반환
