@@ -24,7 +24,7 @@ function App() {
     console.error('에러 발생:', error);
   });
   return (
-    <>
+    <div className="flex flex-col min-h-screen">
       <Header />
       <main>
         <Routes>
@@ -40,7 +40,7 @@ function App() {
         </Routes>
       </main>
       <Footer />
-    </>
+    </div>
   );
 }
 
