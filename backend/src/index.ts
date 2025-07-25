@@ -3,8 +3,8 @@
 
 import dotenv from 'dotenv';
 dotenv.config();
-import express, { Request, Response } from 'express';
-
+import express, { Request, Response, NextFunction } from 'express';
+import cors from 'cors'
 //swagger
 import swaggerUi from 'swagger-ui-express';
 import swaggerJSDoc from 'swagger-jsdoc';
@@ -22,10 +22,17 @@ const app = express();
 const swaggerSpec = swaggerJSDoc(swaggerOptions);
 const PORT = process.env.PORT || 8000;
 
+// 모든 출처를 허용하는 방법 (개발 단계에서만 권장)
+app.use(cors());
 // 미들웨어 및 라우터
 app.use(express.urlencoded({extended:true}))
 app.use(express.json());
 app.use('/', [authRouter, reviewRouter, mainRouter, bookRouter, likesRouter, commentRouter]);
+// --- 전역 오류 처리 미들웨어 ---
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+    console.error(err.stack);
+    res.status(500).send('서버 오류가 발생했습니다.');
+});
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
