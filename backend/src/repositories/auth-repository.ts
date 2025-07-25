@@ -25,9 +25,9 @@ export class AuthRepository{
   }
 
   //회원 등록
-  async createUser(name:string,email:string,password:string,nickname:string):Promise<Users>{
+  async createUser(email:string,password:string,nickname:string):Promise<Users>{
     return await prisma.users.create({
-      data:{name,email,password,nickname}
+      data:{email,password,nickname}
     });
   };
 

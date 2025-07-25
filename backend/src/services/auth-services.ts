@@ -27,10 +27,10 @@ export class AuthService{
     return authRepository.findbyEmail(nickname);
   };
 
-  async createUser(name:string,email:string,password:string,nickname:string):Promise<Users>{
+  async createUser(email:string,password:string,nickname:string):Promise<Users>{
     const salt = 10;
     const hashedPassword = await bcrypt.hash(password, salt);
-    return authRepository.createUser(name,email,hashedPassword,nickname);
+    return authRepository.createUser(email,hashedPassword,nickname);
   };
 
 
@@ -60,12 +60,11 @@ export class AuthService{
    * 사용자 등록 (회원가입)
    * @param email - 사용자 이메일
    * @param password - 사용자 비밀번호
-   * @param name - 사용자 이름
    * @param nickname - 사용자 닉네임
    * @returns {{accessToken: string, refreshToken: string, user: object}} 생성된 토큰 및 사용자 정보
    * @throws Error (이메일/닉네임 중복, 기타 오류)
    */
-  async signup(email: string, password: string, name: string, nickname: string) {
+  async signup(email: string, password: string, nickname: string) {
       // 이메일 또는 닉네임 중복 확인
       const existingUserByEmail = await authRepository.findbyEmail(email);
       if (existingUserByEmail) {
@@ -79,9 +78,8 @@ export class AuthService{
       // 비밀번호 해싱
       const hashedPassword = await bcrypt.hash(password, 10);
 
-      // 새 사용자 생성name:string,email:string,password:string,nickname:string
+      // 새 사용자 생성email:string,password:string,nickname:string
       const newUser = await authRepository.createUser(
-          name,
           email,
           hashedPassword,
           nickname,
