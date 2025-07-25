@@ -1,4 +1,3 @@
-// import './types/custom';  // nodemon 정상 사용 위해, 타입 병합만 유도함 (JS로 빌드 안됨)
 // import { prisma } from './utils/prisma'; // Prisma 클라이언트 임포트
 // import { PrismaClient } from '@prisma/client';
 

@@ -21,15 +21,6 @@ const router: Router = express.Router();
  *          schema:
  *            type: object
  *            properties:
- *              title:
- *                type: string
- *                description: 책 제목
- *              authors:
- *                type: string
- *                description: 저자명
- *              publishedYear:
- *                type: integer
- *                description: 출판연도
  *              rating:
  *                type: number
  *                format: float
