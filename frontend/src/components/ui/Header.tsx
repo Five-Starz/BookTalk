@@ -9,10 +9,12 @@ const Header = () => {
         {/* bg-white px-4 sm:px-8 py-4 shadow-sm */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
           {/* 왼쪽 로고 */}
-          <Link to="/" className="text-2xl font-bold">
-            <span className="text-black">BOOK</span>
-            <span className="text-orange-500">T</span>
-            <span className="text-black">ALK</span>
+          <Link to="/">
+            <h1>
+              BOOK
+              <span className="text-orange-500">T</span>
+              ALK
+            </h1>
           </Link>
 
           {/* 오른쪽 영역: 검색창 + 마이페이지 + 로그인 */}
