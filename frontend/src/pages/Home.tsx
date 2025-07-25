@@ -8,15 +8,13 @@ import BookList from '../components/BookList';
 const Home = () => {
   return (
     <>
-      <div>
-        <div>
-          <BestReview />
-          <RandomReview />
-        </div>
-        <Hot10 />
+      <div className='flex'>
+        <BestReview />
+        <RandomReview />
       </div>
+      <Hot10 />
       <BookList />
-      {/* <BookList /> */}
+      <BookList />
     </>
   );
 };

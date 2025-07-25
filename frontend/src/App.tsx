@@ -3,6 +3,7 @@ import { Routes, Route } from 'react-router-dom'; // Link는 Header로 이동
 import './App.css';
 import Header from './components/ui/Header';
 import Footer from './components/ui/Footer';
+import axios from 'axios';
 
 import Home from './pages/Home';
 import MyPage from './pages/MyPage';
@@ -15,6 +16,13 @@ import ReviewDetail from './pages/ReviewDetail';
 import WriteReview from './pages/WriteReview';
 
 function App() {
+  axios.get('http://localhost:8000')
+  .then(response => {
+    console.log(response.data); // 받아온 데이터 처리
+  })
+  .catch(error => {
+    console.error('에러 발생:', error);
+  });
   return (
     <>
       <Header />

@@ -14,7 +14,7 @@ function BookList() {
     slidesToScroll: 1
   };
   return (
-    <div className="slider-container w-400">
+    <div className="slider-container w-200">
       <Slider {...settings}>
         <div>
           <h3>1</h3>

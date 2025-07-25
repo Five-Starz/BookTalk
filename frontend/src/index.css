@@ -24,17 +24,17 @@ h3{
 }
 
 
-@media screen and (min-width: 1281px) {
+@media (min-width: 1281px) {
   main{
     width: 1280px;
   }
 }
-@media screen and (max-width: 1280px) {
+@media (max-width: 1280px) {
   main{
     width: 80%;
   }
 }
-@media screen and (max-width: 1024px) {
+@media (max-width: 1024px) {
   .text-overflow {
     text-overflow: ellipsis;
     overflow: hidden;
@@ -45,7 +45,7 @@ h3{
     -webkit-box-orient: vertical;
   }
 }
-@media screen and (max-width: 768px) {
+@media (max-width: 768px) {
   *{
     font-size: 0.95rem;
   }
@@ -63,5 +63,17 @@ h3{
   }
   .text-overflow {
     -webkit-line-clamp: 8;
+  }
+}
+
+@media (max-width: 375px){
+  h1{
+    font-size: 2rem;
+  }
+  h2{
+    font-size: 1.3rem;
+  }
+  h3{
+    font-size: 1rem;
   }
 }
