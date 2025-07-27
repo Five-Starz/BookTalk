@@ -14,7 +14,7 @@ export const SignupButton = () => {
       {/* 회원가입 버튼 */}
       <button
         type="submit"
-        className="w-full bg-neutral text-white rounded-md py-6 text-sm hover:bg-gray-700 transition mt-6"
+        className="w-full bg-black hover:bg-neutral-800 text-white rounded-md py-6 text-sm cursor-pointer transition mt-6"
       >
           가입 완료
       </button>
@@ -28,7 +28,7 @@ export const LoginButton = () => {
       {/* 로그인 버튼 */}
       <button
         type="submit"
-        className="w-full bg-neutral text-white rounded-md py-6 text-sm hover:bg-gray-700 transition mt-6"
+        className="w-full bg-black hover:bg-neutral-800 text-white rounded-md py-6 text-sm cursor-pointer transition mt-6"
       >
         로그인
       </button>
@@ -36,10 +36,30 @@ export const LoginButton = () => {
   )
 }
 
-export const DeleteButton = () => {
+export const LogoutButton = () => {
   return (
     <>
-      {/* 삭제 버튼 */}
+      {/* 로그아웃 버튼 */}
+      <button
+        type="submit"
+        className="w-full bg-black hover:bg-neutral-800 text-white rounded-md py-6 text-sm cursor-pointer transition mt-6"
+      >
+        로그아웃
+      </button>
+    </>
+  )
+}
+
+export const CancelButton = () => {
+  return (
+    <>
+      {/* 취소 버튼 */}
+      <button
+        type="submit"
+        className="w-full bg-gray-200 hover:bg-gray-300 text-black rounded-md py-2 text-sm cursor-pointer transition mt-2"
+      >
+        취소
+      </button>
     </>
   )
 }
@@ -48,6 +68,26 @@ export const UpdateButton = () => {
   return (
     <>
       {/* 수정 버튼 */}
+      <button
+        type="submit"
+        className="w-full bg-black hover:bg-neutral-800 text-white rounded-md py-2 text-sm cursor-pointer transition mt-6"
+      >
+        수정
+      </button>
+    </>
+  )
+}
+
+export const ResignButton = () => {
+  return(
+    <>
+      {/* 탈퇴 버튼 */}
+      <button
+        type="submit"
+        className="w-full border text-red-500 hover:font-semibold hover:bg-red-50 rounded-md py-2 text-sm cursor-pointer mt-1"
+      >
+        회원 탈퇴
+      </button>
     </>
   )
 }

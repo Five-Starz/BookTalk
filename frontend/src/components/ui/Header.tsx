@@ -1,4 +1,3 @@
-import React from 'react'
 import { Link } from 'react-router-dom'
 
 const Header = () => {
@@ -64,7 +63,7 @@ const Header = () => {
         </div>
       </header>
       {/* header fixed로 인해서 wrapper div 추가 */}
-      <div className="h-20" />
+      <div className="h-[105px]" />
     </>
   )
 }
