@@ -6,7 +6,7 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
-/*
+
 model Token{
   tokenId       Int      @id @default(autoincrement()) 
   userId        Int      @unique
@@ -15,11 +15,10 @@ model Token{
 
   user Users    @relation(fields: [userId], references: [userId])
 }
-*/
+
 
 model Users{
   userId    Int      @id @default(autoincrement()) 
-  name      String   
   email     String   @unique 
   password  String   
   nickname  String   @unique
@@ -29,7 +28,7 @@ model Users{
   reviews Reviews[] //1:N관계 설정
   comments Comments[] 
   likes Likes[]
-  //token Token? //1:1
+  token Token? //1:1
 }
 
 model Reviews {
@@ -38,7 +37,7 @@ model Reviews {
   isbn      String 
   content   String   
   count     Int?   
-  rating    Int   
+  rating    Decimal  @db.Decimal(2,1)   
   createdAt DateTime @default(now()) 
   updatedAt DateTime @updatedAt 
 
@@ -49,13 +48,15 @@ model Reviews {
 }
 
 model Books{
-  isbn         String  @id
-  title        String
-  author       String
-  publisher    String
-  thumbnail    String
-  createdAt    DateTime @default(now()) 
-  totalRating  Int
+  isbn          String  @id
+  title         String
+  authors       String
+  publisher     String
+  thumbnail     String
+  description   String @db.Text
+  publishedYear Int
+  createdAt     DateTime @default(now()) 
+  totalRating   Decimal  @db.Decimal(3,2)
 
   reviews Reviews[]
 }
