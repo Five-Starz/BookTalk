@@ -8,9 +8,8 @@ export const swaggerOptions: swaggerJSDoc.Options = {
       version: '1.0.0',
       description: '우리 팀 프로젝트의 Swagger 명세서',
     },
-    servers: [
-      {
-        url: 'http://localhost:8000', // 백엔드 주소
+    tags: [{ name: 'Review', description: '리뷰 관련 API' }],
+    servers: [{ url: 'http://localhost:8000', // 백엔드 주소
       },
     ],
     components: {

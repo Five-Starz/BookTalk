@@ -9,8 +9,8 @@ import { authenticateToken } from '../middlewares/auth-middleware';
 /**
  * @swagger
  * tags:
- * name: Auth
- * description: 사용자 인증 및 권한 부여 관련 API
+ *  - name: Auth
+ *    description: 사용자 인증 및 권한 부여 관련 API
  */
 
 

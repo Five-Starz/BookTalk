@@ -10,6 +10,13 @@ const router: Router = express.Router();
 
 /**
  * @swagger
+ * tags:
+ *  - name: Main
+ *    description: 메인페이지 관련 API
+ */
+
+/**
+ * @swagger
  * /main/reviews/liked:
  *  get:
  *    summary: 좋아요 수가 많은 리뷰 1개 조회
