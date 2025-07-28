@@ -1,52 +1,59 @@
-import React from 'react'
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
+import React from 'react';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation } from 'swiper/modules';
 
 // https://velog.io/@owlsuri/React-slick-Custom 참고할 것
 
 function BookList() {
-  const settings = {
-    arrows: true,
-    infinite: false,
-    speed: 500,
-    slidesToShow: 5,
-    slidesToScroll: 1
-  };
   return (
     <div className="slider-container w-full">
-      <Slider {...settings}>
-        <div>
-          <h3>1</h3>
-        </div>
-        <div>
-          <h3>2</h3>
-        </div>
-        <div>
-          <h3>3</h3>
-        </div>
-        <div>
-          <h3>4</h3>
-        </div>
-        <div>
-          <h3>5</h3>
-        </div>
-        <div>
-          <h3>6</h3>
-        </div>
-        <div>
-          <h3>7</h3>
-        </div>
-        <div>
-          <h3>8</h3>
-        </div>
-        <div>
-          <h3>9</h3>
-        </div>
-        <div>
-          <h3>10</h3>
-        </div>
-      </Slider>
+      <h2>BookList</h2>
+      <Swiper
+        style={{
+          '--swiper-navigation-color': '#000',
+        } as React.CSSProperties}
+        slidesPerView={5}
+        loop={true}
+        watchSlidesProgress={true}
+        modules={[Navigation]}
+        className="mySwiper"
+      >
+        <SwiperSlide>
+          <img className='max-h-[280px] rounded-lg mb-4' src="https://contents.kyobobook.co.kr/sih/fit-in/300x0/pdt/9788936439743.jpg" />
+          <h4>책제목</h4>
+          <p>저자명</p>
+        </SwiperSlide>
+        <SwiperSlide>
+          <img className='max-h-[280px] rounded-lg mb-4' src="https://contents.kyobobook.co.kr/sih/fit-in/300x0/pdt/9788998441012.jpg" />
+          <h4>책제목</h4>
+          <p>저자명</p>
+        </SwiperSlide>
+        <SwiperSlide>
+          <img className='max-h-[280px] rounded-lg mb-4' src="https://contents.kyobobook.co.kr/sih/fit-in/300x0/pdt/9791194413394.jpg" />
+          <h4>책제목</h4>
+          <p>저자명</p>
+        </SwiperSlide>
+        <SwiperSlide>
+          <img className='max-h-[280px] rounded-lg mb-4' src="https://contents.kyobobook.co.kr/sih/fit-in/300x0/pdt/9791141602376.jpg" />
+          <h4>책제목</h4>
+          <p>저자명</p>
+        </SwiperSlide>
+        <SwiperSlide>
+          <img className='max-h-[280px] rounded-lg mb-4' src="https://contents.kyobobook.co.kr/sih/fit-in/300x0/pdt/9791170612759.jpg" />
+          <h4>책제목</h4>
+          <p>저자명</p>
+        </SwiperSlide>
+        <SwiperSlide>
+          <img className='max-h-[280px] rounded-lg mb-4' src="https://contents.kyobobook.co.kr/sih/fit-in/300x0/pdt/9791199311206.jpg" />
+          <h4>책제목</h4>
+          <p>저자명</p>
+        </SwiperSlide>
+        <SwiperSlide>
+          <img className='max-h-[280px] rounded-lg mb-4' src="https://contents.kyobobook.co.kr/sih/fit-in/300x0/pdt/9791198754080.jpg" />
+          <h4>책제목</h4>
+          <p>저자명</p>
+        </SwiperSlide>
+      </Swiper>
     </div>
   );
 }

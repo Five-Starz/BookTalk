@@ -15,7 +15,6 @@ import SearchList from './pages/SearchList';
 import ReviewDetail from './pages/ReviewDetail';
 import WriteReview from './pages/WriteReview';
 import SignUp from './pages/SignUp';
-
 interface Book {
   authors: string[];
   contents: string;
@@ -34,6 +33,7 @@ interface Book {
 interface BookApiResponse {
   documents: Book[]; // documents가 Book 배열임을 명시
 }
+
 
 function App() {
   // 데이터 타입을 BookApiResponse 또는 null로 명확히 지정

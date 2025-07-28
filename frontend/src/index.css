@@ -18,9 +18,6 @@ h2{
 h3{
   font-size: 1rem;
 }
-.slick-prev:before, .slick-next:before {
-  color: black !important;
-}
 
 
 @media (min-width: 1281px) {

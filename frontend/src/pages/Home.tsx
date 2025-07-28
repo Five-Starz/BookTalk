@@ -7,7 +7,11 @@ import BookList from '../components/BookList';
 
 const Home = () => {
   return (
-    <div className='flex flex-col gap-12 md:gap-24'>
+    <div className='flex flex-col gap-12 md:gap-20 pt-[105px] pb-[200px]'>
+      <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+      />
       <div className='flex flex-col gap-4 lg:flex-row'>
         <BestReview />
         <RandomReview />
@@ -15,6 +19,9 @@ const Home = () => {
       <Hot10 />
       <BookList />
       <BookList />
+
+
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     </div>
   );
 };

@@ -5,7 +5,7 @@ import ReviewCard from '../components/ui/ReviewCard'
 
 const Book = () => {
   return (
-    <div className='flex flex-col gap-12 md:gap-24'>
+    <div className='flex flex-col gap-12 md:gap-20'>
       <BookInfo />
       <div>
         <div className='flex justify-between mb-3 md:mb-6'>
