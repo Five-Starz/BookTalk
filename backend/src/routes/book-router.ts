@@ -10,6 +10,13 @@ const router: Router = express.Router();
 
 /**
  * @swagger
+ * tags:
+ *  - name: Book
+ *    description: 책 관련 API
+ */
+
+/**
+ * @swagger
  * /books/search:
  *  get:
  *    summary: 도서 검색 (Kakao API 연동)
