@@ -18,7 +18,7 @@ class ReviewController {
         rating,
         content,
       } = req.body; // 리뷰생성시 필수로 받아와야 할 body값들
-
+      
       const userId = req.user?.userId || 2; // swagger UI 같은 외부 도구에서 테스트할 때는 인증 토큰이 없거나, 미들웨어를 거치지 않기 때문에 req.user가 없는 상황이어서 임시로 1 할당 -> 나중에 테스트 끝나면 지워야함
       if (!isbn || rating==null || !content || !userId) {
         return res.status(400).json({ message: '리뷰 등록 정보가 부족합니다.' });

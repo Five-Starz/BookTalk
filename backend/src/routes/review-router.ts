@@ -5,6 +5,7 @@
 import express, { Router } from 'express';
 import ReviewController from '../controllers/review-controller';
 const reviewController = new ReviewController();
+import { authenticateToken } from '../middlewares/auth-middleware';
 
 const router: Router = express.Router();
 
@@ -21,6 +22,8 @@ const router: Router = express.Router();
  *  post:
  *    summary: 리뷰 작성
  *    tags: [Review]
+ *    security:
+ *      - bearerAuth: []  # Access Token 보안 스키마 적용
  *    requestBody:
  *      required: true
  *      content:
@@ -73,7 +76,7 @@ const router: Router = express.Router();
  *      400:
  *        description: 잘못된 요청
  */
-router.post('/reviews', reviewController.createReview);
+router.post('/reviews',authenticateToken, reviewController.createReview);
 
 /** 특정 책의 전체 리뷰 조회
  * @swagger
