@@ -1,10 +1,10 @@
 import React, {useState, useEffect} from 'react';
+
 import { Routes, Route } from 'react-router-dom'; // Link는 Header로 이동
 import './App.css';
 import Header from './components/ui/Header';
 import Footer from './components/ui/Footer';
 import axios from 'axios';
-
 
 import Home from './pages/Home';
 import MyPage, { ReviewCollection, Settings, WantReadList } from './pages/MyPage';

@@ -1,3 +1,5 @@
+import React from 'react'
+
 export const Form = () => {
   return (
     <div>
@@ -31,7 +33,6 @@ export const EmailForm = () => {
     </div>
   )
 }
-
 export const PasswordForm = () => {
   return (
     <div className="relative border-b">
