@@ -1,20 +1,93 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
+import axios from 'axios';
+// import { useParams } from 'react-router-dom';
+
+// Book 인터페이스만 임포트합니다.
+import type { Book } from '../types/Book';
 
 const BookInfo = () => {
+  const isbn = '8986621134 9788986621136';
+  // const { isbn } = useParams<{ isbn: string }>();
+
+  // bookData의 타입을 Book 또는 null로 설정합니다.
+  const [bookData, setBookData] = useState<Book | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!isbn) {
+      setError("책 정보를 불러올 ISBN이 없습니다.");
+      setIsLoading(false);
+      return;
+    }
+
+    const fetchBookDetails = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+
+        // axios.get의 제네릭 타입을 Book으로 명시합니다.
+        // 이는 백엔드가 단일 Book 객체를 반환할 것이라고 가정합니다.
+        const response = await axios.get<Book>(`http://localhost:8000/`);
+        
+        setBookData(response.data); // response.data가 바로 Book 객체입니다.
+        console.log('받아온 책 상세 데이터:', response.data);
+      } catch (err) {
+        console.error('책 상세 데이터 불러오기 에러:', err);
+        // HTTP 상태 코드에 따라 에러 메시지를 더 구체적으로 할 수 있습니다 (예: 404 Not Found)
+        if (axios.isAxiosError(err) && err.response?.status === 404) {
+          setError('요청하신 ISBN에 해당하는 책을 찾을 수 없습니다.');
+        } else {
+          setError('책 정보를 불러오는 데 실패했습니다.');
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchBookDetails();
+  }, [isbn]);
+
+  // ... (이하 로딩, 에러, 데이터 없음 처리 및 렌더링 로직은 동일)
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-48">
+        책 정보를 불러오는 중입니다...
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex justify-center items-center h-48 text-red-500">
+        {error}
+      </div>
+    );
+  }
+
+  if (!bookData) {
+    return (
+      <div className="flex justify-center items-center h-48">
+        해당 책 정보를 찾을 수 없습니다.
+      </div>
+    );
+  }
+
   return (
     <div className='flex flex-col md:flex-row gap-4'>
       <div className="flex justify-center md:block">
         <img
           className='rounded-lg max-w-fit max-h-[240px] sm:max-h-[280px]'
-          src="https://contents.kyobobook.co.kr/sih/fit-in/180x0/pdt/9791141611040.jpg"
-          alt="책 표지" />
+          src={bookData.thumbnail}
+          alt={bookData.title + " 표지"}
+        />
       </div>
       <div className='flex flex-col w-full'>
         <div className='flex flex-col justify-between lg:flex-row'>
           <div className='text-center md:text-justify'>
-            <h2>책 이름</h2>
-            <p>저자명</p>
-            <p className='text-gray-400'>2024</p>
+            <h2>{bookData.title}</h2>
+            <p>{bookData.authors.join(', ')}</p>
+            <p className='text-sm'>{bookData.datetime ? new Date(bookData.datetime).getFullYear() : '날짜 정보 없음'}</p>
           </div>
           <div className='flex justify-between gap-2 mt-4 lg:mt-0'>
             <button type='button' className="flex flex-col w-1/3 p-4 sm:w-[150px] items-center gap-2 cursor-pointer">
@@ -32,9 +105,7 @@ const BookInfo = () => {
           </div>
         </div>
         <div className="w-full mt-4 text-gray-600">
-          문학동네시인선 238번으로 최백규의 『여름은 사랑의 천사』를 펴낸다. 첫 시집 『네가 울어서 꽃은 진다』(창비, 2022)를 펴낸 2022년에 알라딘에서 진행한 ‘한국문학의 얼굴들’ 시 부문 1위에 선정되며 신인으로서는 눈에 띄는 약진을 보인 시인 최백규의 반가운 두번째 시집이다.<br />
-          첫 시집 『네가 울어서 꽃은 진다』에서 시인이 불우한 청춘의 한 시절을 특유의 아름다운 목소리로 풀어냈다면, 『여름은 사랑의 천사』에서는 ‘너’라는 시적 대상과 함께한 ‘여름’이라는 계절의 속성, 그것과 닮은 뜨거운 사랑의 모습들을 더욱 호소력 짙은 감성으로 그려낸다.<br />
-          또한 유년, 가족, 노동, 생활의 이력 등에 대한 시인의 자전적인 면모가 담긴 시를 읽는 기쁨도 크다. 『여름은 사랑의 천사』는 사랑과 청춘, 이별과 그리움, 가난과 허무, 그리고 슬픔과 정념이 넘실거리는 여름의 한복판으로 독자를 데려가는 그야말로 ‘여름 시집’이다.
+            {bookData.contents}
           </div>
       </div>
     </div>

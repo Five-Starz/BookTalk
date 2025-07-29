@@ -3,7 +3,7 @@ import React from 'react';
 import BestReview from '../components/main/BestReview';
 import RandomReview from '../components/main/RandomReview';
 import Hot10 from '../components/main/Hot10';
-import BookList from '../components/BookList';
+import { Good10, Want10 } from '../components/BookList';
 
 const Home = () => {
   return (
@@ -17,8 +17,8 @@ const Home = () => {
         <RandomReview />
       </div>
       <Hot10 />
-      <BookList />
-      <BookList />
+      <Good10 />
+      <Want10 />
 
 
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
