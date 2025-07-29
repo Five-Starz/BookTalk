@@ -25,7 +25,7 @@ const PORT = process.env.PORT || 8000;
 
 // 모든 출처를 허용하는 방법 (개발 단계에서만 권장)
 app.use(cors({
-  origin: 'http://localhost:5173/',   // ✅ React 앱 주소 정확히 명시
+  origin: 'http://localhost:5173',   // ✅ React 앱 주소 정확히 명시
   credentials: true                  // ✅ 쿠키 허용
 }));
 // 미들웨어 및 라우터
