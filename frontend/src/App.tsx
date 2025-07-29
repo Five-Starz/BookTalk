@@ -15,6 +15,7 @@ import SearchList from './pages/SearchList';
 import ReviewDetail from './pages/ReviewDetail';
 import WriteReview from './pages/WriteReview';
 import SignUp from './pages/SignUp';
+import ProtectedRoute from './components/ProtectedRoute';
 
 interface Book {
   authors: string[];
@@ -66,7 +67,7 @@ function App() {
       <main className='break-words'>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/mypage" element={<MyPage />} />
+          {/* <Route path="/mypage" element={<MyPage />} /> */}
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/123" element={<Book />} />
@@ -75,8 +76,12 @@ function App() {
           <Route path="/2346" element={<WriteReview />} />
           <Route path="/345" element={<SearchList />} />
 
-          {/* 중첩 라우터 설정 */}
-          <Route path="/mypage" element={<MyPage />}>
+          {/* 중첩 라우터 설정 + 비로그인 접근 금지 */}
+          <Route path="/mypage" element={
+            <ProtectedRoute>
+              <MyPage />
+            </ProtectedRoute>
+          }>
             <Route path="reviews" element={<ReviewCollection />} />
             <Route path="wants" element={<WantReadList />} />
             <Route path="settings" element={<Settings />} />
