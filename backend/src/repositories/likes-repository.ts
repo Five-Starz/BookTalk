@@ -20,6 +20,9 @@ export class LikesRepository{
   };
   
   async delete(userId:number, reviewId:number):Promise<boolean>{
+    const isLike=await this.findByUserAndReview(userId,reviewId);
+    if(!isLike)
+      throw new Error("해당 리뷰에 좋아요를 누른 적이 없습니다.")
     const deleteLike=await prisma.likes.delete({
       where:{
         userId_reviewId:{

@@ -4,6 +4,7 @@ const likesService=new LikesService();
 
 export class LikesController{
   
+  //이건 지워도 될듯한
   async findByUserAndReview(req: Request, res: Response, next: NextFunction):Promise<any>{
     const userId = parseInt(req.body.userId, 10);
     const reviewId = parseInt(req.body.reviewId, 10);
@@ -11,8 +12,11 @@ export class LikesController{
   }
 
   async create(req: Request, res: Response, next: NextFunction):Promise<any>{
-    const userId = parseInt(req.body.userId, 10);
+    const userId = req.user!.userId;
     const reviewId = parseInt(req.body.reviewId, 10);
+    const isLike=await likesService.findByUserAndReview(userId,reviewId)
+    if(isLike)
+      return res.status(400).json({message:"이미 좋아요를 눌렀습니다"});
     const createLike=await likesService.create(userId,reviewId);
     if(createLike)
       return res.status(200).json(createLike);
@@ -21,7 +25,7 @@ export class LikesController{
   }
 
   async delete(req: Request, res: Response, next: NextFunction){
-    const userId = parseInt(req.body.userId, 10);
+    const userId = req.user!.userId;
     const reviewId = parseInt(req.body.reviewId, 10);
     const del=await likesService.delete(userId,reviewId);
     if(del)
