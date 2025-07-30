@@ -8,6 +8,56 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useEffect } from 'react';
 
+// JWT 디코딩 및 만료 확인 함수
+const parseJwt = (token: string) => {
+  try {
+    const payloadBase64 = token.split('.')[1];
+    const decodedPayload = atob(payloadBase64);
+    return JSON.parse(decodedPayload);
+  } catch {
+    return null;
+  }
+}
+
+// JWT 토큰 만료 여부 확인 함수
+const isTokenExpired = (token: string) => {
+  const payload = parseJwt(token);
+  if (!payload || !payload.exp) return true; // 만료 정보가 없으면 만료된 것으로 간주
+  const currentTime = Math.floor(Date.now() / 1000); // 현재 시간 (초 단위)
+  return payload.exp < currentTime; // 만료 시간과 비교
+}
+
+// access Token 유효성 체크하고 만료 시 /auth/refresh로 갱신 요청
+const getValidAccessToken = async () => {
+  const accessToken = localStorage.getItem('accessToken');
+  const userId = localStorage.getItem('userId');
+
+  if (!accessToken || isTokenExpired(accessToken)) {
+    if (!userId) {
+      return null; // userId가 없으면 토큰 갱신 불필요
+    }
+
+    try {
+      const response = await axios.post(
+        'http://localhost:8000/auth/refresh',
+        { userId},
+        { withCredentials: true }
+      );
+
+      const newAccessToken = response.data.accessToken;
+      localStorage.setItem('accessToken', newAccessToken);
+
+      return newAccessToken;
+    } catch {
+      localStorage.clear(); // 갱신 실패 시 localStorage 초기화
+      window.location.href = '/login'; // 로그인 페이지로 리다이렉트
+      return null; // 토큰 갱신 실패 시 null 반환
+    }
+  }
+  return accessToken; // 유효한 토큰 반환
+}
+
+// 로그인 컴포넌트
 const Login = () => {
   // useNavigate 훅을 사용하여 페이지 이동
   const navigate = useNavigate();
@@ -59,7 +109,7 @@ const Login = () => {
 
       // localStorage에 Token 저장
       localStorage.setItem('accessToken', res.data.accessToken);
-      localStorage.setItem('refreshToken', res.data.refreshToken);
+      localStorage.setItem('userId', res.data.user.userId);
 
       navigate('/'); // 로그인 성공 후 홈으로 이동
     } catch {
