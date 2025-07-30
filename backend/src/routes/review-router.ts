@@ -114,46 +114,6 @@ router.get('/reviews/search/:isbn', reviewController.searchReviewsByBook);
  *      404:
  *        description: 리뷰를 찾을 수 없음
  */
-router.patch('/reviews',authenticateToken, reviewController.updateReview);
-
-/** 리뷰 삭제
- * @swagger
- * /reviews/{reviewId}:
- *  delete:
- *    summary: 리뷰 삭제
- *    tags: [Review]
- *    security:
- *      - bearerAuth: []  # Access Token 보안 스키마 적용
- *    parameters:
- *      - name: isbn
- *        in: path
- *        required: true
- *        schema:
- *          type: string
- *        description: 리뷰삭제할 대상 책의 ISBN 번호
- *      - name: reviewId
- *        in: path
- *        required: true
- *        schema:
- *          type: integer
- *        description: 삭제할 리뷰의 ID
- *    requestBody:
- *      required: true
- *      content:
- *        application/json:
- *          schema:
- *            type: object
- *            required:
- *              - rating
- *              - content
- *    responses:
- *      200:
- *        description: 리뷰 삭제 성공
- *      400:
- *        description: 잘못된 요청
- *      404:
- *        description: 리뷰를 찾을 수 없음
- */
-// router.delete('/reviews/:reviewId',authenticateToken, reviewController.deleteReview);
+router.delete('/reviews/:reviewId',authenticateToken, reviewController.updateReview);
 
 export default router;
