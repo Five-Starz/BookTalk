@@ -27,10 +27,7 @@ class MainService {
 
   // // 5. 보고싶어요 수가 많은 책 (want 10)
   async fetchMostWishedBooks() {
-    const mostWished10Books = await mainRepository.fetchMostWishedBooks();
-    console.log(mostWished10Books);
-    return mostWished10Books;
-    // return await mainRepository.fetchMostWishedBooks();
+    return await mainRepository.fetchMostWishedBooks();
   }
 }
 export default MainService
