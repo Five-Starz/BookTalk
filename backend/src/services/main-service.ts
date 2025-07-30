@@ -11,7 +11,7 @@ class MainService {
   }
 
   // 2. 오늘의 랜덤 리뷰
-  async fetchRandomReview(): Promise<Reviews[] | undefined> {
+  async fetchRandomReview(): Promise<Reviews[] | Reviews | undefined> {
     return await mainRepository.fetchRandomReview();
   }
 
@@ -26,8 +26,11 @@ class MainService {
   }
 
   // // 5. 보고싶어요 수가 많은 책 (want 10)
-  // static async fetchMostWishedBooks() {
-  //   return await mainRepository.fetchMostWishedBooks();
-  // }
+  async fetchMostWishedBooks() {
+    const mostWished10Books = await mainRepository.fetchMostWishedBooks();
+    console.log(mostWished10Books);
+    return mostWished10Books;
+    // return await mainRepository.fetchMostWishedBooks();
+  }
 }
 export default MainService

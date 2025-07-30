@@ -73,6 +73,6 @@ router.get('/main/books/good', mainController.getHighestRated10Books);
  *      200:
  *       description: 보고싶어요 수가 많은 책 (want 10) 조회 성공
  */
-// router.get('/books/want', mainController.getMostWished10Books);
+router.get('/main/books/want', mainController.getMostWished10Books);
 
 export default router;

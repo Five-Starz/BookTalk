@@ -29,26 +29,14 @@ class MainRepository {
     });
   };
 
-  // 2. 오늘의 랜덤 리뷰 3개
-  async fetchRandomReview(): Promise<Reviews[] | undefined> {
+  // 2. 오늘의 랜덤 리뷰 1개
+  async fetchRandomReview(): Promise<Reviews[] | Reviews |undefined> {
     const reviews = await prisma.reviews.findMany();
     if (reviews.length === 0) return undefined;
 
     //1개만 반환할 때
-    // const randomIndex = Math.floor(Math.random() * reviews.length);
-    // return reviews[randomIndex];
-
-    const randomReviews: Reviews[] = [];
-    const selectedIndices = new Set<number>(); // 중복 방지를 위한 Set
-
-    while (randomReviews.length < 3) {
-      const randomIndex = Math.floor(Math.random() * reviews.length);
-      if (!selectedIndices.has(randomIndex)) {
-        selectedIndices.add(randomIndex);
-        randomReviews.push(reviews[randomIndex]);
-      }
-    };
-    return randomReviews;
+    const randomIndex = Math.floor(Math.random() * reviews.length);
+    return reviews[randomIndex];
   }
 
   // 3. 리뷰 수가 많은 책 (hot 10)
@@ -71,12 +59,12 @@ class MainRepository {
     });
   };
 
-  // // 5. 보고싶어요 수가 많은 책 (want 10) - DB에 컬럼 아직 없음. 만들어야함
-  // async fetchMostWishedBooks(): Promise<Books[]> {
-  //   return await prisma.books.findMany({
-  //     orderBy: { 안만들어짐??: 'desc' },
-  //     take: 10,
-  //   });
-  // };
+  // 5. 보고싶어요 수가 많은 책 (want 10) - DB에 컬럼 추가함
+  async fetchMostWishedBooks(): Promise<Books[]> {
+    return await prisma.books.findMany({
+      orderBy: { bookmarks: 'desc' },
+      take: 10,
+    });
+  };
 }
 export default MainRepository

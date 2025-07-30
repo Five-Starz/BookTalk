@@ -54,6 +54,8 @@ class BookRepository {
     }
 
     return bookInfo;
+
+    // 3. 책 랜덤 추천
   }
 }
 

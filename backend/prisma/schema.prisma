@@ -57,6 +57,7 @@ model Books{
   publishedYear Int
   createdAt     DateTime @default(now()) 
   totalRating   Decimal  @db.Decimal(3,2)
+  bookmarks     Int      @default(0)
 
   reviews Reviews[]
 }

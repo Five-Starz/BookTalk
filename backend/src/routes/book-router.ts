@@ -8,14 +8,13 @@ const bookController = new BookController();
 
 const router: Router = express.Router();
 
-/** 도서 검색 (Kakao API 연동)
+/**
  * @swagger
  * tags:
  *  - name: Book
  *    description: 책 관련 API
  */
 
-/**
 /** 도서 검색 (Kakao API 연동)
  * @swagger
  * /books/search:
@@ -54,5 +53,6 @@ router.get('/books/search', bookController.getSearchedBooks);
  */
 router.get('/books/averageRating/:isbn', bookController.getSearchedBooks);
 
+// router.get('localhost:8000/books/random', bookController.getSearchedBooks)
 
 export default router;
