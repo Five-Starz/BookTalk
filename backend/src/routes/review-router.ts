@@ -43,32 +43,6 @@ const router: Router = express.Router();
  *            properties:
  *              isbn:
  *                type: string
- *                description: 책 ISBN 번호
- *              title:
- *                type: string
- *                description: 책 제목
- *              authors:
- *                type: string
- *                description: 저자명
- *              publisher:
- *                type: string
- *                description: 출판사    
- *              publishedYear:
- *                type: integer
- *                description: 출판연도
- *              thumbnail:
- *                type: string
- *                description: 책 썸네일 이미지 주소
- *              description:
- *                type: string
- *                description: 책 설명
- *              rating:
- *                type: number
- *                format: float
- *                enum: [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5]
- *                description: 평점 (0.0 ~ 5.0, 0.5점 단위)
- *              content:
- *                type: string
  *                description: 리뷰 글
  *    responses:
  *      201:
@@ -76,41 +50,119 @@ const router: Router = express.Router();
  *      400:
  *        description: 잘못된 요청
  */
-router.post('/reviews',authenticateToken, reviewController.createReview);
+router.post('/reviews', reviewController.createReview);
 
 /** 특정 책의 전체 리뷰 조회
  * @swagger
- * /reviews/search:
+ * /reviews/search/{isbn}:
  *  get:
  *    summary: 특정 책의 전체 리뷰 조회
  *    tags: [Review]
- *    parameters:
- *      - in: query
- *        name: isbn
- *        schema:
- *          type: string
- *        description: 책 ISBN 번호
- *      - in: query
- *        name: title
- *        schema:
- *          type: string
- *        description: 책 제목
- *      - in: query
- *        name: authors
- *        schema:
- *          type: string
- *        description: 저자명
- *      - in: query
- *        name: publishedYear
- *        schema:
- *          type: integer
- *        description: 출판연도
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              isbn:
+ *                type: string
+ *                description: 책 ISBN 번호
  *    responses:
  *      200:
- *        description: 리뷰 목록 조회 성공
+ *        description: 리뷰 조회 성공
  *      400:
  *        description: 잘못된 요청
  */
-router.get('/reviews/search', reviewController.searchReviewsByBook)
+router.get('/reviews/search/:isbn', reviewController.searchReviewsByBook);
+
+/** 리뷰 수정
+ * @swagger
+ * /reviews:
+ *  patch:
+ *    summary: 리뷰 수정
+ *    tags: [Review]
+ *    security:
+ *      - bearerAuth: []  # Access Token 보안 스키마 적용
+ *    parameters:
+ *      - name: isbn
+ *        in: path
+ *        required: true
+ *        schema:
+ *          type: string
+ *        description: 리뷰수정할 대상 책의 ISBN 번호
+ *      - name: reviewId
+ *        in: path
+ *        required: true
+ *        schema:
+ *          type: integer
+ *        description: 수정할 리뷰의 ID
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            required:
+ *              - rating
+ *              - content
+ *            properties:
+ *              rating:
+ *                type: number
+ *                format: float
+ *                enum: [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5]
+ *                description: 수정할 평점 (0.0 ~ 5.0, 0.5점 단위)
+ *              content:
+ *                type: string
+ *                description: 수정할 리뷰 글
+ *    responses:
+ *      200:
+ *        description: 리뷰 수정 성공
+ *      400:
+ *        description: 잘못된 요청
+ *      404:
+ *        description: 리뷰를 찾을 수 없음
+ */
+router.patch('/reviews',authenticateToken, reviewController.updateReview);
+
+/** 리뷰 삭제
+ * @swagger
+ * /reviews/{reviewId}:
+ *  delete:
+ *    summary: 리뷰 삭제
+ *    tags: [Review]
+ *    security:
+ *      - bearerAuth: []  # Access Token 보안 스키마 적용
+ *    parameters:
+ *      - name: isbn
+ *        in: path
+ *        required: true
+ *        schema:
+ *          type: string
+ *        description: 리뷰삭제할 대상 책의 ISBN 번호
+ *      - name: reviewId
+ *        in: path
+ *        required: true
+ *        schema:
+ *          type: integer
+ *        description: 삭제할 리뷰의 ID
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            required:
+ *              - rating
+ *              - content
+ *    responses:
+ *      200:
+ *        description: 리뷰 삭제 성공
+ *      400:
+ *        description: 잘못된 요청
+ *      404:
+ *        description: 리뷰를 찾을 수 없음
+ */
+// router.delete('/reviews/:reviewId',authenticateToken, reviewController.deleteReview);
 
 export default router;

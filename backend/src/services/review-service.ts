@@ -38,15 +38,41 @@ class ReviewService {
   // 2. 특정 책의 전체 리뷰 조회
   async searchReviewsByBook(data: {
     isbn: string;
-    title: string;
-    authors: string;
-    publishedYear: number;
   }) {
     // 1. 책 정보로 리뷰조회할 대상 책 조회
     const book = await bookRepository.getBookInfo(data.isbn);
 
     // 2. 대상 책의 ISBN으로 쓰여진 리뷰 조회
     return await reviewRepository.searchReviewsByISBN(data.isbn);
+  }
+
+  // 3.리뷰 수정
+  async updateReview(data: {
+    isbn: string;
+    rating: number;
+    content: string;
+    userId: number;
+  }) {
+    // 0. 이미 존재하는 리뷰인지 체크
+    const existing = await reviewRepository.hasReviewByUser(data.userId, data.isbn);
+    console.log(`review-service.ts/updateReview().existing : ${existing}`);   // true
+    if (!existing) {
+      throw new Error('[review-service error] 사용자가 해당 책에 작성한 리뷰가 존재하지 않습니다.');
+    };
+
+    // 1. 특정 사용자의 특정 책 reviewId 가져오기
+    const reviewId = await reviewRepository.getReviewIdByUserIdAndISBN(data.userId, data.isbn);
+    if (reviewId == undefined) {
+      throw new Error('[review-service error] 사용자가 해당 책에 작성한 reviewId를 가져올 수 없습니다.')
+    };
+
+    // 2. 리뷰 수정
+    return await reviewRepository.updateReview(reviewId, {
+      isbn: data.isbn,
+      rating: data.rating,
+      content: data.content,
+      userId: data.userId,
+    });
   }
 }
 export default ReviewService

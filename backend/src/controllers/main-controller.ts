@@ -7,7 +7,7 @@ const mainService = new MainService();
 class MainController {
   // 1. 좋아요 수가 많은 리뷰
   async getMostLikedReviews(req:Request, res:Response): Promise<Response> {
-    const reviews = await mainService.fetchMostLikedReviews();
+    const reviews = await mainService.fetchMostLiked3Reviews();
     return res.json({ reviews });
   }
 

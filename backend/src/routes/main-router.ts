@@ -19,11 +19,11 @@ const router: Router = express.Router();
  * @swagger
  * /main/reviews/liked:
  *  get:
- *    summary: 좋아요 수가 많은 리뷰 1개 조회
+ *    summary: 좋아요 수가 많은 리뷰 3개 조회
  *    tags: [Main]
  *    responses:
  *      200:
- *       description: 좋아요 수가 많은 리뷰 1개 조회 성공
+ *       description: 좋아요 수가 많은 리뷰 3개 조회 성공
  */
 router.get('/reviews/liked', mainController.getMostLikedReviews);
 
