@@ -1,7 +1,31 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 
 const Header = () => {
+  // 로그인 상태 관리
+  const [ isLoggedIn, setIsLoggedIn ] = useState(false);
+
+  // useNavigate 훅을 사용하여 페이지 이동
+  const navigate = useNavigate();
+
+  // 로그인 상태 확인
+  useEffect(() => {
+    const accessToken = localStorage.getItem('accessToken');
+    if (accessToken) {
+      setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
+    }
+  }, []);
+
+  // 로그아웃
+  const handleLogout = () => {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    setIsLoggedIn(false);
+    navigate('/'); // 로그아웃 후 홈으로 이동
+  }
+
   // 헤더 컴포넌트는 페이지 상단에 위치하며, 사이트 로고와 검색창, 마이페이지 및 로그인 링크를 포함합니다.
   return (
     <>
@@ -17,7 +41,7 @@ const Header = () => {
             </h1>
           </Link>
 
-          {/* 오른쪽 영역: 검색창 + 마이페이지 + 로그인 */}
+          {/* 오른쪽 영역: 검색창 + 마이페이지 + 로그인 + 회원가입 + 로그아웃 */}
           <div className="flex flex-col sm:flex-row items-center gap-4 w-full md:w-auto">
             {/* 검색창 */}
             <div className="flex items-center border border-gray-300 rounded-full px-4 py-2 w-full sm:w-72">
@@ -45,21 +69,45 @@ const Header = () => {
               </button>
             </div>
 
-            {/* 마이페이지 */}
-            <Link
-              to="/mypage"
-              className="text-sm text-gray-700 hover:text-black whitespace-nowrap"
-            >
-              마이페이지
-            </Link>
-
-            {/* 로그인 버튼 : 버튼이라기 보다는 로그인 링크 */}
-            <Link
-              to="/login"
-              className="bg-neutral text-white px-4 py-2 rounded-md text-sm hover:bg-gray-700 transition whitespace-nowrap"
-            >
-              로그인
-            </Link>
+            {/* 로그인 여부에 따른 조건부 렌더링 */}
+            {
+              isLoggedIn ? (
+                <>
+                  {/* 마이페이지 */}
+                  <Link
+                    to="/mypage"
+                    className="text-sm text-gray-700 hover:text-black whitespace-nowrap"
+                  >
+                    마이페이지
+                  </Link>
+                  {/* 로그아웃 버튼 */}
+                  <button
+                    onClick={handleLogout}
+                    className="bg-black hover:bg-neutral-800 text-white rounded-md px-4 py-2 text-sm cursor-pointer transition"
+                  >
+                    로그아웃
+                  </button>
+                </>
+              ) : (
+                // 로그인 및 회원가입 링크
+                <>
+                  {/* 로그인 버튼 : 버튼이라기 보다는 로그인 링크 */}
+                  <Link
+                    to="/login"
+                    className="bg-neutral text-white px-4 py-2 rounded-md text-sm hover:bg-gray-700 transition whitespace-nowrap"
+                  >
+                    로그인
+                  </Link>
+                  {/* 회원가입 버튼 : 버튼이라기 보다는 회원가입 링크 */}
+                  <Link
+                    to="/signup"
+                    className="bg-neutral text-white px-4 py-2 rounded-md text-sm hover:bg-gray-700 transition whitespace-nowrap"
+                  >
+                    회원가입
+                  </Link>
+                </>
+              )
+            }
           </div>
         </div>
       </header>

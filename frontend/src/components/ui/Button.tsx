@@ -16,7 +16,7 @@ export const SignupButton = () => {
         type="submit"
         className="w-full bg-black hover:bg-neutral-800 text-white rounded-md py-6 text-sm cursor-pointer transition mt-6"
       >
-          가입 완료
+        가입 완료
       </button>
     </>
   )
