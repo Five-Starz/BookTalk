@@ -62,7 +62,7 @@ class MainRepository {
   // 5. 보고싶어요 수가 많은 책 (want 10) - DB에 컬럼 추가함
   async fetchMostWishedBooks(): Promise<Books[]> {
     return await prisma.books.findMany({
-      orderBy: { bookmarks: 'desc' },
+      orderBy: { bookmarkCount: 'desc' },
       take: 10,
     });
   };

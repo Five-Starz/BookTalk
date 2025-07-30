@@ -29,6 +29,7 @@ model Users{
   comments Comments[] 
   likes Likes[]
   token Token? //1:1
+  bookmarks Bookmarks[]
 }
 
 model Reviews {
@@ -44,7 +45,7 @@ model Reviews {
   users     Users    @relation(fields: [userId], references: [userId], onDelete: Cascade) //onDelete: Cascade 자동삭제
   books     Books   @relation(fields: [isbn], references: [isbn])
   comments  Comments[]
-  likes Likes[]
+  likes     Likes[]  
 }
 
 model Books{
@@ -57,9 +58,10 @@ model Books{
   publishedYear Int
   createdAt     DateTime @default(now()) 
   totalRating   Decimal  @db.Decimal(3,2)
-  bookmarks     Int      @default(0)
+  bookmarkCount     Int      @default(0)
 
   reviews Reviews[]
+  bookmarks Bookmarks[]
 }
 
 
@@ -98,4 +100,16 @@ model Likes {
   // 관계 정의
   users     Users     @relation(fields: [userId], references: [userId], onDelete: Cascade)
   reviews   Reviews     @relation(fields: [reviewId], references: [reviewId], onDelete: Cascade)
+}
+
+
+model Bookmarks {
+  @@id([userId, isbn])
+  userId    Int
+  isbn      String
+  createdAt DateTime @default(now())
+
+  // 관계 정의
+  users     Users     @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  books     Books     @relation(fields: [isbn], references: [isbn], onDelete: Cascade)
 }
