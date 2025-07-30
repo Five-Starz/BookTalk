@@ -124,4 +124,49 @@ router.get('/reviews/search/:isbn', reviewController.searchReviewsByBook);
  */
 // router.delete('/reviews/:reviewId', authenticateToken, reviewController.deleteReview);
 
+
+/** 특정 유저의 전체 리뷰 조회
+ * @swagger
+ * /reviews/user/{userId}:
+ *  get:
+ *    summary: 특정 유저의 전체 리뷰 조회
+ *    tags: [Review]
+ *    parameters:
+ *       - in: path
+ *         name: userId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: "검색할 유저의 고유 아이디"
+ *         example: 1
+ *    responses:
+ *      200:
+ *        description: 리뷰 조회 성공
+ *      400:
+ *        description: 잘못된 요청
+ */
+router.get('/reviews/user/:userId',reviewController.findReviewByUserId)
+
+/** 특정 유저의 리뷰 숫자 조회
+ * @swagger
+ * /reviews/count/{userId}:
+ *  get:
+ *    summary: 특정 유저의 리뷰 숫자 조회
+ *    tags: [Review]
+ *    parameters:
+ *       - in: path
+ *         name: userId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: "검색할 유저의 고유 아이디"
+ *         example: 1
+ *    responses:
+ *      200:
+ *        description: 리뷰 조회 성공
+ *      400:
+ *        description: 잘못된 요청
+ */
+router.get('/reviews/count/:userId',reviewController.UserReviewCount)
+
 export default router;
