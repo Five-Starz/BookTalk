@@ -27,8 +27,8 @@ const BookInfo = ({ book }: { book: BookDetail }) => {
         <div className='flex flex-col justify-between lg:flex-row'>
           <div className='text-center md:text-justify'>
             <h2>{book.title}</h2>
-            <p>{book.authors.join(', ')}</p>
-            <p className='text-sm'>{book.publishedYear ? new Date(book.publishedYear).getFullYear() : '날짜 정보 없음'}</p>
+            <p>{Array.isArray(book.authors) ? book.authors.join(', ') : book.authors}</p>
+            <p className='text-sm'>{book.publishedYear ? book.publishedYear : '날짜 정보 없음'}</p>
           </div>
           <div className='flex justify-between gap-2 mt-4 lg:mt-0'>
             <button type='button' className="flex flex-col w-1/3 p-4 sm:w-[150px] items-center gap-2 cursor-pointer">

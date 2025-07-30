@@ -2,7 +2,7 @@
 export interface BookDetail {
   authors: string | string[];
   description: string;
-  publishedYear: number | string;
+  publishedYear: number;
   isbn: string;
   publisher: string;
   thumbnail: string;

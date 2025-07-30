@@ -1,24 +1,24 @@
 import React, { useState, useEffect }  from 'react'
-import { Link } from 'react-router-dom'; // Link 컴포넌트 임포트
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { useSearchParams } from 'react-router-dom';
 import { getPrimaryIsbn } from '../utils/getPrimaryIsbn';
 
-import type { BookDetail } from '../types/BookType';
+import type { BookDetail } from '../types/BookType'; 
 import BookCard from '../components/ui/BookCard';
 
 const SearchList = () => {
-  const [searchParams] = useSearchParams(); // URL 쿼리 파라미터를 가져오는 훅
-  const query = searchParams.get('query'); // 'query' 파라미터의 값 가져오기 (예: '자연')
+  const [searchParams] = useSearchParams();
+  const query = searchParams.get('query');
 
-  const [searchResults, setSearchResults] = useState<BookDetail[] | null>(null);
+  // searchResults의 초기값을 null이 아닌 빈 배열로 변경 (Hot10과 동일하게)
+  const [searchResults, setSearchResults] = useState<BookDetail[]>([]); 
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // 검색어가 없으면 (예: 그냥 /books/search 로 접근) 데이터 요청을 하지 않습니다.
     if (!query) {
-      setSearchResults([]); // 검색 결과 없음으로 설정
+      setSearchResults([]);
       setIsLoading(false);
       setError("검색어를 입력해주세요.");
       return;
@@ -27,25 +27,34 @@ const SearchList = () => {
     const fetchSearchResults = async () => {
       try {
         setIsLoading(true);
-        setError(null); // 이전 에러 초기화
-
-        // 요청 URL을 동적으로 변경합니다.
-        // 백엔드 URL이 'http://localhost:8000/books/search'이고 'query' 파라미터를 받는다고 가정합니다.
-        const response = await axios.get(`http://localhost:8000/books/search?query=${query}`);
-        console.log(response)
-        // API 응답 구조가 BookApiResponse { documents: Book[] } 형태임을 가정하고 처리합니다.
-        setSearchResults(response.data);
+        setError(null);
+        
+        // axios.get의 제네릭 타입을 명시하여 응답 데이터의 타입을 명확히 합니다.
+        // 백엔드가 BookDetail[]을 직접 반환한다고 가정합니다.
+        const response = await axios.get<BookDetail[]>(`http://localhost:8000/books/search?query=${query}`);
+        
+        // 응답 데이터가 바로 BookDetail[] 배열이라고 가정하고 설정
+        setSearchResults(response.data); 
         console.log('검색 결과 데이터:', response.data);
+
       } catch (err) {
-        console.error('검색 결과 불러오기 에러:', err);
-        setError('검색 결과를 불러오는 데 실패했습니다.');
+        // Axios 에러 처리 강화: Hot10에서 했던 것처럼 상세 에러 메시지 로깅
+        if (axios.isAxiosError(err)) {
+          // 서버에서 보낸 에러 응답 데이터를 콘솔에 출력
+          console.error('검색 결과 불러오기 실패 (Axios 에러):', err.response?.data || err.message);
+          // 사용자에게 더 친절한 에러 메시지
+          setError(`검색 결과를 불러오는 데 실패했습니다: ${err.response?.status} ${err.response?.statusText || ''} - ${err.response?.data?.message || '알 수 없는 서버 오류'}`);
+        } else {
+          console.error('검색 결과 불러오기 실패 (알 수 없는 에러):', err);
+          setError('검색 결과를 불러오는 중 알 수 없는 오류가 발생했습니다.');
+        }
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchSearchResults();
-  }, [query]); // query 값이 변경될 때마다 데이터를 다시 불러옵니다.
+  }, [query]);
 
   if (isLoading) {
     return (
@@ -63,7 +72,8 @@ const SearchList = () => {
     );
   }
 
-  if (!searchResults || searchResults.length === 0) {
+  // searchResults는 항상 배열이므로, 단순히 length로 확인
+  if (searchResults.length === 0) {
     return (
       <div className="p-4 text-center">
         "{query}"에 대한 검색 결과가 없습니다.
@@ -74,10 +84,8 @@ const SearchList = () => {
   return (
     <div className="p-4">
       <h2 className="text-2xl font-bold mb-4">"{query}" 검색 결과</h2>
-      {/* SearchList에서 그리드 컨테이너를 정의하고, BookCard는 각 그리드 아이템이 됩니다. */}
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-8">
         {searchResults.map((book) => {
-          // ✅ getPrimaryIsbn 함수를 사용하여 ISBN 추출
           const finalIsbn = getPrimaryIsbn(book.isbn); 
 
           return (
