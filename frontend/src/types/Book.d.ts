@@ -22,10 +22,7 @@ export interface BookApiResponse {
   // 예를 들어, meta: { total_count: number; pageable_count: number; is_end: boolean; };
 }
 
-// Home 컴포넌트 Props 인터페이스
-// App.tsx에서 Home 컴포넌트로 전달되는 props의 타입을 정의
-export interface HomeProps {
-  apiData: BookApiResponse | null;
-  isLoading: boolean;
-  error: string | null;
+export interface BookCardProps {
+  book: Book; // 책 데이터 전체를 받을 prop 추가
+  width: string; // '1/3', 'full', '80', 'px-10' 등 Tailwind 클래스 문자열을 받음
 }

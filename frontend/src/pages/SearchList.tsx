@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'; // Link 컴포넌트 임포트
 import axios from 'axios';
 import { useSearchParams } from 'react-router-dom';
 
-// Book 인터페이스만 임포트합니다.
 import type { BookApiResponse, Book } from '../types/Book';
 import BookCard from '../components/ui/BookCard';
 
