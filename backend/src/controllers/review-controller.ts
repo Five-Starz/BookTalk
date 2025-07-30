@@ -101,5 +101,23 @@ class ReviewController {
       res.status(500).json({message: '리뷰 수정 중 서버 오류'});
     }
   }
+
+
+  //유저 리뷰 검색
+  async findReviewByUserId(req:express.Request, res:express.Response):Promise<any>{
+    const userId=parseInt(req.params.userId, 10);
+    const userReviews=await reviewService.findReviewByUserId(userId);
+    if(userReviews.length===0)
+      res.status(400).json({message:"리뷰한게 없습니다."});
+    res.status(200).json(userReviews);
+  }
+
+  //유저 리뷰 개수
+  async UserReviewCount(req:express.Request, res:express.Response){
+    const userId=parseInt(req.params.userId, 10);
+    const countReview=await reviewService.UserReviewCount(userId)    
+    console.log(countReview)
+    res.status(200).json(countReview);
+  }
 }
 export default ReviewController

@@ -61,5 +61,17 @@ class ReviewRepository {
       },
     });
   }
+
+  async findReviewByUserId(userId:number):Promise<Reviews[]>{
+    return await prisma.reviews.findMany({
+      where:{userId}
+    })
+  };
+
+  async UserReviewCount(userId:number){
+    return await prisma.reviews.count({
+      where:{userId}
+    });
+  };
 }
 export default ReviewRepository

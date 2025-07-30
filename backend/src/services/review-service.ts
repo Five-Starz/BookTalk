@@ -74,5 +74,15 @@ class ReviewService {
       userId: data.userId,
     });
   }
+  
+  // 유저 리뷰 검색
+  async findReviewByUserId(userId:number){
+    return reviewRepository.findReviewByUserId(userId);
+  };
+
+  // 유저 리뷰 개수
+  async UserReviewCount(userId:number){
+    return reviewRepository.UserReviewCount(userId);
+  };
 }
 export default ReviewService
