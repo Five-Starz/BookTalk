@@ -1,12 +1,12 @@
 export interface ReviewDetail {
   id: string;
-  isbn: string;
-  title: string;
-  authors: string | string[];
-  publisher: string;
-  publishedYear: number;
-  thumbnail: string;
-  description: string;
+  // isbn: string;
+  // title: string;
+  // authors: string | string[];
+  // publisher: string;
+  // publishedYear: number;
+  // thumbnail: string;
+  // description: string;
   rating: number;
   content: string;
   userId: number;
