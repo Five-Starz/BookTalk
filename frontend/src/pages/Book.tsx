@@ -39,11 +39,10 @@ const Book = () => {
       try {
         setIsLoading(true); // 로딩 시작
         setError(null);    // 기존 에러 초기화
-
-        // axios를 사용하여 책 상세 정보를 API로부터 가져옵니다.
+        // ✅ API 요청 URL도 함께 출력해봅니다.
+        console.log('BookInfo API 호출 URL:', `http://localhost:8000/book/${isbn}`);
         const response = await axios.get(`http://localhost:8000/book/${isbn}`);
-        
-        setBookData(response.data); // 가져온 데이터를 bookData 상태에 저장
+        setBookData(response.data);
         console.log('받아온 책 상세 데이터 (BookPage):', response.data);
       } catch (err) {
         console.error('책 상세 데이터 불러오기 에러 (BookPage):', err);
