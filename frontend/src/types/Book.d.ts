@@ -10,7 +10,7 @@ export interface Book {
   status: string;
   thumbnail: string;
   title: string;
-  translators: string[];
+  //translators: string[];
   url: string;
   // 필요한 경우 여기에 추가 필드를 정의하세요.
 }

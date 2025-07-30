@@ -16,7 +16,7 @@ export const Good10 = () => {
         // 백엔드 API 엔드포인트를 '리뷰가 많은 책'에 맞게 조정해야 합니다.
         // 예: 'http://localhost:8000/api/books/top-reviews'
         // 백엔드에서 이 엔드포인트를 통해 리뷰가 많은 책 데이터를 제공해야 합니다.
-        const response = await axios.get<BookApiResponse>('http://localhost:8000/books/good');
+        const response = await axios.get('http://localhost:8000/books/good');
         setApiData(response.data);
         console.log('Hot10 받아온 데이터:', response.data.documents);
       } catch (err) {
@@ -85,7 +85,7 @@ export const Want10 = () => {
         // 백엔드 API 엔드포인트를 '리뷰가 많은 책'에 맞게 조정해야 합니다.
         // 예: 'http://localhost:8000/api/books/top-reviews'
         // 백엔드에서 이 엔드포인트를 통해 리뷰가 많은 책 데이터를 제공해야 합니다.
-        const response = await axios.get<BookApiResponse>('http://localhost:8000/books/want');
+        const response = await axios.get('http://localhost:8000/books/want');
         setApiData(response.data);
         console.log('Hot10 받아온 데이터:', response.data.documents);
       } catch (err) {

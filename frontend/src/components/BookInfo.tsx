@@ -28,7 +28,7 @@ const BookInfo = () => {
 
         // axios.get의 제네릭 타입을 Book으로 명시합니다.
         // 이는 백엔드가 단일 Book 객체를 반환할 것이라고 가정합니다.
-        const response = await axios.get<Book>(`http://localhost:8000/`);
+        const response = await axios.get(`http://localhost:8000/`);
         
         setBookData(response.data); // response.data가 바로 Book 객체입니다.
         console.log('받아온 책 상세 데이터:', response.data);

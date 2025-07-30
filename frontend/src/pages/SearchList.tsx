@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'; // Link 컴포넌트 임포트
 import axios from 'axios';
 import { useSearchParams } from 'react-router-dom';
 
-import type { BookApiResponse, Book } from '../types/Book';
+import type { Book } from '../types/Book';
 import BookCard from '../components/ui/BookCard';
 
 const SearchList = () => {
@@ -30,11 +30,11 @@ const SearchList = () => {
 
         // 요청 URL을 동적으로 변경합니다.
         // 백엔드 URL이 'http://localhost:8000/books/search'이고 'query' 파라미터를 받는다고 가정합니다.
-        const response = await axios.get<BookApiResponse>(`http://localhost:8000/books/search?query=${query}`);
-        
+        const response = await axios.get(`http://localhost:8000/books/search?query=${query}`);
+        console.log(response)
         // API 응답 구조가 BookApiResponse { documents: Book[] } 형태임을 가정하고 처리합니다.
-        setSearchResults(response.data.documents);
-        console.log('검색 결과 데이터:', response.data.documents);
+        setSearchResults(response.data);
+        console.log('검색 결과 데이터:', response.data);
       } catch (err) {
         console.error('검색 결과 불러오기 에러:', err);
         setError('검색 결과를 불러오는 데 실패했습니다.');
