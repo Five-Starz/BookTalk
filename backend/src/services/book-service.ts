@@ -16,6 +16,9 @@ class BookService {
       headers: {
         Authorization: `KakaoAK ${this.KAKAO_API_KEY}`,
       },
+      params: {
+        size: 50,
+      },
     });
 
     // API 응답 중 프론트에 필요한 정보만 필터링해서 반환

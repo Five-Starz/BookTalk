@@ -2,6 +2,7 @@ import express, {Request,Response,Router} from 'express';
 const router:Router=express.Router();
 import { LikesController } from '../controllers/likes-controller';
 const likesController=new LikesController();
+import { authenticateToken } from '../middlewares/auth-middleware';
 //여긴 테스트용으로 만든 라우터임 나중에 위치 수정 필요
 
 
@@ -13,6 +14,8 @@ const likesController=new LikesController();
  *    summary: 좋아요 등록
  *    description: "POST 방식으로 좋아요를 등록한다."
  *    tags: [likes]
+ *    security:
+ *      - bearerAuth: []  # Access Token 보안 스키마 적용
  *    requestBody:
  *      required: true
  *      content:
@@ -20,9 +23,6 @@ const likesController=new LikesController();
  *          schema:
  *            type: object
  *            properties:
- *              userId:
- *                type: integer
- *                description: "유저 아이디"
  *              reviewId:
  *                type: integer
  *                description: "리뷰 아이디"
@@ -30,7 +30,7 @@ const likesController=new LikesController();
  *      200:
  *       description: 검색 결과 반환 성공
  */
-router.post('/likes',likesController.create)
+router.post('/likes',authenticateToken,likesController.create)
 
 
 /**
@@ -68,6 +68,8 @@ router.post('/likes/find',likesController.findByUserAndReview)
  *    summary: 좋아요를 삭제
  *    description: "POST 방식으로 좋아요 삭제"
  *    tags: [likes]
+ *    security:
+ *      - bearerAuth: []  # Access Token 보안 스키마 적용
  *    requestBody:
  *      required: true
  *      content:
@@ -75,9 +77,6 @@ router.post('/likes/find',likesController.findByUserAndReview)
  *          schema:
  *            type: object
  *            properties:
- *              userId:
- *                type: integer
- *                description: "유저 아이디"
  *              reviewId:
  *                type: integer
  *                description: "리뷰 아이디"
@@ -85,7 +84,7 @@ router.post('/likes/find',likesController.findByUserAndReview)
  *      200:
  *       description: 검색 결과 반환 성공
  */
-router.post('/likes/del',likesController.delete)
+router.post('/likes/del',authenticateToken,likesController.delete)
 
 /**
  * @swagger

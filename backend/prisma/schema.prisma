@@ -69,6 +69,7 @@ model Comments{
   content   String 
   createdAt DateTime @default(now()) 
   updatedAt DateTime @updatedAt 
+  status    CommentStatus @default(NORMAL)
 
   // 자기 참조: 이 댓글의 부모 댓글 (null이면 최상위 댓글)
   parentComment Comments? @relation("CommentReplies", fields: [parentId], references: [commentId], onDelete: Cascade)
@@ -79,6 +80,11 @@ model Comments{
 
   users     Users    @relation(fields: [userId], references: [userId], onDelete: Cascade) //onDelete: Cascade 자동삭제
   reviews   Reviews   @relation(fields: [reviewId], references: [reviewId], onDelete: Cascade)
+}
+
+enum CommentStatus{
+  NORMAL
+  DELETED
 }
 
 model Likes {

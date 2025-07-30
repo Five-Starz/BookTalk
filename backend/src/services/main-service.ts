@@ -6,8 +6,8 @@ const mainRepository = new MainRepository();
 
 class MainService {
   // 1. 좋아요 수가 많은 리뷰
-  async fetchMostLikedReviews(): Promise<Reviews | null> {
-    return await mainRepository.fetchMostLikedReviews();
+  async fetchMostLiked3Reviews(): Promise<Reviews | null> {
+    return await mainRepository.fetchMostLiked3Reviews();
   }
 
   // 2. 오늘의 랜덤 리뷰
