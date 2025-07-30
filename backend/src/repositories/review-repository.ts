@@ -69,6 +69,14 @@ class ReviewRepository {
     });
   }
 
+  // 리뷰 삭제
+  async deleteReview(reviewId: number, userId: number) {
+    return await prisma.reviews.delete({
+      where: { reviewId, userId },
+    });
+  }
+
+
   async findReviewByUserId(userId:number):Promise<Reviews[]>{
     return await prisma.reviews.findMany({
       where:{userId}

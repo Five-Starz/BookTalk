@@ -99,6 +99,29 @@ class ReviewController {
     }
   }
 
+  // 4. 리뷰 삭제
+  async deleteReview(req:express.Request, res:express.Response): Promise<any> {
+    try {
+      const reviewId = Number(req.params?.reviewId);
+      const userId = req.user?.userId;
+
+      console.log(`userId=${userId}, reviewId=${reviewId}`);
+      if (!userId || !reviewId) {
+        return res.status(400).json({ message: '리뷰 삭제에 필요한 정보가 부족합니다.' });
+      }
+
+      const deletedReview = await reviewService.deleteReview({
+        reviewId,
+        userId
+      });
+      return res.status(200).json(deletedReview); // 삭제된 리뷰 반환
+    } catch(error) {
+      console.error('[ReviewController] 리뷰 삭제 오류:', error);
+      res.status(500).json({message: '리뷰 삭제 중 서버 오류'});
+    }
+  }
+
+
 
   //유저 리뷰 검색
   async findReviewByUserId(req:express.Request, res:express.Response):Promise <any>{

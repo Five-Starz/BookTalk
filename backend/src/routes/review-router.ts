@@ -165,7 +165,7 @@ router.patch('/reviews/:reviewId',authenticateToken, reviewController.updateRevi
  *      404:
  *        description: 리뷰를 찾을 수 없음
  */
-// router.delete('/reviews/:reviewId', authenticateToken, reviewController.deleteReview);
+router.delete('/reviews/:reviewId', authenticateToken, reviewController.deleteReview);
 
 
 /** 특정 유저의 전체 리뷰 조회
