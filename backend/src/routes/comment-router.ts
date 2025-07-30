@@ -405,4 +405,27 @@ router.put('/comment/update',authenticateToken,commentsController.updateComment)
    */
   router.delete('/comment/:commentId',authenticateToken,commentsController.deleteComment)
 
+  /**
+ * @swagger
+ *
+ * /comment/review/count/{reviewId}:
+ *   get:
+ *     summary: 리뷰 댓글 개수
+ *     description: "특정 리뷰에 등록된 모든 댓글 개수."
+ *     tags: [Comment]
+ *     parameters:
+ *       - in: path
+ *         name: reviewId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: "댓글을 검색할 리뷰의 아이디"
+ *         example: 1
+ *     responses:
+ *       200:
+ *         description: 검색 결과 반환 성공
+ */
+router.get('/comment/review/count/:reviewId',commentsController.countReviewComment)
+
+
 export default router   

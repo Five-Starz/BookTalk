@@ -62,4 +62,9 @@ export class CommentsController{
     else      
       return res.status(200).json({message:"삭제 성공"});
   };
+
+  async countReviewComment(req: Request, res: Response, next: NextFunction){
+    const reviewId=parseInt(req.params.reviewId,10);
+    return res.status(200).json(await commentsServices.countReviewComment(reviewId));
+  }
 };

@@ -24,4 +24,8 @@ export class CommentsServices{
   async deleteComment(userId:number,commentId:number):Promise<boolean>{
     return await commentsRepository.deleteComment(userId,commentId);
   };
+
+  async countReviewComment(reviewId:number){
+    return commentsRepository.countReviewComment(reviewId);
+  }
 };

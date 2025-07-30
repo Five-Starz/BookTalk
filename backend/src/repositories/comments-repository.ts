@@ -119,5 +119,14 @@ export class CommentsRepository{
     else
       return false;
   };
+
+  async countReviewComment(reviewId:number){
+    return await prisma.comments.count({
+      where:{
+        reviewId,
+        status:CommentStatus.NORMAL
+      }
+    });
+  };
 };
 
