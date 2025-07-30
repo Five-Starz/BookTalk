@@ -76,11 +76,11 @@ router.post('/reviews', reviewController.createReview);
  */
 router.get('/reviews/search/:isbn', reviewController.searchReviewsByBook);
 
-/** 리뷰 수정
+/** 리뷰 삭제
  * @swagger
  * /reviews:
  *  patch:
- *    summary: 리뷰 수정
+ *    summary: 리뷰 삭제
  *    tags: [Review]
  *    security:
  *      - bearerAuth: []  # Access Token 보안 스키마 적용
@@ -90,13 +90,13 @@ router.get('/reviews/search/:isbn', reviewController.searchReviewsByBook);
  *        required: true
  *        schema:
  *          type: string
- *        description: 리뷰수정할 대상 책의 ISBN 번호
+ *        description: 리뷰삭제할 대상 책의 ISBN 번호
  *      - name: reviewId
  *        in: path
  *        required: true
  *        schema:
  *          type: integer
- *        description: 수정할 리뷰의 ID
+ *        description: 삭제할 리뷰의 ID
  *    requestBody:
  *      required: true
  *      content:
@@ -106,18 +106,9 @@ router.get('/reviews/search/:isbn', reviewController.searchReviewsByBook);
  *            required:
  *              - rating
  *              - content
- *            properties:
- *              rating:
- *                type: number
- *                format: float
- *                enum: [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5]
- *                description: 수정할 평점 (0.0 ~ 5.0, 0.5점 단위)
- *              content:
- *                type: string
- *                description: 수정할 리뷰 글
  *    responses:
  *      200:
- *        description: 리뷰 수정 성공
+ *        description: 리뷰 삭제 성공
  *      400:
  *        description: 잘못된 요청
  *      404:
