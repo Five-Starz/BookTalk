@@ -56,9 +56,9 @@ export const PasswordForm = ({ error, ...rest } :BaseInputProps) => {
 export const CheckPasswordForm = ({ error, ...rest } :BaseInputProps) => {
   return (
     <div className="relative border-b">
-      <label className="absolute top-3 left-4 text-gray-600 text-xs" htmlFor='password'>비밀번호 확인</label>
+      <label className="absolute top-3 left-4 text-gray-600 text-xs" htmlFor='passwordCheck'>비밀번호 확인</label>
       <input
-        id="password"
+        id="passwordCheck"
         type="password"
         className="w-full px-4 pt-8 pb-1 bg-white text-black rounded-md text-base outline-none border-none"
         { ...rest }

@@ -1,3 +1,5 @@
+// login.tsx
+// access token만 저장 후 처리 전 저장
 import axios from 'axios'
 import { LoginButton } from '../components/ui/Button'
 import { EmailForm, PasswordForm } from '../components/ui/Form'
@@ -6,21 +8,26 @@ import { useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+
+import { useAuthStore } from '../store/authStore';
 
 const Login = () => {
+  const [errorMsg, setErrorMsg] = useState('');
+
   // useNavigate 훅을 사용하여 페이지 이동
   const navigate = useNavigate();
 
-  // 로그인 된 유저가 회원가입 페이지에 접근할 경우, 홈으로 리다이렉트
-  // useEffect를 사용하여 컴포넌트가 마운트될 때 로그인 상태를 확인
-  // localStorage에서 accessToken을 가져와 로그인 상태를 확인하고, 로그인 상태일 경우 홈으로 리다이렉트
+  // Zustand에서 로그인 상태 가져오기!
+  const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
+  const setTokens = useAuthStore((state) => state.setTokens);
+
+  // 로그인된 상태면 즉시 홈으로 이동 (새로고침 없이도 동작)
   useEffect(() => {
-    const accessToken = localStorage.getItem('accessToken');
-    if (accessToken) {
+    if (isLoggedIn) {
       navigate('/'); // 로그인 상태일 경우 홈으로 이동
     }
-  }, [navigate]);
+  }, [isLoggedIn, navigate]);
 
 
   // zod 스키마 정의
@@ -55,15 +62,16 @@ const Login = () => {
         withCredentials: true
       }
     );
-      console.log('Login Success', res);
 
-      // localStorage에 Token 저장
-      localStorage.setItem('accessToken', res.data.accessToken);
-      localStorage.setItem('refreshToken', res.data.refreshToken);
+      // Zustand 전역 상태에 저장
+      setTokens(res.data.accessToken, res.data.refreshToken); // 토큰 저장
 
-      navigate('/'); // 로그인 성공 후 홈으로 이동
-    } catch {
-      return;
+      // navigate('/')는 없어도 됨: isLoggedIn이 true로 바뀌면 useEffect가 자동으로 이동시킴
+      // navigate('/'); // 로그인 성공 후 홈으로 이동
+    } catch(err) {
+      if (axios.isAxiosError(err) && err.response?.data?.message) {
+        setErrorMsg(err.response.data.message);
+      }
     }
   }
 
@@ -71,6 +79,10 @@ const Login = () => {
     <>
       <div className="min-h-full pt-24 pb-24 flex flex-col justify-center items-center px-4">
         <h1 className="text-2xl font-bold  mb-8">로그인</h1>
+        {/* 에러 메시지 출력 */}
+        {
+          errorMsg && <div className="text-red-500 text-sm mb-2">{ errorMsg }</div>
+        }
         {/* 로그인 폼 */}
         <form className="w-full max-w-md space-y-4" onSubmit={ handleSubmit(onValid) }>
           {/* 이메일 */}

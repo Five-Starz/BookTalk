@@ -1,30 +1,19 @@
-import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useAuthStore } from '../../store/authStore';
 
 const Header = () => {
-  // 로그인 상태 관리
-  const [ isLoggedIn, setIsLoggedIn ] = useState(false);
+  // Zustand에서 로그인 상태 및 토큰 삭제 액션 가져오기
+  const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
+  const removeTokens = useAuthStore((state) => state.clearTokens);
 
   // useNavigate 훅을 사용하여 페이지 이동
   const navigate = useNavigate();
 
-  // 로그인 상태 확인
-  useEffect(() => {
-    const accessToken = localStorage.getItem('accessToken');
-    if (accessToken) {
-      setIsLoggedIn(true);
-    } else {
-      setIsLoggedIn(false);
-    }
-  }, []);
-
-  // 로그아웃
+  // 로그아웃 버튼 클릭 시 전역 상태/로컬스토리지 모두 반영
   const handleLogout = () => {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
-    setIsLoggedIn(false);
-    navigate('/'); // 로그아웃 후 홈으로 이동
-  }
+    removeTokens(); // Zustand 상태(및 localStorage)에서 토큰 제거 및 isLoggedIn false로
+    navigate('/');  // 홈으로 이동
+  };
 
   // 헤더 컴포넌트는 페이지 상단에 위치하며, 사이트 로고와 검색창, 마이페이지 및 로그인 링크를 포함합니다.
   return (
