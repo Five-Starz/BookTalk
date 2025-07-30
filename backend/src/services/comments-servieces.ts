@@ -17,11 +17,15 @@ export class CommentsServices{
     return await commentsRepository.findByReviewId(reviewId);
   };
 
-  async updateComment(commentId:number,content:string):Promise<Comments>{
-    return await commentsRepository.updateComment(commentId,content);
+  async updateComment(userId:number,commentId:number,content:string):Promise<Comments>{
+    return await commentsRepository.updateComment(userId,commentId,content);
   };
 
-  async deleteComment(commentId:number):Promise<boolean>{
-    return await commentsRepository.deleteComment(commentId);
+  async deleteComment(userId:number,commentId:number):Promise<boolean>{
+    return await commentsRepository.deleteComment(userId,commentId);
   };
+
+  async countReviewComment(reviewId:number){
+    return commentsRepository.countReviewComment(reviewId);
+  }
 };

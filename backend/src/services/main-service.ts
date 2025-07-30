@@ -6,12 +6,12 @@ const mainRepository = new MainRepository();
 
 class MainService {
   // 1. 좋아요 수가 많은 리뷰
-  async fetchMostLikedReviews(): Promise<Reviews | null> {
-    return await mainRepository.fetchMostLikedReviews();
+  async fetchMostLiked3Reviews(): Promise<Reviews | null> {
+    return await mainRepository.fetchMostLiked3Reviews();
   }
 
   // 2. 오늘의 랜덤 리뷰
-  async fetchRandomReview(): Promise<Reviews | undefined> {
+  async fetchRandomReview(): Promise<Reviews[] | Reviews | undefined> {
     return await mainRepository.fetchRandomReview();
   }
 
@@ -26,8 +26,8 @@ class MainService {
   }
 
   // // 5. 보고싶어요 수가 많은 책 (want 10)
-  // static async fetchMostWishedBooks() {
-  //   return await mainRepository.fetchMostWishedBooks();
-  // }
+  async fetchMostWishedBooks() {
+    return await mainRepository.fetchMostWishedBooks();
+  }
 }
 export default MainService

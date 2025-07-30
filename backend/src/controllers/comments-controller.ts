@@ -19,7 +19,8 @@ export class CommentsController{
     
   async creatComment(req: Request, res: Response, next: NextFunction):Promise<any>{
     const {content}=req.body;
-    const userId=parseInt(req.body.userId, 10);
+    //const userId=parseInt(req.body.userId, 10);
+    const userId = req.user!.userId;
     const reviewId=parseInt(req.body.reviewId, 10);
     let parentId: number | null = null;
     // req.body.parentId가 존재하고 빈 문자열이 아닌 경우에만 파싱 시도
@@ -42,9 +43,10 @@ export class CommentsController{
   };
 
   async updateComment(req: Request, res: Response, next: NextFunction):Promise<any>{
+    const userId = req.user!.userId; //Non-null assertion operator : null 값이 아님을 확신
     const commentId=parseInt(req.body.commentId, 10);
     const {content}=req.body;    
-    const updateComment=await commentsServices.updateComment(commentId,content);
+    const updateComment=await commentsServices.updateComment(userId,commentId,content);
     if(updateComment)
       return res.status(200).json(updateComment);
     else
@@ -52,11 +54,17 @@ export class CommentsController{
   };
 
   async deleteComment(req: Request, res: Response, next: NextFunction):Promise<any>{
+    const userId = req.user!.userId; 
     const commentId=parseInt(req.params.commentId, 10);
-    const deleteComment=await commentsServices.deleteComment(commentId); 
+    const deleteComment=await commentsServices.deleteComment(userId,commentId); 
     if(!deleteComment)
       return res.status(404).json({message:"삭제 실패"});
-    else
+    else      
       return res.status(200).json({message:"삭제 성공"});
   };
+
+  async countReviewComment(req: Request, res: Response, next: NextFunction){
+    const reviewId=parseInt(req.params.reviewId,10);
+    return res.status(200).json(await commentsServices.countReviewComment(reviewId));
+  }
 };

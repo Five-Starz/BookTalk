@@ -7,7 +7,7 @@ const mainService = new MainService();
 class MainController {
   // 1. 좋아요 수가 많은 리뷰
   async getMostLikedReviews(req:Request, res:Response): Promise<Response> {
-    const reviews = await mainService.fetchMostLikedReviews();
+    const reviews = await mainService.fetchMostLiked3Reviews();
     return res.json({ reviews });
   }
 
@@ -30,9 +30,9 @@ class MainController {
   }
 
   // // 5. 보고싶어요 수가 많은 책 (want 10)
-  // async getMostWished10Books(req:Request, res:Response): Promise<Response> {
-  //   const books = await mainService.fetchMostWishedBooks();
-  //   return res.json({ books });
-  // }
+  async getMostWished10Books(req:Request, res:Response): Promise<Response> {
+    const books = await mainService.fetchMostWishedBooks();
+    return res.json({ books });
+  }
 }
 export default MainController

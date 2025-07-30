@@ -2,7 +2,7 @@ import { Books, Reviews } from '@prisma/client';
 import { prisma } from '../utils/prisma';
 class MainRepository {
   // 1. 좋아요 수가 많은 리뷰
-  async fetchMostLikedReviews(): Promise<Reviews | null> {
+  async fetchMostLiked3Reviews(): Promise<Reviews | null> {
     // 1-1. 좋아요테이블에서 리뷰별 좋아요개수를 그룹화, 내림차순 정렬, 상위 1개 가져옴
     const result = await prisma.likes.groupBy({
       by: ['reviewId'], // 리뷰ID별로 그룹화
@@ -14,7 +14,7 @@ class MainRepository {
           reviewId: 'desc', // 좋아요 개수 기준 내림차순 정렬 (많은 순)
         },
       },
-      take: 1,  // 상위 1개 결과만 가져오기
+      take: 3,  // 상위 3개 결과만 가져오기
     })
 
     // 1-2. 결과가 없으면 null 반환 (좋아요가 하나도 없는 경우)
@@ -30,10 +30,11 @@ class MainRepository {
   };
 
   // 2. 오늘의 랜덤 리뷰 1개
-  async fetchRandomReview(): Promise<Reviews | undefined> {
+  async fetchRandomReview(): Promise<Reviews[] | Reviews |undefined> {
     const reviews = await prisma.reviews.findMany();
     if (reviews.length === 0) return undefined;
 
+    //1개만 반환할 때
     const randomIndex = Math.floor(Math.random() * reviews.length);
     return reviews[randomIndex];
   }
@@ -58,12 +59,12 @@ class MainRepository {
     });
   };
 
-  // // 5. 보고싶어요 수가 많은 책 (want 10) - DB에 컬럼 아직 없음. 만들어야함
-  // async fetchMostWishedBooks(): Promise<Books[]> {
-  //   return await prisma.books.findMany({
-  //     orderBy: { 안만들어짐??: 'desc' },
-  //     take: 10,
-  //   });
-  // };
+  // 5. 보고싶어요 수가 많은 책 (want 10) - DB에 컬럼 추가함
+  async fetchMostWishedBooks(): Promise<Books[]> {
+    return await prisma.books.findMany({
+      orderBy: { bookmarkCount: 'desc' },
+      take: 10,
+    });
+  };
 }
 export default MainRepository

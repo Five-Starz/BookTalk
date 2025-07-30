@@ -29,6 +29,7 @@ model Users{
   comments Comments[] 
   likes Likes[]
   token Token? //1:1
+  bookmarks Bookmarks[]
 }
 
 model Reviews {
@@ -44,7 +45,7 @@ model Reviews {
   users     Users    @relation(fields: [userId], references: [userId], onDelete: Cascade) //onDelete: Cascade 자동삭제
   books     Books   @relation(fields: [isbn], references: [isbn])
   comments  Comments[]
-  likes Likes[]
+  likes     Likes[]  
 }
 
 model Books{
@@ -57,8 +58,10 @@ model Books{
   publishedYear Int
   createdAt     DateTime @default(now()) 
   totalRating   Decimal  @db.Decimal(3,2)
+  bookmarkCount     Int      @default(0)
 
   reviews Reviews[]
+  bookmarks Bookmarks[]
 }
 
 
@@ -69,6 +72,7 @@ model Comments{
   content   String 
   createdAt DateTime @default(now()) 
   updatedAt DateTime @updatedAt 
+  status    CommentStatus @default(NORMAL)
 
   // 자기 참조: 이 댓글의 부모 댓글 (null이면 최상위 댓글)
   parentComment Comments? @relation("CommentReplies", fields: [parentId], references: [commentId], onDelete: Cascade)
@@ -81,6 +85,11 @@ model Comments{
   reviews   Reviews   @relation(fields: [reviewId], references: [reviewId], onDelete: Cascade)
 }
 
+enum CommentStatus{
+  NORMAL
+  DELETED
+}
+
 model Likes {
   // 복합 기본 키 정의: user_id와 post_id의 조합이 고유해야 합니다.
   @@id([userId, reviewId])
@@ -91,4 +100,16 @@ model Likes {
   // 관계 정의
   users     Users     @relation(fields: [userId], references: [userId], onDelete: Cascade)
   reviews   Reviews     @relation(fields: [reviewId], references: [reviewId], onDelete: Cascade)
+}
+
+
+model Bookmarks {
+  @@id([userId, isbn])
+  userId    Int
+  isbn      String
+  createdAt DateTime @default(now())
+
+  // 관계 정의
+  users     Users     @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  books     Books     @relation(fields: [isbn], references: [isbn], onDelete: Cascade)
 }

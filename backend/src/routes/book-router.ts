@@ -15,7 +15,7 @@ const router: Router = express.Router();
  *    description: 책 관련 API
  */
 
-/**
+/** 도서 검색 (Kakao API 연동)
  * @swagger
  * /books/search:
  *  get:
@@ -34,5 +34,25 @@ const router: Router = express.Router();
  */
 router.get('/books/search', bookController.getSearchedBooks);
 
+/** 도서 별 평균평점 조회
+ * @swagger
+ * /books/averageRating/{isbn}:
+ *  get:
+ *    summary: 도서 검색 (Kakao API 연동)
+ *    tags: [Book]
+ *    parameters:
+ *      - name: query
+ *        in: query
+ *        required: true
+ *        schema:
+ *          type: string
+ *        description: 검색할 책 제목
+ *    responses:
+ *      200:
+ *       description: 검색 결과 반환 성공
+ */
+router.get('/books/averageRating/:isbn', bookController.getSearchedBooks);
+
+// router.get('localhost:8000/books/random', bookController.getSearchedBooks)
 
 export default router;

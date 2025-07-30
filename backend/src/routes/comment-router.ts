@@ -5,6 +5,14 @@ const commentsController=new CommentsController();
 //여긴 테스트용으로 만든 라우터임 나중에 위치 수정 필요
 import { CommentsRepository } from '../repositories/comments-repository';
 const comment=new CommentsRepository()
+import { authenticateToken } from '../middlewares/auth-middleware';
+
+/**
+ * @swagger
+ * tags:
+ *  - name: Comment
+ *    description: 댓글 관련 API
+ */
 
 /**
  * @swagger
@@ -84,6 +92,8 @@ router.get('/comment/id/:userId', commentsController.findById);
  *     summary: 댓글 등록
  *     description: "리뷰에 댓글 등록 (parentId는 대댓글을 달고 싶은 commentId를 입력하면 됨)"
  *     tags: [Comment]
+ *     security:
+ *       - bearerAuth: []  # Access Token 보안 스키마 적용
  *     requestBody:
  *       required: true
  *       content:
@@ -91,10 +101,6 @@ router.get('/comment/id/:userId', commentsController.findById);
  *           schema:
  *             type: object
  *             properties:
- *               userId:
- *                 type: integer
- *                 description: "유저 아이디"
- *                 example: 1
  *               reviewId:
  *                 type: integer
  *                 description: "리뷰 아이디"
@@ -157,7 +163,7 @@ router.get('/comment/id/:userId', commentsController.findById);
  *                   type: string
  *                   example: 'content, userId, 또는 reviewId가 누락되었거나 유효하지 않습니다.'
  */
-router.post('/comment/add',commentsController.creatComment)
+router.post('/comment/add',authenticateToken,commentsController.creatComment)
 
 
 
@@ -238,6 +244,8 @@ router.get('/comment/review/:reviewId',commentsController.findByReviewId)
  *     summary: 댓글 수정
  *     description: "댓글 내용을 수정합니다."
  *     tags: [Comment]
+ *     security:
+ *       - bearerAuth: []  # Access Token 보안 스키마 적용
  *     requestBody:
  *       required: true
  *       content:
@@ -312,7 +320,7 @@ router.get('/comment/review/:reviewId',commentsController.findByReviewId)
  *                   type: string
  *                   example: '댓글을 찾을 수 없습니다.'
  */
-router.put('/comment/update',commentsController.updateComment)
+router.put('/comment/update',authenticateToken,commentsController.updateComment)
 
   /**
    * @swagger
@@ -322,6 +330,8 @@ router.put('/comment/update',commentsController.updateComment)
    *     summary: 댓글 삭제
    *     description: "특정 댓글을 삭제합니다. (현재 기준으론 대댓글까지 삭제됨)"
    *     tags: [Comment]
+   *     security:
+   *       - bearerAuth: []  # Access Token 보안 스키마 적용
    *     parameters:
    *       - in: path
    *         name: commentId
@@ -389,6 +399,29 @@ router.put('/comment/update',commentsController.updateComment)
    *                   type: string
    *                   example: '댓글을 찾을 수 없습니다.'
    */
-  router.delete('/comment/:commentId',commentsController.deleteComment)
+  router.delete('/comment/:commentId',authenticateToken,commentsController.deleteComment)
+
+  /**
+ * @swagger
+ *
+ * /comment/review/count/{reviewId}:
+ *   get:
+ *     summary: 리뷰 댓글 개수
+ *     description: "특정 리뷰에 등록된 모든 댓글 개수."
+ *     tags: [Comment]
+ *     parameters:
+ *       - in: path
+ *         name: reviewId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: "댓글을 검색할 리뷰의 아이디"
+ *         example: 1
+ *     responses:
+ *       200:
+ *         description: 검색 결과 반환 성공
+ */
+router.get('/comment/review/count/:reviewId',commentsController.countReviewComment)
+
 
 export default router   

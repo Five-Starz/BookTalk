@@ -1,7 +1,7 @@
 import express, {Request,Response,Router} from 'express';
 const router:Router=express.Router();
-import { LikesController } from '../controllers/likes-controller';
-const likesController=new LikesController();
+import { BookmakrsController } from '../controllers/bookmark-controller';
+const bookmakrsController=new BookmakrsController();
 import { authenticateToken } from '../middlewares/auth-middleware';
 //여긴 테스트용으로 만든 라우터임 나중에 위치 수정 필요
 
@@ -9,11 +9,11 @@ import { authenticateToken } from '../middlewares/auth-middleware';
 /**
  * @swagger
  *
- * /likes:
+ * /bookmarks:
  *  post:
- *    summary: 좋아요 등록
+ *    summary: 보고싶어요 등록
  *    description: "POST 방식으로 좋아요를 등록한다."
- *    tags: [likes]
+ *    tags: [bookmarks]
  *    security:
  *      - bearerAuth: []  # Access Token 보안 스키마 적용
  *    requestBody:
@@ -23,24 +23,24 @@ import { authenticateToken } from '../middlewares/auth-middleware';
  *          schema:
  *            type: object
  *            properties:
- *              reviewId:
- *                type: integer
- *                description: "리뷰 아이디"
+ *              isbn:
+ *                type: string
+ *                description: "책 아이디"
  *    responses:
  *      200:
  *       description: 검색 결과 반환 성공
  */
-router.post('/likes',authenticateToken,likesController.create)
+router.post('/bookmarks',authenticateToken,bookmakrsController.create)
 
 
 /**
  * @swagger
  *
- * /likes/find:
+ * /bookmarks/find:
  *  post:
- *    summary: 좋아요를 이미 눌렀는지 확인
- *    description: "POST 방식으로 좋아요 등록 여부 확인"
- *    tags: [likes]
+ *    summary: 보고싶어요를 이미 눌렀는지 확인
+ *    description: "POST 방식으로 보고싶어요 등록 여부 확인"
+ *    tags: [bookmarks]
  *    requestBody:
  *      required: true
  *      content:
@@ -51,23 +51,23 @@ router.post('/likes',authenticateToken,likesController.create)
  *              userId:
  *                type: integer
  *                description: "유저 아이디"
- *              reviewId:
- *                type: integer
- *                description: "리뷰 아이디"
+ *              isbn:
+ *                type: string
+ *                description: "책 아이디"
  *    responses:
  *      200:
  *       description: 검색 결과 반환 성공
  */
-router.post('/likes/find',likesController.findByUserAndReview)
+router.post('/bookmarks/find',bookmakrsController.findByUserAndIsbn)
 
 /**
  * @swagger
  *
- * /likes/del:
+ * /bookmarks/del:
  *  post:
- *    summary: 좋아요를 삭제
- *    description: "POST 방식으로 좋아요 삭제"
- *    tags: [likes]
+ *    summary: 보고싶어요를 삭제
+ *    description: "POST 방식으로 보고싶어요 삭제"
+ *    tags: [bookmarks]
  *    security:
  *      - bearerAuth: []  # Access Token 보안 스키마 적용
  *    requestBody:
@@ -77,23 +77,23 @@ router.post('/likes/find',likesController.findByUserAndReview)
  *          schema:
  *            type: object
  *            properties:
- *              reviewId:
- *                type: integer
- *                description: "리뷰 아이디"
+ *              isbn:
+ *                type: string
+ *                description: "책 아이디"
  *    responses:
  *      200:
  *       description: 검색 결과 반환 성공
  */
-router.post('/likes/del',authenticateToken,likesController.delete)
+router.post('/bookmarks/del',authenticateToken,bookmakrsController.delete)
 
 /**
  * @swagger
  *
- * /likes/count:
+ * /bookmarks/count:
  *  post:
- *    summary: 해당 리뷰의 좋아요 숫자 검색
- *    description: "POST 방식으로 좋아요 숫자 검색"
- *    tags: [likes]
+ *    summary: 해당 책의 보고싶어요 숫자 검색
+ *    description: "POST 방식으로 보고싶어요 숫자 검색"
+ *    tags: [bookmarks]
  *    requestBody:
  *      required: true
  *      content:
@@ -101,13 +101,13 @@ router.post('/likes/del',authenticateToken,likesController.delete)
  *          schema:
  *            type: object
  *            properties:
- *              reviewId:
- *                type: integer
- *                description: "리뷰 아이디"
+ *              isbn:
+ *                type: string
+ *                description: "책 아이디"
  *    responses:
  *      200:
  *       description: 검색 결과 반환 성공
  */
-router.post('/likes/count',likesController.countByReviewId)
+router.post('/bookmarks/count',bookmakrsController.countByIsbn)
 
 export default router 
