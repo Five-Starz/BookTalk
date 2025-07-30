@@ -5,6 +5,8 @@
 import express, { Router } from 'express';
 import ReviewController from '../controllers/review-controller';
 import { authenticateToken } from '../middlewares/auth-middleware';
+import { optionalAuthToken } from '../middlewares/optinal-auth-middleware';
+
 
 const reviewController = new ReviewController();
 const router: Router = express.Router();
@@ -174,6 +176,8 @@ router.delete('/reviews/:reviewId', authenticateToken, reviewController.deleteRe
  *  get:
  *    summary: 특정 유저의 전체 리뷰 조회
  *    tags: [Review]
+ *    security:
+ *      - bearerAuth: []  # Access Token 보안 스키마 적용
  *    parameters:
  *       - in: path
  *         name: userId
@@ -188,7 +192,7 @@ router.delete('/reviews/:reviewId', authenticateToken, reviewController.deleteRe
  *      400:
  *        description: 잘못된 요청
  */
-router.get('/reviews/user/:userId',reviewController.findReviewByUserId)
+router.get('/reviews/user/:userId',optionalAuthToken,reviewController.findReviewByUserId)
 
 /** 특정 유저의 리뷰 숫자 조회
  * @swagger

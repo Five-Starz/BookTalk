@@ -125,11 +125,19 @@ class ReviewController {
 
   //유저 리뷰 검색
   async findReviewByUserId(req:express.Request, res:express.Response):Promise <any>{
-    const userId=parseInt(req.params.userId, 10);
+    //const userId=parseInt(req.params.userId, 10);
+    let userId:number;
+    // console.log(userId)
+    // console.log(req.params.userId)
+    console.log(req.user?.userId)
+    if(!req.user?.userId)
+      userId=parseInt(req.params.userId,10)
+    else
+      userId=req.user.userId;
     const userReviews=await reviewService.findReviewByUserId(userId);
     if(userReviews.length===0)
-      res.status(400).json({message:"리뷰한게 없습니다."});
-    res.status(200).json(userReviews);
+      return res.status(400).json({message:"리뷰한게 없습니다."});
+    return res.status(200).json(userReviews);
   }
 
   //유저 리뷰 개수
