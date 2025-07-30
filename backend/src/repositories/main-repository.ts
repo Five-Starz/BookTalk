@@ -29,13 +29,26 @@ class MainRepository {
     });
   };
 
-  // 2. 오늘의 랜덤 리뷰 1개
-  async fetchRandomReview(): Promise<Reviews | undefined> {
+  // 2. 오늘의 랜덤 리뷰 3개
+  async fetchRandomReview(): Promise<Reviews[] | undefined> {
     const reviews = await prisma.reviews.findMany();
     if (reviews.length === 0) return undefined;
 
-    const randomIndex = Math.floor(Math.random() * reviews.length);
-    return reviews[randomIndex];
+    //1개만 반환할 때
+    // const randomIndex = Math.floor(Math.random() * reviews.length);
+    // return reviews[randomIndex];
+
+    const randomReviews: Reviews[] = [];
+    const selectedIndices = new Set<number>(); // 중복 방지를 위한 Set
+
+    while (randomReviews.length < 3) {
+      const randomIndex = Math.floor(Math.random() * reviews.length);
+      if (!selectedIndices.has(randomIndex)) {
+        selectedIndices.add(randomIndex);
+        randomReviews.push(reviews[randomIndex]);
+      }
+    };
+    return randomReviews;
   }
 
   // 3. 리뷰 수가 많은 책 (hot 10)
