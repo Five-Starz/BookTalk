@@ -38,21 +38,25 @@ router.get('/books/search', bookController.getSearchedBooks);
  * @swagger
  * /books/averageRating/{isbn}:
  *  get:
- *    summary: 도서 검색 (Kakao API 연동)
+ *    summary: 도서 별 평균평점 조회
  *    tags: [Book]
  *    parameters:
- *      - name: query
- *        in: query
+ *      - name: isbn
+ *        in: path
  *        required: true
  *        schema:
  *          type: string
- *        description: 검색할 책 제목
+ *        description: 검색할 책 ISBN
  *    responses:
  *      200:
  *       description: 검색 결과 반환 성공
  */
-router.get('/books/averageRating/:isbn', bookController.getSearchedBooks);
+router.get('/books/averageRating/:isbn', bookController.getAverageRatingByBook);
 
+// 책 보고싶어요 누르기
+// router.get('books/')
+
+// 랜덤 책 추천 15개?
 // router.get('localhost:8000/books/random', bookController.getSearchedBooks)
 
 export default router;
