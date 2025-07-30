@@ -25,7 +25,7 @@ const router: Router = express.Router();
  *      200:
  *       description: 좋아요 수가 많은 리뷰 3개 조회 성공
  */
-router.get('/reviews/liked', mainController.getMostLikedReviews);
+router.get('/main/reviews/liked', mainController.getMostLikedReviews);
 
 /**
  * @swagger
@@ -37,7 +37,7 @@ router.get('/reviews/liked', mainController.getMostLikedReviews);
  *      200:
  *       description: 오늘의 랜덤 리뷰 1개 조회 성공
  */
-router.get('/reviews/random', mainController.getRandomReviewOfTheDay);
+router.get('/main/reviews/random', mainController.getRandomReviewOfTheDay);
 
 /**
  * @swagger
@@ -49,7 +49,7 @@ router.get('/reviews/random', mainController.getRandomReviewOfTheDay);
  *      200:
  *       description: 리뷰 수가 많은 책 (hot 10) 조회 성공
  */
-router.get('/books/hot', mainController.getMostReviewed10Books);
+router.get('/main/books/hot', mainController.getMostReviewed10Books);
 
 /**
  * @swagger
@@ -61,7 +61,7 @@ router.get('/books/hot', mainController.getMostReviewed10Books);
  *      200:
  *       description: 평점이 좋은 책 (good 10) 조회 성공
  */
-router.get('/books/good', mainController.getHighestRated10Books);
+router.get('/main/books/good', mainController.getHighestRated10Books);
 
 /**
  * @swagger

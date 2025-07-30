@@ -17,7 +17,9 @@ class BookService {
         Authorization: `KakaoAK ${this.KAKAO_API_KEY}`,
       },
       params: {
-        size: 50,
+        target: 'title',  // 검색 필드 제한: title(제목)
+        query: `${encodedQuery}`, // 검색을 원하는 질의어
+        size: 50, // 한 페이지에 보여질 문서 수: 50개
       },
     });
 

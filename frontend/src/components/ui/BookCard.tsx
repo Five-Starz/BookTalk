@@ -1,5 +1,5 @@
 import React from 'react'
-import type { BookCardProps } from '../../types/Book';
+import type { BookCardProps } from '../../types/BookType';
 
 const BookCard: React.FC<BookCardProps> = ({book, width}) => {
   return (

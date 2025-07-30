@@ -1,18 +1,12 @@
 // 단일 책 객체 인터페이스
-export interface Book {
+export interface BookDetail {
   authors: string[]; // API 응답에서 authors가 string[]으로 오는 것으로 보임
-  contents: string;
-  datetime: string;
+  description: string;
+  publishedYear: string;
   isbn: string;
-  price: number;
   publisher: string;
-  sale_price: number;
-  status: string;
   thumbnail: string;
   title: string;
-  //translators: string[];
-  url: string;
-  // 필요한 경우 여기에 추가 필드를 정의하세요.
 }
 
 // API 응답 전체 인터페이스 (documents 배열을 포함)

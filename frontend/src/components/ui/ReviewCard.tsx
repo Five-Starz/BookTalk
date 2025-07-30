@@ -1,20 +1,16 @@
 import React from 'react'
 import User from './User';
-interface ReviewCardProps {
-  width: string;
-}
+import type { ReviewCardProps } from '../../types/ReviewType';
 
-const ReviewCard: React.FC<ReviewCardProps> = ({width}) => {
+
+const ReviewCard = ({review, width}: ReviewCardProps ) => {
   return (
     <div className={`w-${width} bg-[#F6F6F6] rounded-lg p-4`}>
       <div className='flex flex-col gap-3'>
         <User width='6' />
         <span className='block w-full h-[1px] bg-[#ddd]' />
         <div className="min-h-30 md:min-h-50 text-overflow">
-          <p>리뷰내용리뷰내용리뷰내용리뷰내용리뷰내용리뷰내용리뷰내용리뷰내용리뷰내용리뷰내용리뷰내용리뷰내용리뷰내용</p>
-          <p>리뷰내용리뷰내용리뷰내용리뷰내용리뷰내용리뷰내용리뷰내용리뷰내용리뷰내용리뷰내용리뷰내용리뷰내용리뷰내용</p>
-          <p>리뷰내용리뷰내용리뷰내용리뷰내용리뷰내용리뷰내용리뷰내용리뷰내용리뷰내용리뷰내용리뷰내용리뷰내용리뷰내용</p>
-          <p>리뷰내용리뷰내용리뷰내용리뷰내용리뷰내용리뷰내용리뷰내용리뷰내용리뷰내용리뷰내용리뷰내용리뷰내용리뷰내용</p>
+          <p>{review.content}</p>
         </div>
         <span className='block w-full h-[1px] bg-[#ddd]' />
         <div className='flex gap-3'>

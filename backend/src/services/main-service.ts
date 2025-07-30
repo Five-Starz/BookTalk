@@ -11,7 +11,7 @@ class MainService {
   }
 
   // 2. 오늘의 랜덤 리뷰
-  async fetchRandomReview(): Promise<Reviews | undefined> {
+  async fetchRandomReview(): Promise<Reviews[] | undefined> {
     return await mainRepository.fetchRandomReview();
   }
 

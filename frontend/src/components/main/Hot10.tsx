@@ -1,10 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
+import { Link } from 'react-router-dom';
 import { Swiper as SwiperClass } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Thumbs } from 'swiper/modules';
 import axios from 'axios';
 
-import type { BookApiResponse, Book } from "../../types/Book"; // 'Book'도 함께 임포트합니다.
+import type { BookApiResponse, BookDetail } from "../../types/BookType"; // 'Book'도 함께 임포트합니다.
 
 const Hot10 = () => {
   const [apiData, setApiData] = useState<BookApiResponse | null>(null);
@@ -22,7 +23,7 @@ const Hot10 = () => {
         // 백엔드 API 엔드포인트를 '리뷰가 많은 책'에 맞게 조정해야 합니다.
         // 예: 'http://localhost:8000/api/books/top-reviews'
         // 백엔드에서 이 엔드포인트를 통해 리뷰가 많은 책 데이터를 제공해야 합니다.
-        const response = await axios.get<BookApiResponse>('http://localhost:8000/');
+        const response = await axios.get<BookApiResponse>('http://localhost:8000/books/hot');
         setApiData(response.data);
         console.log('Hot10 받아온 데이터:', response.data.documents);
       } catch (err) {
@@ -92,20 +93,22 @@ const handleMainSlideChange = (swiper: SwiperClass) => {
         modules={[Navigation, Thumbs]}
         className="mySwiper2 w-full lg:w-[70%]"
       >
-        {hotBooks.map((book: Book) => ( // Book 인터페이스를 사용하여 타입 안전성 확보
-          <SwiperSlide key={book.isbn}> {/* key는 고유한 값으로 설정 (isbn이 적합) */}
-            <div className="flex justify-between">
-              {/* 메인 슬라이더 이미지: book.thumbnail 사용 */}
-              <img className='min-h-[300px] rounded-xl' src={book.thumbnail} alt={book.title} />
-              <div className="bg-orange-200 w-[calc(100%-230px)] rounded-xl rounded-bl-none p-6">
-                <h2 className="mb-4">{book.title}</h2>
-                {/* authors가 string[]이므로 join으로 문자열로 변환 */}
-                <p className="text-sm mb-10">{book.authors.join(', ')}</p>
-                {/* TODO: 여기에 실제 리뷰 내용이나 요약 등을 추가할 수 있습니다. */}
-                <p>{book.contents.substring(0, 100)}...</p> {/* 예시: contents 일부 표시 */}
+        {hotBooks.map((book: BookDetail) => ( // Book 인터페이스를 사용하여 타입 안전성 확보
+          <Link key={book.isbn} to={`/book/${book.isbn}`}>
+            <SwiperSlide> {/* key는 고유한 값으로 설정 (isbn이 적합) */}
+              <div className="flex justify-between">
+                {/* 메인 슬라이더 이미지: book.thumbnail 사용 */}
+                <img className='min-h-[300px] rounded-xl' src={book.thumbnail} alt={book.title} />
+                <div className="bg-orange-200 w-[calc(100%-230px)] rounded-xl rounded-bl-none p-6">
+                  <h2 className="mb-4">{book.title}</h2>
+                  {/* authors가 string[]이므로 join으로 문자열로 변환 */}
+                  <p className="author text-sm mb-10">{book.authors.join(', ')}</p>
+                  {/* TODO: 여기에 실제 리뷰 내용이나 요약 등을 추가할 수 있습니다. */}
+                  <p>{book.description.substring(0, 100)}...</p> {/* 예시: contents 일부 표시 */}
+                </div>
               </div>
-            </div>
-          </SwiperSlide>
+            </SwiperSlide>
+          </Link>
         ))}
       </Swiper>
 
@@ -122,7 +125,7 @@ const handleMainSlideChange = (swiper: SwiperClass) => {
         modules={[Navigation, Thumbs]}
         className="mySwiper w-[30%] !hidden lg:!block"
       >
-        {hotBooks.map((book: Book) => ( // 썸네일 슬라이더 이미지: book.thumbnail 사용
+        {hotBooks.map((book: BookDetail) => ( // 썸네일 슬라이더 이미지: book.thumbnail 사용
           <SwiperSlide key={book.isbn + "-thumb"}> {/* 썸네일도 고유한 key가 필요 */}
             <img className='max-h-[150px] rounded-lg' src={book.thumbnail} alt={book.title + " thumbnail"} />
           </SwiperSlide>

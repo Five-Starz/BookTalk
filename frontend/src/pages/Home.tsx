@@ -1,9 +1,9 @@
-// src/pages/Home.tsx
+ // src/pages/Home.tsx
 import React from 'react';
 import BestReview from '../components/main/BestReview';
 import RandomReview from '../components/main/RandomReview';
 import Hot10 from '../components/main/Hot10';
-import { Good10, Want10 } from '../components/BookList';
+import { Good10, Want10 } from '../components/main/BookList';
 
 const Home = () => {
   return (

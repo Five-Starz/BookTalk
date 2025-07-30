@@ -3,14 +3,14 @@ import { Link } from 'react-router-dom'; // Link 컴포넌트 임포트
 import axios from 'axios';
 import { useSearchParams } from 'react-router-dom';
 
-import type { Book } from '../types/Book';
+import type { BookDetail } from '../types/BookType';
 import BookCard from '../components/ui/BookCard';
 
 const SearchList = () => {
   const [searchParams] = useSearchParams(); // URL 쿼리 파라미터를 가져오는 훅
   const query = searchParams.get('query'); // 'query' 파라미터의 값 가져오기 (예: '자연')
 
-  const [searchResults, setSearchResults] = useState<Book[] | null>(null);
+  const [searchResults, setSearchResults] = useState<BookDetail[] | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -74,11 +74,11 @@ const SearchList = () => {
     <div className="p-4">
       <h2 className="text-2xl font-bold mb-4">"{query}" 검색 결과</h2>
       {/* SearchList에서 그리드 컨테이너를 정의하고, BookCard는 각 그리드 아이템이 됩니다. */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-8">
         {searchResults.map((book) => (
         // Link 컴포넌트로 전체 카드를 감싸 클릭 시 /book/:isbn 경로로 이동
-        <Link to={`/book/${book.isbn}`} className={`flex flex-col items-center p-2`}>
-          <BookCard key={book.isbn} book={book} width='1/2' />
+        <Link key={book.isbn} to={`/book/${book.isbn}`} className={`flex flex-col items-center p-2`}>
+          <BookCard book={book} width='full' />
         </Link>
         ))}
       </div>

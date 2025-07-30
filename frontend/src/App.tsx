@@ -7,7 +7,7 @@ import Footer from './components/ui/Footer';
 
 import Home from './pages/Home';
 import MyPage, { ReviewCollection, Settings, WantReadList } from './pages/MyPage';
-import Login from './pages/Login'
+import Login from './pages/Login';
 import Book from './pages/Book';
 import ReviewList from './pages/ReviewList';
 import SearchList from './pages/SearchList';
@@ -27,7 +27,7 @@ function App() {
           {/* <Route path="/mypage" element={<MyPage />} /> */}
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
-          <Route path="/123" element={<Book />} />
+          <Route path="/book/:isbn" element={<Book />} />
           <Route path="/234" element={<ReviewList />} />
           <Route path="/2345" element={<ReviewDetail />} />
           <Route path="/2346" element={<WriteReview />} />
