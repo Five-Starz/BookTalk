@@ -283,17 +283,21 @@ export const ReviewCollection = () => {
       {/* 리뷰 리스트 */}
       <div className="space-y-2">
         {/* 🔽 정렬 셀렉트 */}
-        <div className="flex justify-end mt-2">
-          <select
-            value={sortType}
-            onChange={ (e) => setSortType(e.target.value as 'latest' | 'likes' | 'comments') }
-            className="border px-3 py-1 rounded text-sm"
-          >
-            <option value="latest">최신순</option>
-            <option value="likes">좋아요순</option>
-            <option value="comments">댓글순</option>
-          </select>
-        </div>
+        {
+          reviews.length === 0 ? null : (
+            <div className="flex justify-end mt-2">
+              <select
+                value={sortType}
+                onChange={ (e) => setSortType(e.target.value as 'latest' | 'likes' | 'comments') }
+                className="border px-3 py-1 rounded text-sm"
+              >
+                <option value="latest">최신순</option>
+                <option value="likes">좋아요순</option>
+                <option value="comments">댓글순</option>
+              </select>
+            </div>
+          )
+        }
         {/* 리뷰 목록 */}
         {
           reviews.length === 0 && (
