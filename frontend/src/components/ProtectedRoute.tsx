@@ -2,6 +2,8 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 
+import { useAuthStore } from '../store/authStore';
+
 /**
  * ProtectedRoute 컴포넌트 (early return 스타일)
  */
@@ -22,6 +24,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
       // 2. accessToken이 없으면 → 비로그인 상태 → 즉시 인증 실패 처리 & 종료
       if (!accessToken) {
         if (isMounted) {
+          useAuthStore.getState().clearTokens();
           setIsAuthenticated(false);
           setAuthChecked(true);
         }
@@ -45,9 +48,8 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
           !err.response ||
           !(err.response.status === 401 || err.response.status === 403)
         ) {
-          localStorage.removeItem('accessToken');
-          localStorage.removeItem('refreshToken');
           if (isMounted) {
+            useAuthStore.getState().clearTokens();
             setIsAuthenticated(false);
             setAuthChecked(true);
           }
@@ -58,9 +60,8 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
       // 5. accessToken 만료/위조(401/403)일 경우 → refreshToken 필요
       if (!refreshToken) {
         // refreshToken도 없으면 로그아웃 처리
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
         if (isMounted) {
+          useAuthStore.getState().clearTokens();
           setIsAuthenticated(false);
           setAuthChecked(true);
         }
@@ -77,9 +78,8 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
             withCredentials: true,
           }
         );
-        // 새 토큰 저장
-        localStorage.setItem('accessToken', res.data.accessToken);
-        localStorage.setItem('refreshToken', res.data.refreshToken);
+        // 새 토큰 저장 (반드시 Zustand store)
+        useAuthStore.getState().setTokens(res.data.accessToken, res.data.refreshToken);
 
         // 7. 재발급 받은 accessToken으로 다시 인증 시도
         try {
@@ -94,9 +94,8 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
           return;
         } catch {
           // 8. 새 accessToken도 인증 실패 → 토큰 모두 삭제 후 로그아웃
-          localStorage.removeItem('accessToken');
-          localStorage.removeItem('refreshToken');
           if (isMounted) {
+            useAuthStore.getState().clearTokens();
             setIsAuthenticated(false);
             setAuthChecked(true);
           }
@@ -104,9 +103,8 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
         }
       } catch {
         // 9. refreshToken으로도 재발급 실패 → 토큰 모두 삭제 후 로그아웃
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
         if (isMounted) {
+          useAuthStore.getState().clearTokens();
           setIsAuthenticated(false);
           setAuthChecked(true);
         }
