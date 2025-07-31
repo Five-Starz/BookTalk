@@ -3,9 +3,7 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 
 // ✨ 커스텀 훅 임포트
-import { useBookDetails } from '../hooks/useBookDetail';
-import { useReviews } from '../hooks/useReviews';
-import { useRecommendList } from '../hooks/useRecommendList';
+import { useBookDetails, useReviews, useRecommendList } from '../hooks/useBook';
 
 import BookInfo from '../components/book/BookInfo';
 import RecommendList from '../components/book/RecommendList';
@@ -14,7 +12,6 @@ import ReviewsSection from '../components/book/ReviewSection';
 // BookPage는 이제 컨테이너 역할을 더욱 명확하게 수행합니다.
 const Book = () => {
   const { isbn } = useParams<{ isbn: string }>();
-  console.log('Book.tsx: useParams로 받은 ISBN:', isbn);
 
   // ✅ 각 커스텀 훅을 호출하여 데이터, 로딩, 에러 상태를 가져옵니다.
   const { bookData, isLoading, error } = useBookDetails(isbn);

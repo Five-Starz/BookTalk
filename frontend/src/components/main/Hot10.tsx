@@ -91,8 +91,8 @@ const handleMainSlideChange = (swiper: SwiperClass) => {
         className="mySwiper2 w-full lg:w-[70%]"
       >
         {hotBooks.map((book: BookDetail) => ( // Book 인터페이스를 사용하여 타입 안전성 확보
-          <Link key={book.isbn} to={`/book/${book.isbn}`}>
-            <SwiperSlide> {/* key는 고유한 값으로 설정 (isbn이 적합) */}
+          <SwiperSlide> {/* key는 고유한 값으로 설정 (isbn이 적합) */}
+            <Link key={book.isbn} to={`/book/${book.isbn}`}>
               <div className="flex justify-between">
                 {/* 메인 슬라이더 이미지: book.thumbnail 사용 */}
                 <img className='min-h-[300px] rounded-xl' src={book.thumbnail} alt={book.title} />
@@ -104,8 +104,8 @@ const handleMainSlideChange = (swiper: SwiperClass) => {
                   <p>{book.description.substring(0, 100)}...</p> {/* 예시: contents 일부 표시 */}
                 </div>
               </div>
-            </SwiperSlide>
-          </Link>
+            </Link>
+          </SwiperSlide>
         ))}
       </Swiper>
 
