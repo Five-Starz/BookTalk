@@ -15,7 +15,6 @@ const MyPage = () => {
   const [ nickname, setNickname ] = useState<string>('');
   const [ userId, setUserId ] = useState<number | null>(null);
   const [ reviewCount, setReviewCount ] = useState(0);
-  const [ bookmarkCount, setBookmarkCount ] = useState(0);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -33,10 +32,6 @@ const MyPage = () => {
         // 2. 리뷰 수 가져오기
         const reviews = await axios.get(`http://localhost:8000/reviews/count/${userId}`);
         setReviewCount(reviews.data);
-
-        // 3. 보고싶어요 수 가져오기
-        const bookmarks = await axios.get(`http://localhost:8000/bookmarks/count/${userId}`);
-        setBookmarkCount(bookmarks.data);
 
       } catch {
         return;
@@ -106,7 +101,7 @@ const MyPage = () => {
             </Link>
 
             <Link to="/mypage/wants" className="text-center cursor-pointer hover:scale-105 transition">
-              <p className="text-xl font-semibold">{ bookmarkCount }</p>
+              <p className="text-xl font-semibold">0</p>
               <p className="text-sm text-gray-600">보고싶어요</p>
             </Link>
           </div>
@@ -114,7 +109,7 @@ const MyPage = () => {
 
         {/* ✅ 하위 페이지 콘텐츠 */}
         <div className="w-full max-w-4xl mt-4">
-          <Outlet context={{ userId }} />
+          <Outlet context={{ userId, setReviewCount }} />
         </div>
       </div>
     </>
@@ -137,9 +132,9 @@ export const ReviewCollection = () => {
     commentCount?: number;
   };
 
-  type OutletContextType = { userId: number | null }
+  type OutletContextType = { userId: number | null; setReviewCount: React.Dispatch<React.SetStateAction<number>> }
 
-  const { userId } = useOutletContext<OutletContextType>();
+  const { userId, setReviewCount } = useOutletContext<OutletContextType>();
   const [ reviews, setReviews ] = useState<Review[]>([]);
 
   // 정렬 상태
@@ -148,6 +143,10 @@ export const ReviewCollection = () => {
   // 페이지 처리
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+
+  // 모달창 open
+  const [modalOpen, setModalOpen] = useState(false);
+  const [targetReviewId, setTargetReviewId] = useState<number | null>(null);
 
   const navigate = useNavigate();
 
@@ -158,7 +157,7 @@ export const ReviewCollection = () => {
       try {
         // 1. 리뷰 목록 불러오기
         const res = await axios.get(`http://localhost:8000/reviews/user/${userId}`);
-        const reviews = res.data; // [{reviewId, isbn, ...}, ...]
+        const reviews = res.data;
 
         // 2. 각 리뷰에 필요한 추가 데이터
         const reviewWithExtras = await Promise.all(
@@ -190,7 +189,6 @@ export const ReviewCollection = () => {
             let commentCount = 0;
             try {
               const commentRes = await axios.get(`http://localhost:8000/comment/review/count/${review.reviewId}`);
-              console.log(commentRes.data)
               commentCount = Number(commentRes.data) || 0;
             } catch {
               commentCount = 0;
@@ -215,6 +213,36 @@ export const ReviewCollection = () => {
 
   fetchReviewData();
   }, [userId]);
+
+  // 삭제 버튼 클릭 시 모달 오픈
+  const openDeleteModal = (reviewId: number) => {
+    setTargetReviewId(reviewId);
+    setModalOpen(true);
+  };
+
+  // 모달 취소/바깥 클릭
+  const handleCancelDelete = () => {
+    setModalOpen(false);
+    setTargetReviewId(null);
+  };
+
+  // 모달에서 삭제 확정
+  const handleConfirmDelete = async () => {
+    if (!targetReviewId) return;
+    try {
+      await axios.delete(`http://localhost:8000/reviews/${targetReviewId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+        }
+      });
+      setReviews((prev) => prev.filter((r) => r.reviewId !== targetReviewId));
+      setReviewCount((prev) => prev - 1);
+      setModalOpen(false);
+    } catch {
+      alert('리뷰 삭제에 실패했습니다.');
+      setModalOpen(false);
+    }
+  };
 
   // 정렬 함수
   const sortedReviews = [...reviews].sort((a, b) => {
@@ -277,11 +305,11 @@ export const ReviewCollection = () => {
             <div key={review.reviewId} className="bg-white rounded-lg border shadow p-5 mb-4 flex flex-col justify-between">
             {/* 책 제목 */}
               <div className="flex items-center mb-1">
-                <h3 className="font-semibold text-lg">{review.bookTitle || '책 제목 불러오기'}</h3>
+                <h3 className="font-semibold text-lg cursor-pointer" onClick={() => navigate(`/2345`)}>{review.bookTitle || '책 제목 불러오기'}</h3>
               </div>
 
               {/* 리뷰 내용 */}
-              <div className="text-gray-700 mt-2 line-clamp-4 flex-1">
+              <div className="text-gray-700 mt-2 line-clamp-4 flex-1 cursor-pointer" onClick={() => navigate(`/2345`)}>
                 {review.content}
               </div>
 
@@ -296,13 +324,13 @@ export const ReviewCollection = () => {
                 <div className="flex gap-2">
                   <button
                     className="px-2 py-1 rounded text-sm border border-gray-300 hover:bg-gray-100"
-                    onClick={() => navigate(`/write-review/${review.reviewId}`)}
+                    onClick={() => navigate(`/edit-review/${review.reviewId}`)}
                   >
                     수정
                   </button>
                   <button
                     className="px-2 py-1 rounded text-sm border border-red-400 text-red-500 hover:bg-red-50"
-                    // onClick={() => handleDeleteReview(review.reviewId)}
+                    onClick={() => openDeleteModal(review.reviewId)}
                   >
                     삭제
                   </button>
@@ -326,6 +354,38 @@ export const ReviewCollection = () => {
           </ul>
         </div>
       </div>
+
+      {/* 모달은 컴포넌트 return 가장 하단에 한 번만 작성 (리스트 반복 X) */}
+      {
+        modalOpen && (
+          <div
+            className="fixed inset-0 bg-black/30 flex items-center justify-center z-40"
+            onClick={handleCancelDelete}
+          >
+            <div
+              className="bg-white p-6 rounded-lg shadow-lg min-w-[300px] max-w-sm"
+              onClick={e => e.stopPropagation()} // 모달 내용 클릭시 닫힘 방지
+            >
+              <h2 className="text-lg font-bold mb-3">리뷰 삭제</h2>
+              <div className="mb-6">정말 이 리뷰를 삭제하시겠습니까?</div>
+              <div className="flex justify-end gap-2">
+                <button
+                  className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
+                  onClick={handleCancelDelete}
+                >
+                  취소
+                </button>
+                <button
+                  className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+                  onClick={handleConfirmDelete}
+                >
+                  삭제
+                </button>
+              </div>
+            </div>
+          </div>
+        )
+      }
     </>
   )
 }
