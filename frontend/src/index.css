@@ -20,8 +20,22 @@ h3{
   font-size: 1.5rem;
 }
 
-.author {
+.author, .year {
   color: #555;
+}
+
+.rating-stars path{
+    fill: rgb(216, 216, 216);
+}
+
+.rating-star-over path{
+    cursor: pointer;
+    fill: gold;
+}
+
+.rating-star-out path{
+    cursor: pointer;
+    fill: rgb(216, 216, 216);
 }
 
 .swiper-button-prev:after, .swiper-button-next:after {

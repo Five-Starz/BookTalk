@@ -61,19 +61,19 @@ export const Good10 = () => {
         className="mySwiper"
       >
         {goodBooks.map((book: BookDetail) => { // Book 인터페이스를 사용하여 타입 안전성 확보
-           const finalIsbn = getPrimaryIsbn(book.isbn);
-           return (
-            <Link key={finalIsbn} to={`/book/search/${finalIsbn }`}>
-              <SwiperSlide>
-                  {/* 메인 슬라이더 이미지: book.thumbnail 사용 */}
-                  <img className='min-h-[280px] rounded-xl mb-4' src={book.thumbnail} alt={book.title} />
-                    <h4 className="mb-4">{book.title}</h4>
-                    {/* authors가 string[]이므로 join으로 문자열로 변환 */}
-                    <p className="text-sm mb-10">{Array.isArray(book.authors) ? book.authors.join(', ') : book.authors}</p>
-              </SwiperSlide>
-            </Link>
-           )
-          })}
+          const finalIsbn = getPrimaryIsbn(book.isbn);
+          return (
+            <SwiperSlide>
+              <Link key={finalIsbn} to={`/book/${finalIsbn}`}>
+                {/* 메인 슬라이더 이미지: book.thumbnail 사용 */}
+                <img className='min-h-[280px] rounded-xl mb-4' src={book.thumbnail} alt={book.title} />
+                  <h4 className="mb-4">{book.title}</h4>
+                  {/* authors가 string[]이므로 join으로 문자열로 변환 */}
+                  <p className="text-sm mb-10">{Array.isArray(book.authors) ? book.authors.join(', ') : book.authors}</p>
+              </Link>
+            </SwiperSlide>
+          )
+        })}
       </Swiper>
     </div>
   );
@@ -132,19 +132,19 @@ export const Want10 = () => {
         className="mySwiper"
       >
         {wantBooks.map((book: BookDetail) => { // Book 인터페이스를 사용하여 타입 안전성 확보
-           const finalIsbn = getPrimaryIsbn(book.isbn);
-           return (
-            <Link key={finalIsbn} to={`/book/search/${finalIsbn }`}>
-              <SwiperSlide>
-                  {/* 메인 슬라이더 이미지: book.thumbnail 사용 */}
-                  <img className='min-h-[280px] rounded-xl mb-4' src={book.thumbnail} alt={book.title} />
-                    <h4 className="mb-4">{book.title}</h4>
-                    {/* authors가 string[]이므로 join으로 문자열로 변환 */}
-                    <p className="text-sm mb-10">{Array.isArray(book.authors) ? book.authors.join(', ') : book.authors}</p>
-              </SwiperSlide>
-            </Link>
-           )
-          })}
+          const finalIsbn = getPrimaryIsbn(book.isbn);
+          return (
+            <SwiperSlide>
+              <Link key={finalIsbn} to={`/book/${finalIsbn}`}>
+                {/* 메인 슬라이더 이미지: book.thumbnail 사용 */}
+                <img className='min-h-[280px] rounded-xl mb-4' src={book.thumbnail} alt={book.title} />
+                  <h4 className="mb-4">{book.title}</h4>
+                  {/* authors가 string[]이므로 join으로 문자열로 변환 */}
+                  <p className="text-sm mb-10">{Array.isArray(book.authors) ? book.authors.join(', ') : book.authors}</p>
+              </Link>
+            </SwiperSlide>
+          )
+        })}
       </Swiper>
     </div>
   );

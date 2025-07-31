@@ -28,11 +28,15 @@ function App() {
           {/* <Route path="/user/:id" element={<UserPage />} /> */}
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
+          <Route path="/books/search" element={<SearchList />} />
           <Route path="/book/:isbn" element={<Book />} />
           <Route path="/234" element={<ReviewList />} />
           <Route path="/2345" element={<ReviewDetail />} />
-          <Route path="/2346" element={<WriteReview />} />
-          <Route path="/books/search" element={<SearchList />} />
+          <Route path="/reviews/:isbn" element={
+            <ProtectedRoute>
+              <WriteReview />
+            </ProtectedRoute>
+          } />
 
           {/* 중첩 라우터 설정 + 비로그인 접근 금지 */}
           <Route path="/mypage" element={

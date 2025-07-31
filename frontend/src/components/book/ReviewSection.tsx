@@ -1,13 +1,7 @@
 // components/sections/ReviewsSection.tsx
 import React from 'react';
 import ReviewCard from '../ui/ReviewCard'; // ReviewCard 임포트
-import type { ReviewDetail } from '../../types/ReviewType'; // 타입 임포트
-
-interface ReviewsSectionProps {
-  reviews: ReviewDetail[] | null;
-  isLoading: boolean;
-  error: string | null;
-}
+import type { ReviewsSectionProps } from '../../types/ReviewType'; // 타입 임포트
 
 const ReviewsSection = ({ reviews, isLoading, error }: ReviewsSectionProps) => {
   return (
