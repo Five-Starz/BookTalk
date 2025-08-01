@@ -76,7 +76,30 @@ class BookRepository {
     return ratings;
   }
 
-    // 4. 책 랜덤 추천
+    // 4. 랜덤 도서 조회
+    async getRandomBooks(): Promise<Books[] | null> {
+      // 모든 책들의 ISBN만 배열로 가져옴
+      const allBooksISBN = await prisma.books.findMany({
+        select: { isbn: true }
+      });
+
+      // ISBN배열들 랜덤으로 정렬(순서 섞기)
+      const shuffled = allBooksISBN.sort(() => Math.random() - 0.5);
+
+      // 15개 ISBN만 꺼낸 배열
+      const selectedISBNs = shuffled.slice(0, 15).map(book => book.isbn);
+
+      // 선택된 ISBN 15개로 책 다시 조회
+      const randomBooks = await prisma.books.findMany({
+        where: {
+          isbn: {
+            in: selectedISBNs
+          }
+        }
+      });
+
+      return randomBooks;
+    }
 }
 
 export default BookRepository

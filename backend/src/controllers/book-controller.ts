@@ -1,6 +1,7 @@
 // [역할] req, res 처리 담당. 클라이언트 응답 전용
 
 import { Request, Response } from 'express';
+import { Books } from '@prisma/client';
 import BookService from '../services/book-service'
 const bookService = new BookService();
 
@@ -21,7 +22,7 @@ class BookController {
   }
 
 
-  // 2. 도서 별 평균평점 조회
+  // 도서 별 평균평점 조회
   async getAverageRatingByBook(req:Request, res:Response): Promise<any> {
     try {
       const { isbn } = req.params;  // 검색할 도서 ISBN 저장
@@ -52,6 +53,17 @@ class BookController {
     } catch(error) {
       console.error('[BookController] 도서정보 조회 오류:', error);
       res.status(500).json({ message: '도서정보 조회 중 오류 발생' });
+    }
+  }
+
+  // 랜덤 도서들 조회
+  async getRandomBooks(req:Request, res:Response): Promise<any> {
+    try {
+      const randombooks = await bookService.getRandomBooks();
+      return res.status(200).json(randombooks);
+    } catch(error) {
+      console.error('[BookController] 랜덤 도서들 조회 오류:', error);
+      res.status(500).json({ message: '랜덤 도서들 조회 중 오류 발생' });
     }
   }
 }

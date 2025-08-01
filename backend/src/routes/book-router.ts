@@ -82,6 +82,6 @@ router.get('/books/averageRating/:isbn', bookController.getAverageRatingByBook);
  *      200:
  *       description: 랜덤 도서들 반환 성공
  */
-// router.get('/books/random', bookController.getRandomBooks)
+router.get('/books/random', bookController.getRandomBooks)
 
 export default router;

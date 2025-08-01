@@ -60,6 +60,9 @@ class BookService {
     return await bookRepository.getBookInfo(isbn);
   }
 
-  // 3. 도서 평균 평점 
+  // 랜덤 도서 조회
+  async getRandomBooks(): Promise<Books[] | null> {
+    return await bookRepository.getRandomBooks();
+  }
 }
 export default BookService
