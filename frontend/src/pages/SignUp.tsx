@@ -8,11 +8,17 @@ import { z } from 'zod';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { useAuthStore } from '../store/authStore';
+
 const SignUp = () => {
   // 모달 상태 관리
   // isModalOpen을 useState로 초기화하여 모달의 열림/닫음 상태를 관리
   // 초기값은 false로 설정하여 모달이 닫힌 상태로 시작
   const [ isModalOpen, setIsModalOpen ] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
+
+  const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
+  // const setTokens = useAuthStore((state) => state.setTokens); // 회원가입 후 로그인 된 상태로 메인으로 이동할 거면 사용
 
   // useNavigate 훅을 사용하여 페이지 이동
   // useNavigate를 사용하여 페이지 이동을 위한 navigate 함수를 생성
@@ -22,11 +28,10 @@ const SignUp = () => {
   // useEffect를 사용하여 컴포넌트가 마운트될 때 로그인 상태를 확인
   // localStorage에서 accessToken을 가져와 로그인 상태를 확인하고, 로그인 상태일 경우 홈으로 리다이렉트
   useEffect(() => {
-    const accessToken = localStorage.getItem('accessToken');
-    if (accessToken) {
+    if (isLoggedIn) {
       navigate('/'); // 로그인 상태일 경우 홈으로 이동
     }
-  }, [navigate]);
+  }, [isLoggedIn ,navigate]);
 
   // 모달 닫기 핸들러
   // 모달이 열려있을 때, 확인 버튼 클릭 시 모달을 닫고 로그인 페이지로 이동
@@ -83,10 +88,15 @@ const SignUp = () => {
         email: data.email,
         password: data.password
       });
+
+      // Zustand 스토어에 토큰 저장 (회원가입 == 즉시 로그인) : 만약 이렇게 사용할거면 await 앞에 const res 변수 필요
+      // setTokens(res.data.accessToken, res.data.refreshToken);
+
       setIsModalOpen(true); // 모달 열기
-    } catch {
-      alert('회원가입에 실패했습니다. 다시 시도해주세요.');
-      return;
+    } catch (err) {
+      if (axios.isAxiosError(err) && err.response?.data?.message) {
+        setErrorMsg(err.response.data.message);
+      }
     }
   }
 
@@ -94,6 +104,10 @@ const SignUp = () => {
     <>
       <div className="min-h-full pt-24 pb-24 flex flex-col justify-center items-center px-4">
         <h1 className="text-2xl font-bold  mb-8">회원 가입</h1>
+        {/* 에러 메시지 출력 */}
+        {
+          errorMsg && <div className="text-red-500 text-sm mb-2">{ errorMsg }</div>
+        }
         {/* 회원가입 폼 */}
         <form className="w-full max-w-md space-y-4" onSubmit={ handleSubmit(onValid) }>
           {/* 닉네임 */}

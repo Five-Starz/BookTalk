@@ -65,4 +65,21 @@ export class AuthRepository{
           where: { userId },
       });
   }
+
+  async updatePassword(userId:number,nickname:string,password:string){
+    await prisma.users.update({
+      where:{userId},
+      data:{nickname,password}  
+    });
+  };
+  
+  async findUserProfile(userId: number){
+    return prisma.users.findUnique({
+      where: { userId },
+      select:{
+        userId:true,
+        nickname:true
+      }
+    });
+  }
 };

@@ -128,5 +128,15 @@ export class AuthController{
     });
   }
 
+  async editInfo(req: Request, res: Response){
+    const userId=req.user!.userId;
+    const {nickname,password}=req.body;    
+    await authService.updatePassword(userId,nickname,password);
+    res.status(200).json({message:"비밀번호 수정 성공"})
+  };
 
+  async findUserProfile(req: Request, res: Response){
+    const userId=parseInt(req.params.userId,10);
+    res.status(200).json(await authService.findUserProfile(userId));
+  };
 };

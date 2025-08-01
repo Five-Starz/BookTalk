@@ -101,10 +101,6 @@ router.get('/comment/id/:userId', commentsController.findById);
  *           schema:
  *             type: object
  *             properties:
- *               userId:
- *                 type: integer
- *                 description: "유저 아이디"
- *                 example: 1
  *               reviewId:
  *                 type: integer
  *                 description: "리뷰 아이디"

@@ -1,18 +1,135 @@
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 
-// ProtectedRoute 컴포넌트는 로그인 상태를 확인하고, 로그인하지 않은 사용자를 로그인 페이지로 리다이렉트합니다.
-// 로그인 상태가 아닌 경우, 로그인 페이지로 이동시키고, 로그인 상태인 경우 자식 컴포넌트를 렌더링합니다.
-// 이 컴포넌트는 주로 라우팅 설정에서 사용되어, 특정 페이지에 접근하기 전에 로그인 상태를 확인하는 용도로 사용됩니다.
-// 예를 들어, 마이페이지나 게시글 작성 페이지 등 로그인한 사용자만 접근할 수 있는 페이지에 적용됩니다.
-const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const accessToken = localStorage.getItem('accessToken');
+import { useAuthStore } from '../store/authStore';
 
-  if (!accessToken) {
-    return <Navigate to="/login" replace />;
-    // replace가 있으면 뒤로 가기 버튼을 눌렀을 때 이전 페이지로 돌아지 않도록 함 (불필요한 리다이렉션 반복 방지)
+/**
+ * ProtectedRoute 컴포넌트 (early return 스타일)
+ */
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  // 인증 체크 완료 여부
+  const [authChecked, setAuthChecked] = useState(false);
+  // 인증 성공 여부
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const checkAuth = async () => {
+      // 1. 로컬스토리지에서 토큰 꺼내오기
+      const accessToken = localStorage.getItem('accessToken');
+      const refreshToken = localStorage.getItem('refreshToken');
+
+      // 2. accessToken이 없으면 → 비로그인 상태 → 즉시 인증 실패 처리 & 종료
+      if (!accessToken) {
+        if (isMounted) {
+          useAuthStore.getState().clearTokens();
+          setIsAuthenticated(false);
+          setAuthChecked(true);
+        }
+        return;
+      }
+
+      // 3. accessToken으로 서버 인증 시도
+      try {
+        await axios.get('http://localhost:8000/auth/protected', {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
+        if (isMounted) {
+          setIsAuthenticated(true);
+          setAuthChecked(true);
+        }
+        return;
+      } catch (err) {
+        // 4. accessToken 만료/위조가 아닌 모든 네트워크/서버 에러는 즉시 로그아웃
+        if (
+          !axios.isAxiosError(err) ||
+          !err.response ||
+          !(err.response.status === 401 || err.response.status === 403)
+        ) {
+          if (isMounted) {
+            useAuthStore.getState().clearTokens();
+            setIsAuthenticated(false);
+            setAuthChecked(true);
+          }
+          return;
+        }
+      }
+
+      // 5. accessToken 만료/위조(401/403)일 경우 → refreshToken 필요
+      if (!refreshToken) {
+        // refreshToken도 없으면 로그아웃 처리
+        if (isMounted) {
+          useAuthStore.getState().clearTokens();
+          setIsAuthenticated(false);
+          setAuthChecked(true);
+        }
+        return;
+      }
+
+      // 6. refreshToken으로 accessToken 재발급 시도
+      try {
+        const res = await axios.post(
+          'http://localhost:8000/auth/refresh',
+          {}, // body 필요 없을 때는 빈 객체
+          {
+            headers: { Authorization: `Bearer ${refreshToken}` },
+            withCredentials: true,
+          }
+        );
+        // 새 토큰 저장 (반드시 Zustand store)
+        useAuthStore.getState().setTokens(res.data.accessToken, res.data.refreshToken);
+
+        // 7. 재발급 받은 accessToken으로 다시 인증 시도
+        try {
+          await axios.get('http://localhost:8000/auth/protected', {
+            headers: { Authorization: `Bearer ${res.data.accessToken}` },
+          });
+          // 인증 성공: 보호 페이지 진입 허용
+          if (isMounted) {
+            setIsAuthenticated(true);
+            setAuthChecked(true);
+          }
+          return;
+        } catch {
+          // 8. 새 accessToken도 인증 실패 → 토큰 모두 삭제 후 로그아웃
+          if (isMounted) {
+            useAuthStore.getState().clearTokens();
+            setIsAuthenticated(false);
+            setAuthChecked(true);
+          }
+          return;
+        }
+      } catch {
+        // 9. refreshToken으로도 재발급 실패 → 토큰 모두 삭제 후 로그아웃
+        if (isMounted) {
+          useAuthStore.getState().clearTokens();
+          setIsAuthenticated(false);
+          setAuthChecked(true);
+        }
+        return;
+      }
+    };
+
+    // 최초 마운트 시 인증 체크 함수 실행
+    checkAuth();
+
+    // 언마운트 방지(비동기 setState 방지)
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  if (!authChecked) {
+    return <div>Loading...</div>;
   }
 
-  return <>{ children }</>;
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return <>{children}</>;
 };
 
 export default ProtectedRoute;

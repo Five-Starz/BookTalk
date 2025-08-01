@@ -15,7 +15,7 @@ const router: Router = express.Router();
  *    description: 메인페이지 관련 API
  */
 
-/**
+/** 좋아요 수가 많은 리뷰 3개 조회
  * @swagger
  * /main/reviews/liked:
  *  get:
@@ -27,7 +27,7 @@ const router: Router = express.Router();
  */
 router.get('/main/reviews/liked', mainController.getMostLikedReviews);
 
-/**
+/** 오늘의 랜덤 리뷰 1개 조회
  * @swagger
  * /main/reviews/random:
  *  get:
@@ -39,7 +39,7 @@ router.get('/main/reviews/liked', mainController.getMostLikedReviews);
  */
 router.get('/main/reviews/random', mainController.getRandomReviewOfTheDay);
 
-/**
+/** 리뷰 수가 많은 책 (hot 10) 조회
  * @swagger
  * /main/books/hot:
  *  get:
@@ -51,7 +51,7 @@ router.get('/main/reviews/random', mainController.getRandomReviewOfTheDay);
  */
 router.get('/main/books/hot', mainController.getMostReviewed10Books);
 
-/**
+/** 평점이 좋은 책 (good 10) 조회
  * @swagger
  * /main/books/good:
  *  get:
@@ -63,7 +63,7 @@ router.get('/main/books/hot', mainController.getMostReviewed10Books);
  */
 router.get('/main/books/good', mainController.getHighestRated10Books);
 
-/**
+/** 보고싶어요 수가 많은 책 (want 10) 조회
  * @swagger
  * /main/books/want:
  *  get:

@@ -8,7 +8,7 @@ const bookRepository = new BookRepository();
 class BookService {
   private KAKAO_API_URL = 'https://dapi.kakao.com/v3/search/book';
   private KAKAO_API_KEY = process.env.KAKAO_API_KEY;
-  // 1. 도서 검색
+  // 1. Kakao API에 도서 검색
   async searchBooksByQuery(query: string): Promise<Books | null> {
     const encodedQuery = encodeURIComponent(query); // URL에 넣기 안전한 문자열로 바꿈
 
@@ -54,5 +54,12 @@ class BookService {
     
     return avgRating;
   }
+
+  // 2. DB에 도서 검색
+  async searchBookByISBN(isbn: string):Promise<Books | null> {
+    return await bookRepository.getBookInfo(isbn);
+  }
+
+  // 3. 도서 평균 평점 
 }
 export default BookService

@@ -17,6 +17,7 @@ import reviewRouter from './routes/review-router'
 import authRouter from './routes/auth-router';
 import likesRouter from './routes/likes-router';
 import commentRouter from './routes/comment-router';
+import bookmakrsRouter from './routes/bookmark-router'
 import axios from 'axios';
 
 const app = express();
@@ -31,7 +32,7 @@ app.use(cors({
 // 미들웨어 및 라우터
 app.use(express.urlencoded({extended:true}))
 app.use(express.json());
-app.use('/', [authRouter, reviewRouter, mainRouter, bookRouter, likesRouter, commentRouter]);
+app.use('/', [authRouter, reviewRouter, mainRouter, bookRouter, likesRouter, commentRouter,bookmakrsRouter]);
 // --- 전역 오류 처리 미들웨어 ---
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     console.error(err.stack);

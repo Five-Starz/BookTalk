@@ -180,4 +180,17 @@ export class AuthService{
           console.error('데이터베이스에서 Refresh Token 삭제 중 오류:', dbError);
       }
   }
+
+  async updatePassword(userId:number,nickname:string,password:string){
+    const existingUserByNickname = await authRepository.findbyNickname(nickname);
+      if (existingUserByNickname) {
+          throw new Error('이미 사용 중인 닉네임입니다.');
+      }
+    const hashedPassword = await bcrypt.hash(password, 10);
+    await authRepository.updatePassword(userId,nickname,hashedPassword);
+  }
+
+  async findUserProfile(userId: number){
+    return await authRepository.findUserProfile(userId);
+  }
 }; 

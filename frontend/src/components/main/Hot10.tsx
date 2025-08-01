@@ -20,12 +20,9 @@ const Hot10 = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // 백엔드 API 엔드포인트를 '리뷰가 많은 책'에 맞게 조정해야 합니다.
-        // 예: 'http://localhost:8000/api/books/top-reviews'
-        // 백엔드에서 이 엔드포인트를 통해 리뷰가 많은 책 데이터를 제공해야 합니다.
-        const response = await axios.get<BookApiResponse>('http://localhost:8000/books/hot');
+        const response = await axios.get<BookApiResponse>('http://localhost:8000/main/books/hot');
         setApiData(response.data);
-        console.log('Hot10 받아온 데이터:', response.data.documents);
+        console.log('Hot10 받아온 데이터:', response.data.books);
       } catch (err) {
         setError('리뷰가 많은 책 데이터를 불러오는 데 실패했습니다.');
         console.error('Hot10 API 에러:', err);
@@ -46,11 +43,11 @@ const Hot10 = () => {
       return <div className="p-4 text-center text-red-500">{error}</div>;
     }
 
-    if (!apiData || !apiData.documents || apiData.documents.length === 0) {
+    if (!apiData || !apiData.books || apiData.books.length === 0) {
       return <div className="p-4 text-center">리뷰가 많은 책 데이터를 찾을 수 없습니다.</div>;
     }
 
-    const hotBooks = apiData.documents;
+    const hotBooks = apiData.books;
 
 const handleMainSlideChange = (swiper: SwiperClass) => {
     if (thumbsSwiper && thumbsSwiper.params) {
@@ -94,21 +91,21 @@ const handleMainSlideChange = (swiper: SwiperClass) => {
         className="mySwiper2 w-full lg:w-[70%]"
       >
         {hotBooks.map((book: BookDetail) => ( // Book 인터페이스를 사용하여 타입 안전성 확보
-          <Link key={book.isbn} to={`/book/${book.isbn}`}>
-            <SwiperSlide> {/* key는 고유한 값으로 설정 (isbn이 적합) */}
+          <SwiperSlide> {/* key는 고유한 값으로 설정 (isbn이 적합) */}
+            <Link key={book.isbn} to={`/book/${book.isbn}`}>
               <div className="flex justify-between">
                 {/* 메인 슬라이더 이미지: book.thumbnail 사용 */}
                 <img className='min-h-[300px] rounded-xl' src={book.thumbnail} alt={book.title} />
                 <div className="bg-orange-200 w-[calc(100%-230px)] rounded-xl rounded-bl-none p-6">
                   <h2 className="mb-4">{book.title}</h2>
                   {/* authors가 string[]이므로 join으로 문자열로 변환 */}
-                  <p className="author text-sm mb-10">{book.authors.join(', ')}</p>
+                  <p className="author text-sm mb-10">{Array.isArray(book.authors) ? book.authors.join(', ') : book.authors}</p>
                   {/* TODO: 여기에 실제 리뷰 내용이나 요약 등을 추가할 수 있습니다. */}
                   <p>{book.description.substring(0, 100)}...</p> {/* 예시: contents 일부 표시 */}
                 </div>
               </div>
-            </SwiperSlide>
-          </Link>
+            </Link>
+          </SwiperSlide>
         ))}
       </Swiper>
 
