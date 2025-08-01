@@ -38,10 +38,8 @@ const UserPage = () => {
     const fetchUserInfo = async () => {
       try {
         // 유저 정보
-        // const res = await axios.get(`http://localhost:8000/auth/user/${userId}`);
-        // setNickname(res.data.nickname);
-        setNickname('');
-
+        const res = await axios.get(`http://localhost:8000/auth/${userId}`);
+        setNickname(res.data.nickname);
         // 리뷰 수
         const reviews = await axios.get(`http://localhost:8000/reviews/count/${userId}`);
         setReviewCount(reviews.data);
@@ -49,6 +47,7 @@ const UserPage = () => {
         return;
       }
     };
+
     fetchUserInfo();
   }, [userId]);
 
@@ -109,6 +108,9 @@ export const UserReviewCollection = () => {
   const { userId } = useOutletContext<{ userId: number }>();
   const [ reviews, setReviews ] = useState<Review[]>([]);
 
+  // 로딩 상태
+  const [ isLoading, setIsLoading ] = useState<boolean>(true);
+
   // 정렬 상태
   const [sortType, setSortType] = useState<'latest' | 'likes' | 'comments'>('latest');
 
@@ -122,6 +124,7 @@ export const UserReviewCollection = () => {
     if (!userId) return;
 
     const fetchReviewData = async () => {
+      setIsLoading(true);
       try {
         // 1. 리뷰 목록 불러오기
         const res = await axios.get(`http://localhost:8000/reviews/user/${userId}`);
@@ -176,6 +179,8 @@ export const UserReviewCollection = () => {
 
       } catch {
         setReviews([]);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -216,10 +221,20 @@ export const UserReviewCollection = () => {
     setCurrentPage(page);
   };
 
+  // 로딩 상태 처리
+  if (isLoading) {
+    return <div className="p-4 text-gray-500 flex justify-center items-center h-40">리뷰를 불러오는 중입니다...</div>
+  }
+
+  // 리뷰가 없을 경우
+  if (reviews.length === 0) {
+    return <div className="p-4 text-gray-500 flex justify-center items-center h-40">작성한 리뷰가 없습니다.</div>
+  }
+
   return (
     <>
       <div className="space-y-2">
-        {/* 🔽 정렬 셀렉트 */}
+        {/* 정렬 셀렉트 */}
         {
           reviews.length === 0 ? null : (
             <div className="flex justify-end mt-2">
@@ -235,11 +250,7 @@ export const UserReviewCollection = () => {
             </div>
           )
         }
-        {
-          reviews.length === 0 && (
-            <div className="p-4 text-gray-500 flex justify-center items-center h-40">작성한 리뷰가 없습니다.</div>
-          )
-        }
+        {/* 리뷰표시 */}
         {
           pagedReviews.map(review => (
             <div key={review.reviewId} className="bg-white rounded-lg border shadow p-5 mb-4 flex flex-col justify-between">

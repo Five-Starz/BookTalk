@@ -15,6 +15,7 @@ const MyPage = () => {
   const [ nickname, setNickname ] = useState<string>('');
   const [ userId, setUserId ] = useState<number | null>(null);
   const [ reviewCount, setReviewCount ] = useState(0);
+  // const [ bookmarkCount, setBookmarkCount ] = useState(0);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -32,6 +33,10 @@ const MyPage = () => {
         // 2. 리뷰 수 가져오기
         const reviews = await axios.get(`http://localhost:8000/reviews/count/${userId}`);
         setReviewCount(reviews.data);
+
+        // 3. 보고싶어요 수 가져오기
+        // const bookmarks = await axios.get(`http://localhost:8000/bookmarks/${userId}`);
+        // setBookmarkCount(bookmarks.data);
 
       } catch {
         return;
@@ -140,6 +145,9 @@ export const ReviewCollection = () => {
   // 정렬 상태
   const [sortType, setSortType] = useState<'latest' | 'likes' | 'comments'>('latest');
 
+  // 로딩 상태
+  const [ isLoading, setIsLoading ] = useState<boolean>(true);
+
   // 페이지 처리
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
@@ -154,6 +162,7 @@ export const ReviewCollection = () => {
     if (!userId) return;
 
     const fetchReviewData = async () => {
+      setIsLoading(true);
       try {
         // 1. 리뷰 목록 불러오기
         const res = await axios.get(`http://localhost:8000/reviews/user/${userId}`);
@@ -208,6 +217,8 @@ export const ReviewCollection = () => {
 
       } catch {
         setReviews([]);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -277,6 +288,16 @@ export const ReviewCollection = () => {
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
+
+  // 로딩 상태 처리
+  if (isLoading) {
+    return <div className="p-4 text-gray-500 flex justify-center items-center h-40">리뷰를 불러오는 중입니다...</div>
+  }
+
+  // 리뷰가 없을 경우
+  if (reviews.length === 0) {
+    return <div className="p-4 text-gray-500 flex justify-center items-center h-40">작성한 리뷰가 없습니다.</div>
+  }
 
   return (
     <>
@@ -395,6 +416,51 @@ export const ReviewCollection = () => {
 }
 
 export const WantReadList = () => {
+
+  type BookItem = {
+    isbn: string;
+    createdAt: string;
+    //
+    title?: string;
+    authors?: string;
+    thumbnail?: string;
+  };
+
+  type OutletContextType = { userId: number | null }
+  const { userId } = useOutletContext<OutletContextType>();
+
+  const [ bookmarks, setBookmarks ] = useState<BookItem[]>([]);
+  const [ isLoading, setIsLoading ] = useState(true);
+
+  console.log(userId)
+  useEffect(() => {
+    setIsLoading(true);
+    const fetchBookmarkData = async () => {
+      try {
+        // 1. 북마크(보고싶어요) 리스트 호출
+        const res = await axios.get(`http://localhost:8000/bookmarks/${userId}`);
+        const bookmarkList = res.data.comments;
+
+        // 2. 각 책의 상세정보(제목, 저자, 썸네일 등) 가져오기
+        const bookDetails = await Promise.all(
+          bookmarkList.map(async (item: BookItem) => {
+            try {
+              // Book API로 도서 정보 조회
+              const bookRes = await axios.get(`http://localhost:8000/books/search?query=${item.isbn}`);
+              const bookInfo = Array.isArray(bookRes.data) ? bookRes.data[0] : bookRes.data;
+            } catch {
+              return { ...item,  }
+            }
+          })
+        );
+      } catch {
+        return;
+      }
+    }
+    fetchBookmarkData();
+  }, [userId]);
+
+
   return (
     <>
       {/* 보고싶어요 */}
