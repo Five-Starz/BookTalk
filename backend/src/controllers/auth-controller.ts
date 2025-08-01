@@ -134,4 +134,9 @@ export class AuthController{
     await authService.updatePassword(userId,nickname,password);
     res.status(200).json({message:"비밀번호 수정 성공"})
   };
+
+  async findUserProfile(req: Request, res: Response){
+    const userId=parseInt(req.params.userId,10);
+    res.status(200).json(await authService.findUserProfile(userId));
+  };
 };

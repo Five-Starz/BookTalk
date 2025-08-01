@@ -189,4 +189,8 @@ export class AuthService{
     const hashedPassword = await bcrypt.hash(password, 10);
     await authRepository.updatePassword(userId,nickname,hashedPassword);
   }
+
+  async findUserProfile(userId: number){
+    return await authRepository.findUserProfile(userId);
+  }
 }; 
