@@ -88,7 +88,7 @@ router.post('/reviews', authenticateToken, reviewController.createReview);
  *    tags: [Review]
  *    parameters:
  *      - name: isbn
- *        in: path
+ *        in: query
  *        required: true
  *        schema:
  *          type: string
