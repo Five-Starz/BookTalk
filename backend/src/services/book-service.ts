@@ -2,13 +2,13 @@
 // 처리 흐름, 트랜잭션
 import { Books } from '@prisma/client';
 import axios from 'axios';  // Node.js 서버에서 외부 API 호출할 때 필요
-// import BookRepository from '../repositories/book-repository'
-// const bookRepository = new BookRepository();
+import BookRepository from '../repositories/book-repository'
+const bookRepository = new BookRepository();
 
 class BookService {
   private KAKAO_API_URL = 'https://dapi.kakao.com/v3/search/book';
   private KAKAO_API_KEY = process.env.KAKAO_API_KEY;
-  // 1. 도서 검색
+  // 1. Kakao API에 도서 검색
   async searchBooksByQuery(query: string): Promise<Books | null> {
     const encodedQuery = encodeURIComponent(query); // URL에 넣기 안전한 문자열로 바꿈
 
@@ -35,5 +35,11 @@ class BookService {
     }));
     return books; // 결과 반환
   }
+
+  // 2. DB에 도서 검색
+  async searchBookByISBN(isbn: string):Promise<Books | null> {
+    return await bookRepository.getBookInfo(isbn);
+  }
+
 }
 export default BookService
