@@ -90,7 +90,6 @@ const UserPage = () => {
   )
 }
 
-
 export const UserReviewCollection = () => {
   type Review = {
     reviewId: number;
