@@ -1,33 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper/modules';
-import axios from 'axios';
+import { use10List } from '../../hooks/useMain';
 
-import type { BookApiResponse, BookDetail } from '../../types/BookType'; // 'Book'도 함께 임포트합니다.
-import { getPrimaryIsbn } from '../../utils/getPrimaryIsbn';
+import type { BookDetail } from '../../types/BookType'; // 'Book'도 함께 임포트합니다.
 
 export const Good10 = () => {
-  const [apiData, setApiData] = useState<BookApiResponse | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get('http://localhost:8000/main/books/good');
-        setApiData(response.data);
-        console.log('Good10 받아온 데이터:', response.data.books);
-      } catch (err) {
-        setError('평점이 높은 책 데이터를 불러오는 데 실패했습니다.');
-        console.error('Good10 API 에러:', err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
+  const { apiData, isLoading, error } = use10List('good');
 
     // 로딩, 에러, 데이터 없음 상태 처리
     if (isLoading) {
@@ -61,10 +41,10 @@ export const Good10 = () => {
         className="mySwiper"
       >
         {goodBooks.map((book: BookDetail) => { // Book 인터페이스를 사용하여 타입 안전성 확보
-          const finalIsbn = getPrimaryIsbn(book.isbn);
+          // const finalIsbn = getPrimaryIsbn(book.isbn);
           return (
             <SwiperSlide>
-              <Link key={finalIsbn} to={`/book/${finalIsbn}`}>
+              <Link key={book.isbn} to={`/book/${book.isbn}`}>
                 {/* 메인 슬라이더 이미지: book.thumbnail 사용 */}
                 <img className='min-h-[280px] rounded-xl mb-4' src={book.thumbnail} alt={book.title} />
                   <h4 className="mb-4">{book.title}</h4>
@@ -80,26 +60,7 @@ export const Good10 = () => {
 }
 
 export const Want10 = () => {
-  const [apiData, setApiData] = useState<BookApiResponse | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get('http://localhost:8000/main/books/want');
-        setApiData(response.data);
-        console.log('Want10 받아온 데이터:', response.data.books);
-      } catch (err) {
-        setError('보고 싶어요 수가 많은 책 데이터를 불러오는 데 실패했습니다.');
-        console.error('Want10 API 에러:', err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
+  const { apiData, isLoading, error } = use10List('want');
 
     // 로딩, 에러, 데이터 없음 상태 처리
     if (isLoading) {
@@ -132,10 +93,9 @@ export const Want10 = () => {
         className="mySwiper"
       >
         {wantBooks.map((book: BookDetail) => { // Book 인터페이스를 사용하여 타입 안전성 확보
-          const finalIsbn = getPrimaryIsbn(book.isbn);
           return (
             <SwiperSlide>
-              <Link key={finalIsbn} to={`/book/${finalIsbn}`}>
+              <Link key={book.isbn} to={`/book/${book.isbn}`}>
                 {/* 메인 슬라이더 이미지: book.thumbnail 사용 */}
                 <img className='min-h-[280px] rounded-xl mb-4' src={book.thumbnail} alt={book.title} />
                   <h4 className="mb-4">{book.title}</h4>

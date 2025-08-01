@@ -461,6 +461,37 @@ router.get('/auth/protected', authenticateToken, authController.protectedRoute);
  *                 format: password
  *                 description: 사용자의 비밀번호 (최소 8자)
  *                 example: 12345678
+ *     responses:
+ *       200:
+ *         description: 검색 결과 반환 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: '검색 결과 반환 성공'
+ *       409:
+ *         description: 동일 닉 사용
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: '이미 사용 중인 닉네임입니다.'
+ *       500:
+ *         description: 내부 서버 오류
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: '서버 오류가 발생했습니다.'
  */ 
 router.post('/auth/passupdate',authenticateToken,authController.editInfo);
 
@@ -515,5 +546,30 @@ router.post('/auth/passupdate',authenticateToken,authController.editInfo);
  *                   example: '유효하지 않은 userId 형식입니다.'
  */
 router.get('/auth/:userId', authController.findUserProfile);
+
+
+ /**
+   * @swagger
+   *
+   * /auth/del/{userId}:
+   *   delete:
+   *     summary: 유저 삭제
+   *     description: "특정 유저를 삭제합니다."
+   *     tags: [Auth]
+   *     security:
+   *       - bearerAuth: []  # Access Token 보안 스키마 적용
+   *     responses:
+   *       200:
+   *         description: 유저 삭제 성공
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 message:
+   *                   type: string
+   *                   example: '유저 삭제 성공'
+   */
+  router.delete('/auth/del/:userId',authenticateToken,authController.deleteUser)
 
 export default router 

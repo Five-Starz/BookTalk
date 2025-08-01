@@ -129,9 +129,9 @@ class ReviewController {
     let userId:number;
     // console.log(userId)
     // console.log(req.params.userId)
-    console.log(req.user?.userId)
+    console.log(req.user?.userId);
     if(!req.user?.userId)
-      userId=parseInt(req.params.userId,10)
+      userId=parseInt(req.params.userId,10);
     else
       userId=req.user.userId;
     const userReviews=await reviewService.findReviewByUserId(userId);

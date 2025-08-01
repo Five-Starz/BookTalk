@@ -1,11 +1,12 @@
 // [역할] req, res 처리 담당. 클라이언트 응답 전용
 
 import { Request, Response } from 'express';
+import { Books } from '@prisma/client';
 import BookService from '../services/book-service'
 const bookService = new BookService();
 
 class BookController {
-  // 1. 검색 결과
+  // 검색 결과
   async getSearchedBooks(req:Request, res:Response): Promise<any> {
     try {
       const { query } = req.query;  // 검색도서명 저장
@@ -17,6 +18,52 @@ class BookController {
     } catch(error) {
       console.error('[BookController] 도서 검색 오류:', error);
       res.status(500).json({ message: '도서 검색 중 오류 발생' });
+    }
+  }
+
+
+  // 도서 별 평균평점 조회
+  async getAverageRatingByBook(req:Request, res:Response): Promise<any> {
+    try {
+      const { isbn } = req.params;  // 검색할 도서 ISBN 저장
+      console.log('[Book Controller] 받은 isbn', isbn);
+
+      if (!isbn || typeof isbn !== 'string') {
+        return res.status(400).json({ message: '검색할 책 ISBN(params)을 입력해주세요. '})
+      }
+      const rating = await bookService.getAverageRatingByBook(isbn);  // ISBN으로 책 검색 후 평균평점 계산해 받아와
+      console.log('[Book Controller] 서비스에서 받은 평균 평점: ', rating);
+
+      return res.status(200).json(rating);
+    } catch(error) {
+      console.error('[BookController] 도서 별 평균평점 조회 오류:', error);
+      res.status(500).json({ message: '도서 별 평균평점 조회 중 오류 발생' });
+    }
+  }
+
+  // ISBN으로 DB 내 리뷰작성된 도서정보 조회
+  async getBookInfo(req:Request, res:Response): Promise<any> {
+    try {
+      const { isbn } = req.params;  // 검색도서 ISBN 저장
+      if (!isbn || typeof isbn !== 'string') {
+        return res.status(200).json({ message: '검색할 도서 isbn(query)을 입력해주세요. '})
+      }
+      const bookInfo = await bookService.searchBookByISBN(isbn);  // 검색결과 책 목록들 받아와
+      return res.status(200).json(bookInfo); // 결과 반환
+    } catch(error) {
+      console.error('[BookController] 도서정보 조회 오류:', error);
+      res.status(500).json({ message: '도서정보 조회 중 오류 발생' });
+    }
+  }
+
+  // 랜덤 도서들 조회
+  async getRandomBooks(req:Request, res:Response): Promise<any> {
+    try {
+      const randombooks = await bookService.getRandomBooks();
+      return res.status(200).json(randombooks);
+    } catch(error) {
+      console.error('[BookController] 랜덤 도서들 조회 오류:', error);
+      res.status(500).json({ message: '랜덤 도서들 조회 중 오류 발생' });
     }
   }
 }
