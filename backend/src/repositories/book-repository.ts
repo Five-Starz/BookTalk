@@ -77,7 +77,6 @@ class BookRepository {
   }
 
     // 4. 책 랜덤 추천
-  }
 }
 
 export default BookRepository
