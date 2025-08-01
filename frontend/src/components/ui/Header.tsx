@@ -1,10 +1,13 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../../store/authStore';
+import { useState } from 'react';
 
 const Header = () => {
   // Zustand에서 로그인 상태 및 토큰 삭제 액션 가져오기
   const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
   const removeTokens = useAuthStore((state) => state.clearTokens);
+
+  const [ searchQuery, setSearchQuery ] = useState('');
 
   // useNavigate 훅을 사용하여 페이지 이동
   const navigate = useNavigate();
@@ -15,6 +18,14 @@ const Header = () => {
     navigate('/');  // 홈으로 이동
   };
 
+  // 검색 버튼을 클릭하면 검색화면으로 이동
+  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault(); // 폼 submit시 새로고침 방지
+    if (!searchQuery.trim()) return; // 빈값 방지
+    // `/search?query=검색어` 경로로 이동
+    navigate(`books/search?query=${encodeURIComponent(searchQuery)}`);
+  };
+
   // 헤더 컴포넌트는 페이지 상단에 위치하며, 사이트 로고와 검색창, 마이페이지 및 로그인 링크를 포함합니다.
   return (
     <>
@@ -22,7 +33,10 @@ const Header = () => {
         {/* bg-white px-4 sm:px-8 py-4 shadow-sm */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
           {/* 왼쪽 로고 */}
-          <Link to="/">
+          <Link
+            to="/"
+            onClick={ () => setSearchQuery('') }
+          >
             <h1>
               BOOK
               <span className="text-orange-500">T</span>
@@ -33,29 +47,38 @@ const Header = () => {
           {/* 오른쪽 영역: 검색창 + 마이페이지 + 로그인 + 회원가입 + 로그아웃 */}
           <div className="flex flex-col sm:flex-row items-center gap-4 w-full md:w-auto">
             {/* 검색창 */}
-            <div className="flex items-center border border-gray-300 rounded-full px-4 py-2 w-full sm:w-72">
-              <input
-                type="text"
-                placeholder="Search..."
-                className="outline-none border-none w-full text-sm text-gray-700 placeholder-gray-400"
-              />
-              <button
-                className="text-gray-600 hover:text-black active:scale-90 transition-transform duration-100"
-                aria-label="검색">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  />
-                </svg>
-              </button>
+            <div className="flex items-center px-4 py-2 w-full sm:w-72">
+              <form
+                onSubmit={ handleSearch }
+                className="flex items-center border border-gray-300 rounded-full px-4 py-2 w-full sm:w-72"
+              >
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  value={ searchQuery }
+                  className="outline-none border-none w-full text-sm text-gray-700 placeholder-gray-400"
+                  onChange={ e => setSearchQuery(e.target.value) }
+                />
+                <button
+                  type="submit"
+                  className="text-gray-600 hover:text-black active:scale-90 transition-transform duration-100"
+                  aria-label="검색"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                    />
+                  </svg>
+                </button>
+              </form>
             </div>
 
             {/* 로그인 여부에 따른 조건부 렌더링 */}
