@@ -435,5 +435,32 @@ router.post('/auth/logout', authController.logout);
  */
 router.get('/auth/protected', authenticateToken, authController.protectedRoute);
 
+/**
+ * @swagger
+ * /auth/passupdate:
+ *   post:
+ *     summary: 비밀번호 수정
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - userId
+ *               - password
+ *             properties:
+ *               userId:
+ *                 type: integer
+ *                 description: 유저 번호
+ *                 example: 1
+ *               password:
+ *                 type: string
+ *                 format: password
+ *                 description: 사용자의 비밀번호 (최소 8자)
+ *                 example: 12345678
+ */ 
+router.post('/auth/passupdate',authController.updatePassword);
 
 export default router 
