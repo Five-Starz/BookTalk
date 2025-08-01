@@ -17,6 +17,7 @@ export const useMainReviews = (listType: string): UseReviewsResult => {
 
         const response = await axios.get(`http://localhost:8000/main/reviews/${listType}`);
         const reviewData = response.data.reviews;
+        
         const fetchedReviews = Array.isArray(reviewData) ? reviewData : [reviewData];
 
         if (fetchedReviews.length > 0) {
