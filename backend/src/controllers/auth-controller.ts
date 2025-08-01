@@ -128,5 +128,9 @@ export class AuthController{
     });
   }
 
-
+  async updatePassword(req: Request, res: Response){
+    const {userId,password}=req.body;    
+    await authService.updatePassword(parseInt(userId,10),password);
+    res.status(200).json({message:"비밀번호 수정 성공"})
+  };
 };
