@@ -5,7 +5,7 @@ import BookService from '../services/book-service'
 const bookService = new BookService();
 
 class BookController {
-  // 1. 검색 결과
+  // 검색 결과
   async getSearchedBooks(req:Request, res:Response): Promise<any> {
     try {
       const { query } = req.query;  // 검색도서명 저장
@@ -34,5 +34,7 @@ class BookController {
       res.status(500).json({ message: '도서정보 조회 중 오류 발생' });
     }
   }
+
+  
 }
 export default BookController

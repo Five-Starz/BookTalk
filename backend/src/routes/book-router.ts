@@ -34,6 +34,25 @@ const router: Router = express.Router();
  */
 router.get('/books/search', bookController.getSearchedBooks);
 
+/** ISBN으로 DB 내 리뷰작성된 도서정보 조회
+ * @swagger
+ * /books/info/{isbn}:
+ *  get:
+ *    summary: ISBN으로 DB 내 리뷰작성된 도서정보 조회
+ *    tags: [Book]
+ *    parameters:
+ *      - name: isbn
+ *        in: path
+ *        required: true
+ *        schema:
+ *          type: string
+ *        description: 검색할 책 ISBN
+ *    responses:
+ *      200:
+ *       description: 도서정보 반환 성공
+ */
+router.get('/books/info/:isbn', bookController.getBookInfo);
+
 /** 도서 별 평균평점 조회
  * @swagger
  * /books/averageRating/{isbn}:
@@ -52,26 +71,6 @@ router.get('/books/search', bookController.getSearchedBooks);
  *       description: 평균평점 반환 성공
  */
 // router.get('/books/averageRating/:isbn', bookController.getAverageRating);
-
-/** ISBN으로 DB 내 리뷰작성된 도서정보 조회
- * @swagger
- * /books/info/{isbn}:
- *  get:
- *    summary: ISBN으로 DB 내 리뷰작성된 도서정보 조회
- *    tags: [Book]
- *    parameters:
- *      - name: isbn
- *        in: path
- *        required: true
- *        schema:
- *          type: string
- *        description: 검색할 책 ISBN
- *    responses:
- *      200:
- *       description: 도서정보 반환 성공
- */
-router.get('/books/info/:isbn', bookController.getBookInfo)
-
 
 /** 랜덤 도서 추천  
  * @swagger
