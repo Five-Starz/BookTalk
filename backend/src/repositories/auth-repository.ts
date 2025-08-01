@@ -66,10 +66,10 @@ export class AuthRepository{
       });
   }
 
-  async updatePassword(userId:number,password:string){
+  async updatePassword(userId:number,nickname:string,password:string){
     await prisma.users.update({
       where:{userId},
-      data:{password}  
+      data:{nickname,password}  
     });
   };
 };

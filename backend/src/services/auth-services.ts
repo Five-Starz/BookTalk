@@ -181,8 +181,12 @@ export class AuthService{
       }
   }
 
-  async updatePassword(userId:number,password:string){
+  async updatePassword(userId:number,nickname:string,password:string){
+    const existingUserByNickname = await authRepository.findbyNickname(nickname);
+      if (existingUserByNickname) {
+          throw new Error('이미 사용 중인 닉네임입니다.');
+      }
     const hashedPassword = await bcrypt.hash(password, 10);
-    await authRepository.updatePassword(userId,hashedPassword);
+    await authRepository.updatePassword(userId,nickname,hashedPassword);
   }
 }; 

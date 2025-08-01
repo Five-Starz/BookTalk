@@ -439,8 +439,10 @@ router.get('/auth/protected', authenticateToken, authController.protectedRoute);
  * @swagger
  * /auth/passupdate:
  *   post:
- *     summary: 비밀번호 수정
+ *     summary: 회원정보 수정
  *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []  # Access Token 보안 스키마 적용
  *     requestBody:
  *       required: true
  *       content:
@@ -448,19 +450,18 @@ router.get('/auth/protected', authenticateToken, authController.protectedRoute);
  *           schema:
  *             type: object
  *             required:
- *               - userId
+ *               - nickname
  *               - password
  *             properties:
- *               userId:
- *                 type: integer
- *                 description: 유저 번호
- *                 example: 1
+ *               nickname:
+ *                 type: string
+ *                 description: 사용자의 닉네임 (2자 이상)
  *               password:
  *                 type: string
  *                 format: password
  *                 description: 사용자의 비밀번호 (최소 8자)
  *                 example: 12345678
  */ 
-router.post('/auth/passupdate',authController.updatePassword);
+router.post('/auth/passupdate',authenticateToken,authController.editInfo);
 
 export default router 
