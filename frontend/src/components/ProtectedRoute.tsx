@@ -122,7 +122,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   if (!authChecked) {
-    return <div>Loading...</div>;
+    return <div className='flex items-center justify-center'>Loading...</div>;
   }
 
   if (!isAuthenticated) {

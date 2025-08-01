@@ -15,7 +15,7 @@ const MyPage = () => {
   const [ nickname, setNickname ] = useState<string>('');
   const [ userId, setUserId ] = useState<number | null>(null);
   const [ reviewCount, setReviewCount ] = useState(0);
-  // const [ bookmarkCount, setBookmarkCount ] = useState(0);
+  const [ bookmarkCount, setBookmarkCount ] = useState(0);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -35,9 +35,8 @@ const MyPage = () => {
         setReviewCount(reviews.data);
 
         // 3. 보고싶어요 수 가져오기
-        // const bookmarks = await axios.get(`http://localhost:8000/bookmarks/${userId}`);
-        // setBookmarkCount(bookmarks.data);
-
+        const bookmarks = await axios.get(`http://localhost:8000/bookmarks/${userId}`);
+        setBookmarkCount(Array.isArray(bookmarks.data) ? bookmarks.data.length : 0);
       } catch {
         return;
       }
@@ -106,7 +105,7 @@ const MyPage = () => {
             </Link>
 
             <Link to="/mypage/wants" className="text-center cursor-pointer hover:scale-105 transition">
-              <p className="text-xl font-semibold">0</p>
+              <p className="text-xl font-semibold">{ bookmarkCount }</p>
               <p className="text-sm text-gray-600">보고싶어요</p>
             </Link>
           </div>
@@ -432,14 +431,17 @@ export const WantReadList = () => {
   const [ bookmarks, setBookmarks ] = useState<BookItem[]>([]);
   const [ isLoading, setIsLoading ] = useState(true);
 
-  console.log(userId)
   useEffect(() => {
+    if (!userId) {
+      return;
+    }
+
     setIsLoading(true);
     const fetchBookmarkData = async () => {
       try {
         // 1. 북마크(보고싶어요) 리스트 호출
         const res = await axios.get(`http://localhost:8000/bookmarks/${userId}`);
-        const bookmarkList = res.data.comments;
+        const bookmarkList = Array.isArray(res.data) ? res.data : [];
 
         // 2. 각 책의 상세정보(제목, 저자, 썸네일 등) 가져오기
         const bookDetails = await Promise.all(
@@ -448,32 +450,54 @@ export const WantReadList = () => {
               // Book API로 도서 정보 조회
               const bookRes = await axios.get(`http://localhost:8000/books/search?query=${item.isbn}`);
               const bookInfo = Array.isArray(bookRes.data) ? bookRes.data[0] : bookRes.data;
+              return {
+                ...item,
+                title: bookInfo?.title || "",
+                authors: bookInfo?.authors || "",
+                thumbnail: bookInfo?.thumbnail || "",
+              };
             } catch {
-              return { ...item,  }
+              return { ...item, title: "", authors: "", thumbnail: "" }
             }
           })
         );
+        setBookmarks(bookDetails);
       } catch {
-        return;
+        setBookmarks([]);
+      } finally {
+        setIsLoading(false);
       }
     }
     fetchBookmarkData();
   }, [userId]);
 
+  if (isLoading) {
+    return <div className="p-6 text-gray-400 text-center">불러오는 중...</div>;
+  }
+
+  if (!bookmarks.length) {
+    return <div className="p-6 text-gray-400 text-center">보고싶어요를 누른 책이 없습니다.</div>
+  }
 
   return (
     <>
       {/* 보고싶어요 */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {Array.from({ length: 15 }).map((_, idx) => (
-          <div key={idx} className="bg-white border rounded shadow overflow-hidden">
-            <img src="https://contents.kyobobook.co.kr/sih/fit-in/180x0/pdt/9791141611040.jpg" alt="책" className="w-full" />
-            <div className="p-2">
-              <h3 className="font-semibold text-sm">혼모노: 성애와 소설집</h3>
-              <p className="text-xs text-gray-500">상하니</p>
-            </div>
-          </div>
-        ))}
+        {
+          bookmarks.map((book, idx) => (
+            <Link
+              to={`/book/${book.isbn}`}
+              key={book.isbn + idx}
+              className='bg-white border rounded shadow overflow-hidden'
+            >
+              <img src={ book.thumbnail } alt={ book.title } className='w-full h-[180px] object-cover'/>
+              <div className="p-2">
+                <h3 className="font-semibold text-sm truncate">{book.title || "제목없음"}</h3>
+                <p className="text-xs text-gray-500 truncate">{book.authors}</p>
+              </div>
+            </Link>
+          ))
+        }
       </div>
     </>
   )
