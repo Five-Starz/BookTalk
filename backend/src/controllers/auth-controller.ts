@@ -132,17 +132,20 @@ export class AuthController{
     const userId=req.user!.userId;
     let nickname = req.body.nickname as string | undefined;
     let password = req.body.password as string | undefined;  
-    console.log(typeof nickname)
+    
     if (typeof nickname === 'string'){
-      if(nickname.trim() === '')
-        nickname=undefined;      
+      if(nickname.trim() === ''){
+        console.log('nickname 공백')
+        nickname=undefined;}      
     }
     if(typeof password === 'string'){
-      if(password.trim() === '')
-          password=undefined;
+      if(password.trim() === ''){
+        console.log('password 공백')
+          password=undefined;}
     }
     
     try {
+      console.log('시작')
         await authService.editInfo(userId, nickname, password);        
         res.status(200).json({ message: "회원정보 수정 성공" });
     } catch (error: any) { 

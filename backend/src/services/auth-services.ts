@@ -192,7 +192,7 @@ export class AuthService{
     //userId값이 동일하지 않다면 중복 닉네임 
     if (existingUserByNickname && existingUserByNickname.userId!==userId)
       throw new Error('이미 사용 중인 닉네임입니다.');      
-    else
+    else if(existingUserByNickname && existingUserByNickname.userId===userId)
       nickname=undefined; //동일 닉을 설정했다 : 닉네임 수정 안하겠다는 의미
 
     if(!password)
