@@ -11,6 +11,19 @@ export class BookmakrsController{
     return res.status(200).json(await bookmarksService.findByUserAndIsbn(userId,isbn));
   }
 
+  async findById(req: Request, res: Response, next: NextFunction):Promise<any>{
+    const userId=parseInt(req.params.userId, 10);
+    if (isNaN(userId)) {
+    console.error('유효하지 않은 userId 형식:', req.params.userId);
+    return res.status(400).json({ message: '유효하지 않은 userId 형식입니다.' });
+  }
+    const userBookmarks= await bookmarksService.findById(userId);
+    if(userBookmarks.length>0)
+      return res.status(200).json(userBookmarks);
+    else
+      return res.status(404).json({message:"해당 유저의 북마크가 존재하지 않습니다."});
+  }
+
   async create(req: Request, res: Response, next: NextFunction):Promise<any>{
     const userId = req.user!.userId;
     const isbn = req.body.isbn;

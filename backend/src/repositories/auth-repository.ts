@@ -72,4 +72,14 @@ export class AuthRepository{
       data:{nickname,password}  
     });
   };
+  
+  async findUserProfile(userId: number){
+    return prisma.users.findUnique({
+      where: { userId },
+      select:{
+        userId:true,
+        nickname:true
+      }
+    });
+  }
 };

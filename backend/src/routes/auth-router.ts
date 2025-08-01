@@ -464,4 +464,56 @@ router.get('/auth/protected', authenticateToken, authController.protectedRoute);
  */ 
 router.post('/auth/passupdate',authenticateToken,authController.editInfo);
 
+
+/**
+ * @swagger
+ *
+ * /auth/{userId}:
+ *   get:
+ *     summary: 유저 프로필 검색
+ *     description: "특정 유저가 등록한 프로필을 검색합니다."
+ *     tags: [Auth]
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: "검색할 유저의 고유 아이디"
+ *         example: 1
+ *     responses:
+ *       200:
+ *         description: 검색 결과 반환 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: '검색 결과 반환 성공'
+ *                 comments:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       userId:
+ *                         type: integer
+ *                         example: 1
+ *                       nickname:
+ *                         type: string
+ *                         example: "테스트유저"
+ *       400:
+ *         description: 유효하지 않은 요청 파라미터
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: '유효하지 않은 userId 형식입니다.'
+ */
+router.get('/auth/:userId', authController.findUserProfile);
+
 export default router 
