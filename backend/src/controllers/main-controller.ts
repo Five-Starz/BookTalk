@@ -13,8 +13,8 @@ class MainController {
 
   // 2. 오늘의 랜덤 리뷰
   async getRandomReviewOfTheDay(req:Request, res:Response): Promise<Response> {
-    const review = await mainService.fetchRandomReview();
-    return res.json({ review });
+    const reviews = await mainService.fetchRandomReview();
+    return res.json({ reviews });
   }
 
   // 3. 리뷰 수가 많은 책 (hot 10)
