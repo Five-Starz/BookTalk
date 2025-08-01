@@ -56,8 +56,28 @@ class BookRepository {
     return bookInfo;
   }
 
-  // 3. 랜덤 도서 추천
-  // async 
+  // 3. 평균평점 조회를 위해 
+  async getAllRatingsByBook(isbn: string): Promise<number[] | null> {
+    console.log('[Book Repository] 받은 isbn:', isbn);
+
+    const reviews = await prisma.reviews.findMany({
+      where: { isbn },
+      select: { rating: true }, // rating만 가져옴
+    });
+
+    console.log('[Book Repository] DB에서 조회한 reviews:', reviews);
+
+    if (reviews.length === 0) return null;
+
+    // Decimal -> Number로 변환
+    const ratings = reviews.map((review)=> Number(review.rating));
+    console.log('[Book Repository] rating 숫자 배열:', ratings);
+    
+    return ratings;
+  }
+
+    // 4. 책 랜덤 추천
+  }
 }
 
 export default BookRepository

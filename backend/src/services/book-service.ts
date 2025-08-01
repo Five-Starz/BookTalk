@@ -2,7 +2,7 @@
 // 처리 흐름, 트랜잭션
 import { Books } from '@prisma/client';
 import axios from 'axios';  // Node.js 서버에서 외부 API 호출할 때 필요
-import BookRepository from '../repositories/book-repository'
+import BookRepository from '../repositories/book-repository';
 const bookRepository = new BookRepository();
 
 class BookService {
@@ -36,12 +36,30 @@ class BookService {
     return books; // 결과 반환
   }
 
+  // 2. 도서 별 평균평점 계산
+  async getAverageRatingByBook(isbn: string): Promise<number | null> {
+    console.log('[Book Service] 받은 isbn:', isbn);
+    let rating: number[] | null = await bookRepository.getAllRatingsByBook(isbn);  // 전체 점수 받아와
+    console.log('[Book Service] Repository에서 받은 rating 배열:', rating);
+
+    // rating이 없으면 null 반환
+    if (!rating || rating.length === 0) return null;
+
+    // 평균 계산
+    let sumRating = 0;
+    for (let i=0; i<rating.length; i++) {
+      sumRating += rating[i];
+    }
+    const avgRating = parseFloat((sumRating/rating.length).toFixed(2));
+    
+    return avgRating;
+  }
+
   // 2. DB에 도서 검색
   async searchBookByISBN(isbn: string):Promise<Books | null> {
     return await bookRepository.getBookInfo(isbn);
   }
 
   // 3. 도서 평균 평점 
-
 }
 export default BookService

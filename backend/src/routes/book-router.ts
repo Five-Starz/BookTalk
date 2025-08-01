@@ -70,7 +70,7 @@ router.get('/books/info/:isbn', bookController.getBookInfo);
  *      200:
  *       description: 평균평점 반환 성공
  */
-// router.get('/books/averageRating/:isbn', bookController.getAverageRating);
+router.get('/books/averageRating/:isbn', bookController.getAverageRatingByBook);
 
 /** 랜덤 도서 추천  
  * @swagger
