@@ -66,11 +66,11 @@ export class AuthRepository{
       });
   }
 
-  async updatePassword(userId:number,nickname:string,password:string){
+  async editInfo(userId:number,nickname?:string,password?:string){
     await prisma.users.update({
-      where:{userId},
-      data:{nickname,password}  
-    });
+        where:{userId},
+        data:{nickname,password}  
+      });
   };
   
   async findUserProfile(userId: number){

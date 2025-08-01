@@ -181,13 +181,26 @@ export class AuthService{
       }
   }
 
-  async updatePassword(userId:number,nickname:string,password:string){
-    const existingUserByNickname = await authRepository.findbyNickname(nickname);
-      if (existingUserByNickname) {
-          throw new Error('이미 사용 중인 닉네임입니다.');
-      }
-    const hashedPassword = await bcrypt.hash(password, 10);
-    await authRepository.updatePassword(userId,nickname,hashedPassword);
+  async editInfo(userId:number,nickname?:string,password?:string){
+    let existingUserByNickname:Users|null=null;
+    let hashedPassword:string|undefined;
+
+    if(nickname)
+      existingUserByNickname = await authRepository.findbyNickname(nickname);
+      
+    //existingUserByNickname이 존재할 때 userId값이 동일하다면 동일 닉네임을 쓴다는 뜻
+    //userId값이 동일하지 않다면 중복 닉네임 
+    if (existingUserByNickname && existingUserByNickname.userId!==userId)
+      throw new Error('이미 사용 중인 닉네임입니다.');      
+    else
+      nickname=undefined; //동일 닉을 설정했다 : 닉네임 수정 안하겠다는 의미
+    
+    if(!password)
+      hashedPassword=undefined;
+    else
+      hashedPassword = await bcrypt.hash(password, 10);  
+
+    return await authRepository.editInfo(userId,nickname,hashedPassword);
   }
 
   async findUserProfile(userId: number){

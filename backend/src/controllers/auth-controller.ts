@@ -130,9 +130,28 @@ export class AuthController{
 
   async editInfo(req: Request, res: Response){
     const userId=req.user!.userId;
-    const {nickname,password}=req.body;    
-    await authService.updatePassword(userId,nickname,password);
-    res.status(200).json({message:"비밀번호 수정 성공"})
+    let nickname = req.body.nickname as string | undefined;
+    let password = req.body.password as string | undefined;  
+    console.log(typeof nickname)
+    if (typeof nickname === 'string'){
+      if(nickname.trim() === '')
+        nickname=undefined;      
+    }
+    if(typeof password === 'string'){
+      if(password.trim() === '')
+          password=undefined;
+    }
+    
+    try {
+        await authService.editInfo(userId, nickname, password);        
+        res.status(200).json({ message: "회원정보 수정 성공" });
+    } catch (error: any) { 
+        if (error.message === '이미 사용 중인 닉네임입니다.') {
+            return res.status(409).json({ message: error.message });
+        }
+        console.error("회원정보 수정 중 오류 발생:", error); // 에러 로그
+        return res.status(500).json({ message: "회원정보 수정 중 서버 오류가 발생했습니다." });
+    }
   };
 
   async findUserProfile(req: Request, res: Response){
