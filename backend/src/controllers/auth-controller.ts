@@ -158,4 +158,15 @@ export class AuthController{
     const userId=parseInt(req.params.userId,10);
     res.status(200).json(await authService.findUserProfile(userId));
   };
+
+  async deleteUser(req: Request, res: Response){
+    const userId=req.user!.userId;    
+    try {
+        await authService.deleteUser(userId);        
+        res.status(200).json({ message: "회원 탈퇴 성공" });
+    } catch (error: any) { 
+        console.error("서버 오류 발생:", error);
+        return res.status(500).json({ message: "서버 오류가 발생했습니다." });
+    }
+  }
 };

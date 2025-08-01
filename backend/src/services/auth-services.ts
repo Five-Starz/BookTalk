@@ -194,7 +194,7 @@ export class AuthService{
       throw new Error('이미 사용 중인 닉네임입니다.');      
     else
       nickname=undefined; //동일 닉을 설정했다 : 닉네임 수정 안하겠다는 의미
-    
+
     if(!password)
       hashedPassword=undefined;
     else
@@ -205,5 +205,9 @@ export class AuthService{
 
   async findUserProfile(userId: number){
     return await authRepository.findUserProfile(userId);
-  }
+  };
+
+  async deleteUser(userId:number){
+    return await authRepository.deletUser(userId);
+  };
 }; 

@@ -81,5 +81,9 @@ export class AuthRepository{
         nickname:true
       }
     });
+  };
+
+  async deletUser(userId: number){
+    return await prisma.users.delete({where:{userId}}) ? true : false;
   }
 };
