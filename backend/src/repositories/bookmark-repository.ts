@@ -3,6 +3,15 @@ import { prisma } from "../utils/prisma";
 
 export class BookmarksRepository{
 
+   //특정 유저 검색
+   async findById(userId:number):Promise<Bookmarks[]>{
+     return await prisma.bookmarks.findMany({
+       where:{
+         userId,
+       }
+     });
+   }; 
+
   //특정 책에 좋아요 누른 특정 사용자 검색 (존재하면 T 아니면 F)
   async findByUserAndIsbn(userId:number, isbn:string):Promise<boolean>{    
     return await prisma.bookmarks.findUnique({
