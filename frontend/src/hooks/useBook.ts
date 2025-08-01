@@ -94,7 +94,7 @@ export const useRecommendList = (): UseRecommendListResult => {
   return { recommendList, isLoadingRecommended, errorRecommended };
 };
 
-interface UseReviewsResult {
+export interface UseReviewsResult {
   reviews: ReviewDetail[] | null;
   isLoadingReviews: boolean;
   errorReviews: string | null;

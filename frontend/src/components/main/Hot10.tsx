@@ -1,38 +1,19 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import { Link } from 'react-router-dom';
 import { Swiper as SwiperClass } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Thumbs } from 'swiper/modules';
-import axios from 'axios';
 
-import type { BookApiResponse, BookDetail } from "../../types/BookType"; // 'Book'도 함께 임포트합니다.
+import type { BookDetail } from "../../types/BookType"; // 'Book'도 함께 임포트합니다.
+import { use10List } from '../../hooks/useMain'
 
 const Hot10 = () => {
-  const [apiData, setApiData] = useState<BookApiResponse | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const { apiData, isLoading, error } = use10List('hot');
 
   const [thumbsSwiper, setThumbsSwiper] = useState<SwiperClass | null>(null);
   const mainSwiperRef = useRef<SwiperClass | null>(null);
   const prevRef = useRef(null);
   const nextRef = useRef(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get<BookApiResponse>('http://localhost:8000/main/books/hot');
-        setApiData(response.data);
-        console.log('Hot10 받아온 데이터:', response.data.books);
-      } catch (err) {
-        setError('리뷰가 많은 책 데이터를 불러오는 데 실패했습니다.');
-        console.error('Hot10 API 에러:', err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
 
     // 로딩, 에러, 데이터 없음 상태 처리
     if (isLoading) {
@@ -46,8 +27,6 @@ const Hot10 = () => {
     if (!apiData || !apiData.books || apiData.books.length === 0) {
       return <div className="p-4 text-center">리뷰가 많은 책 데이터를 찾을 수 없습니다.</div>;
     }
-
-    const hotBooks = apiData.books;
 
 const handleMainSlideChange = (swiper: SwiperClass) => {
     if (thumbsSwiper && thumbsSwiper.params) {
@@ -90,7 +69,7 @@ const handleMainSlideChange = (swiper: SwiperClass) => {
         modules={[Navigation, Thumbs]}
         className="mySwiper2 w-full lg:w-[70%]"
       >
-        {hotBooks.map((book: BookDetail) => ( // Book 인터페이스를 사용하여 타입 안전성 확보
+        {apiData.books.map((book: BookDetail) => ( // Book 인터페이스를 사용하여 타입 안전성 확보
           <SwiperSlide> {/* key는 고유한 값으로 설정 (isbn이 적합) */}
             <Link key={book.isbn} to={`/book/${book.isbn}`}>
               <div className="flex justify-between">
@@ -122,7 +101,7 @@ const handleMainSlideChange = (swiper: SwiperClass) => {
         modules={[Navigation, Thumbs]}
         className="mySwiper w-[30%] !hidden lg:!block"
       >
-        {hotBooks.map((book: BookDetail) => ( // 썸네일 슬라이더 이미지: book.thumbnail 사용
+        {apiData.books.map((book: BookDetail) => ( // 썸네일 슬라이더 이미지: book.thumbnail 사용
           <SwiperSlide key={book.isbn + "-thumb"}> {/* 썸네일도 고유한 key가 필요 */}
             <img className='max-h-[150px] rounded-lg' src={book.thumbnail} alt={book.title + " thumbnail"} />
           </SwiperSlide>
