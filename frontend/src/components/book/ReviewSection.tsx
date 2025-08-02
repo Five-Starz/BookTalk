@@ -29,24 +29,24 @@ const ReviewsSection = ({ reviews, isLoading, error, bookData }: ReviewsSectionP
       
       {reviews && reviews.length > 0 && (
         <>
-          <div className='hidden justify-between flex-wrap gap-2 lg:flex'>
+          <div className='hidden flex-wrap gap-2 lg:flex'>
             {reviews.slice(0, 6).map(review => (
               <Link to={`/review/${review.reviewId}`} state={{bookData, review}} className='w-[calc(33.3%-6px)]'>
-                <ReviewCard key={review.reviewId} review={review} width='full' />
+                <ReviewCard key={review.reviewId} review={review} />
               </Link>
             ))}
           </div>
-          <div className='hidden justify-between flex-wrap gap-2 sm:flex lg:hidden'>
+          <div className='hidden flex-wrap gap-2 sm:flex lg:hidden'>
             {reviews.slice(0, 4).map(review => (
               <Link to={`/review/${review.reviewId}`} state={{bookData, review}} className='w-[calc(50%-4px)]'>
-                <ReviewCard key={review.reviewId} review={review} width='full' />
+                <ReviewCard key={review.reviewId} review={review} />
               </Link>
             ))}
           </div>
-          <div className='block justify-between flex-wrap gap-2 sm:hidden'>
+          <div className='block flex-wrap gap-2 sm:hidden'>
             {reviews.slice(0, 1).map(review => (
               <Link to={`/review/${review.reviewId}`} state={{bookData}} className='w-[calc(100%)]'>
-                <ReviewCard key={review.reviewId} review={review} width='full' />
+                <ReviewCard key={review.reviewId} review={review} />
               </Link>
             ))}
           </div>

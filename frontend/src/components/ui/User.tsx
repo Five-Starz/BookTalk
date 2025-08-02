@@ -2,9 +2,10 @@ import React from 'react'
 
 interface UserProps {
   width: string;
+  nickname: string;
 }
 
-const User: React.FC<UserProps> = ({width}) => {
+const User: React.FC<UserProps> = ({width, nickname}) => {
   return (
     <div className='flex gap-2 items-center'>      
         <div className="avatar">
@@ -12,7 +13,7 @@ const User: React.FC<UserProps> = ({width}) => {
             <img src="https://img.daisyui.com/images/profile/demo/yellingcat@192.webp" />
           </div>
         </div>
-        <p className='text-[#888]'>닉네임</p>
+        <p className='text-[#888]'>{nickname}</p>
     </div>
   )
 }

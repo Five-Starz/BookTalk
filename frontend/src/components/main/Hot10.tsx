@@ -14,7 +14,6 @@ const Hot10 = () => {
   const mainSwiperRef = useRef<SwiperClass | null>(null);
   const prevRef = useRef(null);
   const nextRef = useRef(null);
-  console.log(apiData)
 
     // 로딩, 에러, 데이터 없음 상태 처리
     if (isLoading) {
