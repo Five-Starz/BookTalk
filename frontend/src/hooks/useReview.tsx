@@ -3,8 +3,7 @@ import React, { useState, useEffect, type FormEvent } from "react";
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-import type { BookDetail } from '../types/BookType'; // BookDetail 타입 임포트
-import type { ReviewSubmitData } from '../types/ReviewType'; // 제출용 리뷰 데이터 타입 임포트
+import type { ReviewSubmitData, UseReviewFormProps, UseReviewFormResult } from '../types/ReviewType'; // 제출용 리뷰 데이터 타입 임포트
 import { FaStar } from 'react-icons/fa'
 import { getPrimaryIsbn } from "../utils/getPrimaryIsbn";
 
@@ -82,20 +81,7 @@ export const RatingStar: React.FC<RatingStarProps> = ({ ratingIndex, setRatingIn
 };
 
 
-interface UseReviewFormProps {
-  initialIsbn: string; // 초기 ISBN (useParams에서 가져온 값)
-  bookData: BookDetail | null; // useBookDetails 훅에서 가져온 책 데이터
-}
 
-interface UseReviewFormResult {
-  formData: ReviewSubmitData;
-  handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
-  handleRatingChange: (newRating: number) => void;
-  handleSubmit: (e: FormEvent) => Promise<void>;
-  isSubmitting: boolean;
-  submitError: string | null;
-  submitSuccess: boolean;
-}
 
 export const useReviewForm = ({ initialIsbn, bookData }: UseReviewFormProps): UseReviewFormResult => {
   const navigate = useNavigate();
