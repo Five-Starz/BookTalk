@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import type { BookDetail } from '../types/BookType';
 import type { ReviewDetail } from '../types/ReviewType';
+import { decodeHtml } from '../utils/decodeHtml';
 
 interface UseBookDetailsResult {
   bookData: BookDetail | null;
@@ -11,7 +12,7 @@ interface UseBookDetailsResult {
 
 export const useBookDetails = (isbn: string | undefined): UseBookDetailsResult => {
   const [bookData, setBookData] = useState<BookDetail | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -23,32 +24,47 @@ export const useBookDetails = (isbn: string | undefined): UseBookDetailsResult =
 
     const fetchBookDetails = async () => {
       try {
-        setIsLoading(true);
         setError(null);
 
         // ✅ API 요청 URL을 /books/search?query={isbn}으로 변경
         const requestUrl = `http://localhost:8000/books/search?query=${isbn}`; 
 
         // ✅ 응답이 배열 형태임을 가정하고 제네릭 타입 설정
-        const response = await axios.get<BookDetail[]>(requestUrl); 
+        const response = await axios.get<BookDetail[]>(requestUrl);
+        console.log(response)
         
         // 검색 결과가 배열로 오므로, 첫 번째 책을 사용
         if (response.data && response.data.length > 0) {
-          setBookData(response.data[0]); // ✅ 배열의 첫 번째 요소 사용
-          console.log('useBookDetails.ts: API 응답 데이터 (첫 번째 책):', response.data[0]);
+          const rawBook = response.data[0];
+
+          // ✅ API 응답의 문자열 데이터를 setBookData에 저장하기 전에 디코딩
+          const decodedBook: BookDetail = {
+            ...rawBook,
+            title: `${decodeHtml(rawBook.title)}`,
+            description: `${decodeHtml(rawBook.description)}`,
+            authors: `${Array.isArray(rawBook.authors)
+              ? rawBook.authors.map(author => decodeHtml(author))
+              : decodeHtml(rawBook.authors)}`,
+          };
+
+          setBookData(decodedBook);
         } else {
           // 검색 결과가 없으면 에러 처리
           setBookData(null);
           setError('요청하신 ISBN에 해당하는 책을 찾을 수 없습니다.');
+          setIsLoading(false);
         }
+        setIsLoading(true);
         
       } catch (err) {
         console.error('useBookDetails.ts: API 요청 에러 발생:', err);
         if (axios.isAxiosError(err)) {
           console.error('useBookDetails.ts: Axios 에러 응답:', err.response);
           setError(`책 정보를 불러오는 데 실패했습니다: ${err.response?.status} - ${err.response?.data?.message || '알 수 없는 오류'}`);
+          setIsLoading(false);
         } else {
           setError('책 정보를 불러오는 중 알 수 없는 오류가 발생했습니다.');
+          setIsLoading(false);
         }
       } finally {
         setIsLoading(false);
@@ -69,20 +85,21 @@ interface UseRecommendListResult {
 
 export const useRecommendList = (): UseRecommendListResult => {
   const [recommendList, setRecommendList] = useState<BookDetail[] | null>(null);
-  const [isLoadingRecommended, setIsLoadingRecommended] = useState<boolean>(true);
+  const [isLoadingRecommended, setIsLoadingRecommended] = useState<boolean>(false);
   const [errorRecommended, setErrorRecommended] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchRecommendList = async () => {
       try {
-        setIsLoadingRecommended(true);
         setErrorRecommended(null);
-        const response = await axios.get('http://localhost:8000/api/books/recommended?limit=5');
+        const response = await axios.get('http://localhost:8000/books/random');
         // 백엔드 응답이 `documents` 필드 안에 배열을 주는 경우
-        setRecommendList(response.data.documents || []); 
+        setRecommendList(response.data.documents || []);
+        setIsLoadingRecommended(true);
       } catch (err) {
         console.error('추천 도서 불러오기 에러 (useRecommendList):', err);
         setErrorRecommended('추천 도서를 불러오는 데 실패했습니다.');
+        setIsLoadingRecommended(false);
       } finally {
         setIsLoadingRecommended(false);
       }
@@ -94,6 +111,9 @@ export const useRecommendList = (): UseRecommendListResult => {
   return { recommendList, isLoadingRecommended, errorRecommended };
 };
 
+
+
+
 export interface UseReviewsResult {
   reviews: ReviewDetail[] | null;
   isLoadingReviews: boolean;
@@ -101,13 +121,11 @@ export interface UseReviewsResult {
 }
 
 export const useReviews = (isbn: string | undefined): UseReviewsResult => {
-const [reviews, setReviews] = useState<ReviewDetail[] | null>(null);
-  const [isLoadingReviews, setIsLoadingReviews] = useState<boolean>(true);
+  const [reviews, setReviews] = useState<ReviewDetail[] | null>(null);
+  const [isLoadingReviews, setIsLoadingReviews] = useState<boolean>(false);
   const [errorReviews, setErrorReviews] = useState<string | null>(null);
 
   useEffect(() => {
-    console.log('useReviews: 훅에 전달된 ISBN:', isbn); // ✅ 훅에 전달된 ISBN 확인
-
     if (!isbn) {
       setErrorReviews("리뷰를 불러올 ISBN이 없습니다.");
       setIsLoadingReviews(false);
@@ -117,14 +135,11 @@ const [reviews, setReviews] = useState<ReviewDetail[] | null>(null);
 
     const fetchReviews = async () => {
       try {
-        setIsLoadingReviews(true);
         setErrorReviews(null);
 
-        const requestUrl = `http://localhost:8000/reviews/search/${isbn}`;
-        console.log('useReviews: API 요청 URL:', requestUrl); // ✅ 실제 요청 URL 확인
-
+        const requestUrl = `http://localhost:8000/reviews/search/{isbn}?isbn=${isbn}`;
         const response = await axios.get(requestUrl);
-        console.log('useReviews: API 응답 데이터:', response.data); // ✅ 성공 시 응답 데이터 확인
+        setIsLoadingReviews(true);
 
         setReviews(response.data);
       } catch (err) {

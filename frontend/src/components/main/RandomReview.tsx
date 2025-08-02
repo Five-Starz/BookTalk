@@ -1,33 +1,46 @@
 import React from 'react'
 import User from '../ui/User'
 import {useMainReviews} from '../../hooks/useMain'
+import { useUserNickname } from '../../hooks/useUser';
+import { Link } from 'react-router-dom';
 
 const RandomReview = () => {
   const { reviews, isLoadingReviews, errorReviews } = useMainReviews('random');
 
-    console.log('random:', reviews)
+  // ✅ reviews 배열이 비어있지 않으면 첫 번째 리뷰의 userId를, 아니면 undefined를 사용
+  const userId = reviews && reviews.length > 0 ? reviews[0].userId : undefined;
 
-    // 로딩, 에러, 데이터 없음 상태 처리
-    if (isLoadingReviews) {
-      return <div className="p-4 text-center">랜덤 리뷰 데이터를 불러오는 중입니다...</div>;
-    }
+  // ✅ userId가 있을 때만 훅을 호출하도록 수정 (hooks는 조건부로 호출하면 안 되므로,
+  //    userId를 인자로 넘겨주고 훅 내부에서 유효성을 검사하는 것이 올바른 패턴입니다)
+  const { nickname } = useUserNickname(userId);
 
-    if (errorReviews) {
-      return <div className="p-4 text-center text-red-500">{errorReviews}</div>;
-    }
 
-    if (!reviews || reviews.length === 0) {
-      return <div className="p-4 text-center">랜덤 리뷰 데이터를 찾을 수 없습니다.</div>;
-    }
+  // 로딩, 에러, 데이터 없음 상태 처리
+  if (!isLoadingReviews) {
+    return <div className="p-4 text-center">랜덤 리뷰 데이터를 불러오는 중입니다...</div>;
+  }
+
+  if (errorReviews) {
+    return <div className="p-4 text-center text-red-500">{errorReviews}</div>;
+  }
+
+  if (!reviews || reviews.length === 0) {
+    return <div className="p-4 text-center">랜덤 리뷰 데이터를 찾을 수 없습니다.</div>;
+  }  
 
   return (
-    <div className='flex flex-col w-full rounded-lg p-4 gap-10 bg-[#D8D5AF] lg:w-2/5 lg:justify-between'>
-      <h2>오늘의 랜덤 리뷰</h2>
-      <p className='text-overflow px-4'>dd</p>
-      <div className='flex gap-4 justify-center'>
-        <User width='6' />
+    <Link key={reviews[0].reviewId}
+      to={`/review/${reviews[0].reviewId}`}
+      state={{ reviewData: reviews[0] }}
+      className='lg:w-2/5 lg:justify-between'>    
+      <div className='flex flex-col w-full rounded-lg p-4 gap-10 bg-[#D8D5AF]'>
+        <h2>오늘의 랜덤 리뷰</h2>
+        <p className='text-center px-4'>{reviews[0].content}</p>
+        <div className='flex gap-4 justify-center'>
+          <User nickname={nickname} width='6' />
+        </div>
       </div>
-    </div>
+    </Link>
   )
 }
 

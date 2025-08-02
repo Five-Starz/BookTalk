@@ -3,26 +3,25 @@ import axios from 'axios';
 import type { BookDetail, BookApiResponse } from '../types/BookType';
 import type { ReviewDetail } from '../types/ReviewType';
 import type { UseReviewsResult } from '../hooks/useBook';
+import { decodeHtml } from '../utils/decodeHtml';
 
 export const useMainReviews = (listType: string): UseReviewsResult => {
   const [reviews, setReviews] = useState<ReviewDetail[] | null>(null);
-  const [isLoadingReviews, setIsLoadingReviews] = useState<boolean>(true);
+  const [isLoadingReviews, setIsLoadingReviews] = useState<boolean>(false);
   const [errorReviews, setErrorReviews] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchReviews = async () => {
-      try {
-        setIsLoadingReviews(true);
-        setErrorReviews(null);
-
+      try {       
         const response = await axios.get(`http://localhost:8000/main/reviews/${listType}`);
+        setIsLoadingReviews(true);
         const reviewData = response.data.reviews;
         const fetchedReviews = Array.isArray(reviewData) ? reviewData : [reviewData];
 
         if (fetchedReviews.length > 0) {
           const bookOfReview = await Promise.all(
             fetchedReviews.map(async (review) => {
-              const bookResponse = await axios.get<BookDetail>(`http://localhost:8000/book/${review.isbn}`);
+              const bookResponse = await axios.get<BookDetail>(`http://localhost:8000/books/info/${review.isbn}`);
               return {
                 ...review,
                 book: bookResponse.data
@@ -43,11 +42,11 @@ export const useMainReviews = (listType: string): UseReviewsResult => {
           } else {
             setErrorReviews('리뷰를 불러오는 데 실패했습니다.');
           }
+          setIsLoadingReviews(false);
         } else {
           setErrorReviews('리뷰를 불러오는 중 알 수 없는 오류가 발생했습니다.');
+          setIsLoadingReviews(false);
         }
-      } finally {
-        setIsLoadingReviews(false);
       }
     };
 
@@ -59,18 +58,29 @@ export const useMainReviews = (listType: string): UseReviewsResult => {
 
 export const use10List = (listType: string) => {
   const [apiData, setApiData] = useState<BookApiResponse | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get<BookApiResponse>(`http://localhost:8000/main/books/${listType}`);
-        setApiData(response.data);
-        console.log(`${listType} 받아온 데이터:`, response.data.books);
+        const rawBooks = response.data.books;
+        
+        // ✅ 배열의 각 책 정보를 순회하며 필요한 필드를 디코딩
+        const decodedBooks = rawBooks.map(book => ({
+            ...book,
+            title: `${decodeHtml(book.title)}`,
+            description: `${decodeHtml(book.description)}`,
+        }));
+
+        // ✅ 디코딩된 데이터로 상태 업데이트
+        setApiData({ books: decodedBooks });
+        setIsLoading(true);
       } catch (err) {
         setError('리뷰가 많은 책 데이터를 불러오는 데 실패했습니다.');
         console.error(`${listType} API 에러:`, err);
+        setIsLoading(false);
       } finally {
         setIsLoading(false);
       }

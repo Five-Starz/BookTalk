@@ -21,10 +21,15 @@ export class CommentsServices{
     return await commentsRepository.updateComment(userId,commentId,content);
   };
 
+  //삭제 상태 변경
   async deleteComment(userId:number,commentId:number):Promise<boolean>{
     return await commentsRepository.deleteComment(userId,commentId);
   };
 
+  //실제 삭제
+  async deleteComment2(commentId:number):Promise<boolean>{
+    return await commentsRepository.deleteComment2(commentId);
+  };
   async countReviewComment(reviewId:number){
     return commentsRepository.countReviewComment(reviewId);
   }

@@ -3,8 +3,8 @@ import React, { useState, useEffect, type FormEvent } from "react";
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-import type { BookDetail } from '../types/BookType'; // BookDetail 타입 임포트
-import type { ReviewSubmitData } from '../types/ReviewType'; // 제출용 리뷰 데이터 타입 임포트
+import type { ReviewSubmitData, UseReviewFormProps, UseReviewFormResult } from '../types/ReviewType'; // 제출용 리뷰 데이터 타입 임포트
+import type { RevCommentSubmitData, UseRevCommentFormProps, UseRevCommentFormResult } from '../types/CommentTypes'
 import { FaStar } from 'react-icons/fa'
 import { getPrimaryIsbn } from "../utils/getPrimaryIsbn";
 
@@ -82,20 +82,7 @@ export const RatingStar: React.FC<RatingStarProps> = ({ ratingIndex, setRatingIn
 };
 
 
-interface UseReviewFormProps {
-  initialIsbn: string; // 초기 ISBN (useParams에서 가져온 값)
-  bookData: BookDetail | null; // useBookDetails 훅에서 가져온 책 데이터
-}
 
-interface UseReviewFormResult {
-  formData: ReviewSubmitData;
-  handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
-  handleRatingChange: (newRating: number) => void;
-  handleSubmit: (e: FormEvent) => Promise<void>;
-  isSubmitting: boolean;
-  submitError: string | null;
-  submitSuccess: boolean;
-}
 
 export const useReviewForm = ({ initialIsbn, bookData }: UseReviewFormProps): UseReviewFormResult => {
   const navigate = useNavigate();
@@ -194,6 +181,80 @@ export const useReviewForm = ({ initialIsbn, bookData }: UseReviewFormProps): Us
     formData,
     handleChange,
     handleRatingChange,
+    handleSubmit,
+    isSubmitting,
+    submitError,
+    submitSuccess
+  };
+};
+
+
+
+
+export const useRevCommentForm = ({ reviewId, userId }: UseRevCommentFormProps): UseRevCommentFormResult => {
+
+  const [formData, setFormData] = useState<RevCommentSubmitData>({
+    reviewId: reviewId || '',
+    parentId?: '',
+    userId: userId,
+    content: ''
+  });
+
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [submitSuccess, setSubmitSuccess] = useState<boolean>(false);
+
+  // 입력 필드 변경 핸들러
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prevData => ({
+      ...prevData,
+      [name]: name === 'rating' || name === 'publishedYear' ? Number(value) : value
+    }));
+  };
+
+  // 폼 제출 핸들러
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+
+    if (!formData.reviewId || !formData.content ) {
+      setSubmitError("내용을 입력해 주세요");
+      return; 
+    }
+
+    setIsSubmitting(true);
+    setSubmitError(null);
+    setSubmitSuccess(false);
+
+    try {
+      const accessToken = localStorage.getItem('accessToken');
+      const headers = accessToken ? {
+        Authorization: `Bearer ${accessToken}`
+      } : {};
+
+      // ✅ axios.post의 세 번째 인자로 headers 객체를 정확히 전달했는지 확인합니다.
+      const response = await axios.post('http://localhost:8000/reviews', formData, {
+        headers: headers
+      });
+
+      console.log('리뷰 작성 성공:', response.data);
+      setSubmitSuccess(true);
+
+    } catch (error) {
+      console.error('리뷰 작성 실패:', error);
+      if (axios.isAxiosError(error)) {
+        setSubmitError(error.response?.data?.message || "리뷰 작성 중 오류가 발생했습니다.");
+      } else {
+        setSubmitError("알 수 없는 오류가 발생했습니다.");
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return {
+    formData,
+    handleChange,
     handleSubmit,
     isSubmitting,
     submitError,

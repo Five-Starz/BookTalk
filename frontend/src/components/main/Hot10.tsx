@@ -47,7 +47,6 @@ const handleMainSlideChange = (swiper: SwiperClass) => {
       setTimeout(() => {
           // 루프 모드에서 정확한 realIndex 탐색을 위해 slideToLoop 사용
           thumbsSwiper.slideToLoop(targetThumbsRealIndex);
-          console.log(`Main RealIndex: ${currentMainRealIndex}, Thumbs sliding to real index: ${targetThumbsRealIndex}`);
       }, 0);
     }
   };
