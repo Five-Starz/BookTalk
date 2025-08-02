@@ -35,7 +35,7 @@ export const useBookDetails = (isbn: string | undefined): UseBookDetailsResult =
         // 검색 결과가 배열로 오므로, 첫 번째 책을 사용
         if (response.data && response.data.length > 0) {
           setBookData(response.data[0]); // ✅ 배열의 첫 번째 요소 사용
-          console.log('useBookDetails.ts: API 응답 데이터 (첫 번째 책):', response.data[0]);
+          console.log(response.data);
         } else {
           // 검색 결과가 없으면 에러 처리
           setBookData(null);
@@ -77,7 +77,7 @@ export const useRecommendList = (): UseRecommendListResult => {
       try {
         setIsLoadingRecommended(true);
         setErrorRecommended(null);
-        const response = await axios.get('http://localhost:8000/api/books/recommended?limit=5');
+        const response = await axios.get('http://localhost:8000/books/random');
         // 백엔드 응답이 `documents` 필드 안에 배열을 주는 경우
         setRecommendList(response.data.documents || []); 
       } catch (err) {
@@ -101,7 +101,7 @@ export interface UseReviewsResult {
 }
 
 export const useReviews = (isbn: string | undefined): UseReviewsResult => {
-const [reviews, setReviews] = useState<ReviewDetail[] | null>(null);
+  const [reviews, setReviews] = useState<ReviewDetail[] | null>(null);
   const [isLoadingReviews, setIsLoadingReviews] = useState<boolean>(true);
   const [errorReviews, setErrorReviews] = useState<string | null>(null);
 
@@ -120,7 +120,7 @@ const [reviews, setReviews] = useState<ReviewDetail[] | null>(null);
         setIsLoadingReviews(true);
         setErrorReviews(null);
 
-        const requestUrl = `http://localhost:8000/reviews/search/${isbn}`;
+        const requestUrl = `http://localhost:8000/reviews/search/{isbn}?isbn=${isbn}`;
         console.log('useReviews: API 요청 URL:', requestUrl); // ✅ 실제 요청 URL 확인
 
         const response = await axios.get(requestUrl);

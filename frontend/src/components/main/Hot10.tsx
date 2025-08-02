@@ -14,6 +14,7 @@ const Hot10 = () => {
   const mainSwiperRef = useRef<SwiperClass | null>(null);
   const prevRef = useRef(null);
   const nextRef = useRef(null);
+  console.log(apiData)
 
     // 로딩, 에러, 데이터 없음 상태 처리
     if (isLoading) {
@@ -47,7 +48,6 @@ const handleMainSlideChange = (swiper: SwiperClass) => {
       setTimeout(() => {
           // 루프 모드에서 정확한 realIndex 탐색을 위해 slideToLoop 사용
           thumbsSwiper.slideToLoop(targetThumbsRealIndex);
-          console.log(`Main RealIndex: ${currentMainRealIndex}, Thumbs sliding to real index: ${targetThumbsRealIndex}`);
       }, 0);
     }
   };

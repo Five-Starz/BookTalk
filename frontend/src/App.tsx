@@ -11,7 +11,7 @@ import Login from './pages/Login';
 import Book from './pages/Book';
 import ReviewList from './pages/ReviewList';
 import SearchList from './pages/SearchList';
-import ReviewDetail from './pages/ReviewDetail';
+import ReviewOne from './pages/ReviewOne';
 import WriteReview from './pages/WriteReview';
 import SignUp from './pages/SignUp';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -30,8 +30,8 @@ function App() {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/books/search" element={<SearchList />} />
           <Route path="/book/:isbn" element={<Book />} />
-          <Route path="/234" element={<ReviewList />} />
-          <Route path="/2345" element={<ReviewDetail />} />
+          <Route path="/book/:isbn/reviews" element={<ReviewList />} />
+          <Route path="/review/:reviewId" element={<ReviewOne />} />
           <Route path="/reviews/:isbn" element={
             <ProtectedRoute>
               <WriteReview />

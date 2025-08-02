@@ -54,7 +54,8 @@ const Book = () => {
       <ReviewsSection 
         reviews={reviews} 
         isLoading={isLoadingReviews} 
-        error={errorReviews} 
+        error={errorReviews}
+        bookData={bookData} // ✅ 부모 컴포넌트에서 bookData를 직접 전달
       />
 
       <RecommendList

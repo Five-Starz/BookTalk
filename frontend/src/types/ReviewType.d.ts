@@ -2,10 +2,25 @@ import { BookDetail } from "./BookType";
 
 export interface ReviewDetail {
   book: BookDetail;
-  id: string;
+  reviewId: string;
   rating: number;
   content: string;
   userId: number;
+}
+
+interface UseReviewFormProps {
+  initialIsbn: string; // 초기 ISBN (useParams에서 가져온 값)
+  bookData: BookDetail | null; // useBookDetails 훅에서 가져온 책 데이터
+}
+
+interface UseReviewFormResult {
+  formData: ReviewSubmitData;
+  handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  handleRatingChange: (newRating: number) => void;
+  handleSubmit: (e: FormEvent) => Promise<void>;
+  isSubmitting: boolean;
+  submitError: string | null;
+  submitSuccess: boolean;
 }
 
 export interface ReviewSubmitData {
@@ -29,4 +44,5 @@ interface ReviewsSectionProps {
   reviews: ReviewDetail[] | null;
   isLoading: boolean;
   error: string | null;
+  bookData: BookDetail | null; //
 }

@@ -6,23 +6,21 @@ import type { UseReviewsResult } from '../hooks/useBook';
 
 export const useMainReviews = (listType: string): UseReviewsResult => {
   const [reviews, setReviews] = useState<ReviewDetail[] | null>(null);
-  const [isLoadingReviews, setIsLoadingReviews] = useState<boolean>(true);
+  const [isLoadingReviews, setIsLoadingReviews] = useState<boolean>(false);
   const [errorReviews, setErrorReviews] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchReviews = async () => {
-      try {
-        setIsLoadingReviews(true);
-        setErrorReviews(null);
-
+      try {       
         const response = await axios.get(`http://localhost:8000/main/reviews/${listType}`);
+        setIsLoadingReviews(true);
         const reviewData = response.data.reviews;
         const fetchedReviews = Array.isArray(reviewData) ? reviewData : [reviewData];
 
         if (fetchedReviews.length > 0) {
           const bookOfReview = await Promise.all(
             fetchedReviews.map(async (review) => {
-              const bookResponse = await axios.get<BookDetail>(`http://localhost:8000/book/${review.isbn}`);
+              const bookResponse = await axios.get<BookDetail>(`http://localhost:8000/books/info/${review.isbn}`);
               return {
                 ...review,
                 book: bookResponse.data
@@ -43,11 +41,11 @@ export const useMainReviews = (listType: string): UseReviewsResult => {
           } else {
             setErrorReviews('리뷰를 불러오는 데 실패했습니다.');
           }
+          setIsLoadingReviews(false);
         } else {
           setErrorReviews('리뷰를 불러오는 중 알 수 없는 오류가 발생했습니다.');
+          setIsLoadingReviews(false);
         }
-      } finally {
-        setIsLoadingReviews(false);
       }
     };
 
@@ -67,7 +65,6 @@ export const use10List = (listType: string) => {
       try {
         const response = await axios.get<BookApiResponse>(`http://localhost:8000/main/books/${listType}`);
         setApiData(response.data);
-        console.log(`${listType} 받아온 데이터:`, response.data.books);
       } catch (err) {
         setError('리뷰가 많은 책 데이터를 불러오는 데 실패했습니다.');
         console.error(`${listType} API 에러:`, err);
