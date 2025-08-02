@@ -4,10 +4,7 @@ import { Link } from 'react-router-dom';
 import { getPrimaryIsbn } from '../../utils/getPrimaryIsbn';
 
 const BookInfo = ({ book }: { book: BookDetail }) => {
-  // book 데이터가 prop으로 전달되므로,
-  // 내부 로딩/에러 처리 로직은 BookPage에서 담당합니다.
-
-  // 단, prop으로 받은 book 객체가 유효한지 간단히 확인하는 로직은 선택적으로 유지할 수 있습니다.
+  
   if (!book) {
     return (
       <div className="flex justify-center items-center h-48 text-red-500">
@@ -50,7 +47,7 @@ const BookInfo = ({ book }: { book: BookDetail }) => {
           </div>
         </div>
         <div className="w-full mt-4 text-gray-600">
-            {book.description}
+            {book.description}...
           </div>
       </div>
     </div>

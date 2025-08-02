@@ -1,23 +1,31 @@
 import React from 'react'
 import User from '../ui/User';
 import {useMainReviews} from '../../hooks/useMain'
+import { useUserNickname } from '../../hooks/useUser';
 import { Link } from 'react-router-dom';
 
 const BestReview = () => {
   const { reviews, isLoadingReviews, errorReviews } = useMainReviews('liked');
+  
+  // ✅ reviews 배열이 비어있지 않으면 첫 번째 리뷰의 userId를, 아니면 undefined를 사용
+  const userId = reviews && reviews.length > 0 ? reviews[0].userId : undefined;
 
-    // 로딩, 에러, 데이터 없음 상태 처리
-    if (!isLoadingReviews) {
-      return <div className="p-4 text-center">베스트 리뷰 데이터를 불러오는 중입니다...</div>;
-    }
+  // ✅ userId가 있을 때만 훅을 호출하도록 수정 (hooks는 조건부로 호출하면 안 되므로,
+  //    userId를 인자로 넘겨주고 훅 내부에서 유효성을 검사하는 것이 올바른 패턴입니다)
+  const { nickname } = useUserNickname(userId);
 
-    if (errorReviews) {
-      return <div className="p-4 text-center text-red-500">{errorReviews}</div>;
-    }
+  // 로딩, 에러, 데이터 없음 상태 처리
+  if (!isLoadingReviews) {
+    return <div className="p-4 text-center">베스트 리뷰 데이터를 불러오는 중입니다...</div>;
+  }
 
-    if (!reviews || reviews.length === 0) {
-      return <div className="p-4 text-center">베스트 리뷰 데이터를 찾을 수 없습니다.</div>;
-    }
+  if (errorReviews) {
+    return <div className="p-4 text-center text-red-500">{errorReviews}</div>;
+  }
+
+  if (!reviews || reviews.length === 0) {
+    return <div className="p-4 text-center">베스트 리뷰 데이터를 찾을 수 없습니다.</div>;
+  }
 
   return (
     <div className='flex flex-col lg:w-3/5 gap-4'>
@@ -36,7 +44,7 @@ const BestReview = () => {
               />
               <div className='flex-grow rounded-lg border border-[#FFA100] p-4'>
                 <h3 className='mb-4'>{reviews[0].book.title}</h3> {/* ✅ 책 제목 사용 */}
-                <User width='6' />
+                <User nickname={nickname} width='6' />
                 <p className='text-overflow mt-4'>{reviews[0].content}</p> {/* ✅ 리뷰 내용 사용 */}
               </div>
             </div>
@@ -56,7 +64,7 @@ const BestReview = () => {
                     alt={review.book.title} /> {/* ✅ 책 제목 사용 */}
                 </figure>
                 <div className='p-2 text-overflow'>
-                  <h3>{review.book.title}</h3> {/* ✅ 책 제목 사용 */}
+                  <h4>{review.book.title}</h4> {/* ✅ 책 제목 사용 */}
                   <p>{review.content}</p> {/* ✅ 리뷰 내용 사용 */}
                 </div>
               </div>

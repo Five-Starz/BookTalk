@@ -1,13 +1,16 @@
 import React from 'react'
 import User from './User';
 import type { ReviewCardProps } from '../../types/ReviewType';
+import {useUserNickname} from '../../hooks/useUser'
 
 
-const ReviewCard = ({review, width}: ReviewCardProps ) => {
+const ReviewCard = ({review}: ReviewCardProps ) => {
+  const { nickname } = useUserNickname(review?.userId);
+
   return (
-    <div className={`w-${width} bg-[#F6F6F6] rounded-lg p-4`}>
+    <div className={`w-full bg-[#F6F6F6] rounded-lg p-4`}>
       <div className='flex flex-col gap-3'>
-        <User width='6' />
+        <User nickname={nickname} width='6' />
         <span className='block w-full h-[1px] bg-[#ddd]' />
         <div className="min-h-30 md:min-h-50 text-overflow">
           <p>{review.content}</p>
