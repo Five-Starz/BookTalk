@@ -41,7 +41,7 @@ export const LogoutButton = () => {
     <>
       {/* 로그아웃 버튼 */}
       <button
-        type="submit"
+        type="button"
         className="w-full bg-black hover:bg-neutral-800 text-white rounded-md py-6 text-sm cursor-pointer transition mt-6"
       >
         로그아웃
@@ -50,13 +50,14 @@ export const LogoutButton = () => {
   )
 }
 
-export const CancelButton = () => {
+export const CancelButton = (props: React.ButtonHTMLAttributes<HTMLButtonElement>) => {
   return (
     <>
       {/* 취소 버튼 */}
       <button
-        type="submit"
+        type="button"
         className="w-full bg-gray-200 hover:bg-gray-300 text-black rounded-md py-2 text-sm cursor-pointer transition mt-2"
+        { ...props }
       >
         취소
       </button>
@@ -78,13 +79,14 @@ export const UpdateButton = () => {
   )
 }
 
-export const ResignButton = () => {
+export const ResignButton = (props: React.ButtonHTMLAttributes<HTMLButtonElement>) => {
   return(
     <>
       {/* 탈퇴 버튼 */}
       <button
-        type="submit"
+        type="button"
         className="w-full border text-red-500 hover:font-semibold hover:bg-red-50 rounded-md py-2 text-sm cursor-pointer mt-1"
+        { ...props }
       >
         회원 탈퇴
       </button>

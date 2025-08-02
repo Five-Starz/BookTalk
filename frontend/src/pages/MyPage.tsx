@@ -4,6 +4,12 @@ import { NicknameForm, PasswordForm } from '../components/ui/Form';
 import { CancelButton, ResignButton, UpdateButton } from '../components/ui/Button';
 import axios from 'axios';
 
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { useUserStore } from '../store/userStore';
+import { useAuthStore } from '../store/authStore';
+
 const emojiOptions = [
   '😁', '🤣', '😎', '😍', '😴'
 ]
@@ -12,8 +18,13 @@ const MyPage = () => {
   const [selectedEmoji, setSelectedEmoji] = useState<string | null>(null);
   const [showSelector, setShowSelector] = useState(false);
 
-  const [ nickname, setNickname ] = useState<string>('');
-  const [ userId, setUserId ] = useState<number | null>(null);
+  // const [ nickname, setNickname ] = useState<string>('');
+  const nickname = useUserStore(state => state.nickname);
+  const setUser = useUserStore(state => state.setUser);
+
+  // const [ userId, setUserId ] = useState<number | null>(null);
+  const userId = useUserStore(state => state.userId);
+
   const [ reviewCount, setReviewCount ] = useState(0);
   const [ bookmarkCount, setBookmarkCount ] = useState(0);
 
@@ -24,11 +35,21 @@ const MyPage = () => {
         const authRes = await axios.get('http://localhost:8000/auth/protected', {
           headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
         });
+        const { userId } = authRes.data.user;
+
+        // 2. 최신 프로필(닉네임 등)은 별도 fetch
+        const profileRes = await axios.get(`http://localhost:8000/auth/${userId}`);
+        // profileRes.data.comments[0] 구조라면...
+        const profile = Array.isArray(profileRes.data.comments) ? profileRes.data.comments[0] : profileRes.data;
+        const { nickname } = profile;
+
+        setUser({ userId, nickname }); // zustand에 최신값 저장
 
         // 유저ID와 닉네임 가져오기
-        const { userId, nickname } = authRes.data.user;
-        setUserId(userId);
-        setNickname(nickname);
+        // const { userId, nickname } = authRes.data.user;
+        // setUserId(userId);
+        // setNickname(nickname);
+        setUser({ userId, nickname }); // zustand에 저장
 
         // 2. 리뷰 수 가져오기
         const reviews = await axios.get(`http://localhost:8000/reviews/count/${userId}`);
@@ -43,7 +64,7 @@ const MyPage = () => {
     }
 
     fetchUserData();
-  }, []);
+  }, [setUser]);
 
   const handleProfileClick = () => {
     setShowSelector((prev) => !prev);
@@ -415,7 +436,6 @@ export const ReviewCollection = () => {
 }
 
 export const WantReadList = () => {
-
   type BookItem = {
     isbn: string;
     createdAt: string;
@@ -504,23 +524,202 @@ export const WantReadList = () => {
 }
 
 export const Settings = () => {
+  const updateSchema = z.object({
+    nickname: z
+      .string()
+      .min(2, "닉네임은 2자 이상이어야 합니다.")
+      .max(10, "닉네임은 10자 이하여야 합니다.")
+      .regex(/^[가-힣a-zA-Z0-9]+$/, "닉네임은 한글, 영어, 숫자만 사용할 수 있습니다.")
+      .refine(val => !/\s/.test(val), "닉네임에 공백을 포함할 수 없습니다.")
+      .optional()
+      .or(z.literal("")), // 빈 문자열 허용
+
+    password: z
+      .string()
+      .min(8, "비밀번호는 8자 이상이어야 합니다.")
+      .max(20, "비밀번호는 20자 이하여야 합니다.")
+      .refine(val => !/\s/.test(val), "비밀번호에 공백을 포함할 수 없습니다.")
+      .optional()
+      .or(z.literal("")), // 빈 문자열 허용
+  })
+  .refine(data => data.nickname || data.password, {
+    message: "닉네임 또는 비밀번호 중 하나 이상 입력해주세요.",
+  });
+
+  type UpdateFormData = {
+    nickname?: string;
+    password?: string;
+  };
+
+  const { nickname, userId, clearUser, setUser } = useUserStore(); // setNickname
+  const { accessToken, clearTokens } = useAuthStore();
+
+  const [ msg, setMsg ] = useState('');
+  const [ errMsg, setErrMsg ] = useState('');
+
+  // 탈퇴 모달
+  const [ resignModalOpen, setResignModalOpen ] = useState(false);
+
+  // RHF 셋업
+  const { register, handleSubmit, reset, formState: { errors } } = useForm<UpdateFormData>({
+    resolver: zodResolver(updateSchema),
+    defaultValues: {
+      nickname: nickname ?? "",
+      password: "",
+    },
+    mode: "onBlur"
+  });
+
+  // 수정 요청
+  const onValid = async (data: UpdateFormData) => {
+    setMsg("");
+    setErrMsg('');
+    try {
+      // 빈 문자열은 서버에 보내지 않음
+      const sendData: UpdateFormData = {};
+      if (data.nickname && data.nickname !== nickname) sendData.nickname = data.nickname;
+      if (data.password) sendData.password = data.password;
+
+      if (!Object.keys(sendData).length) {
+        setErrMsg("변경사항이 없습니다.");
+        return;
+      }
+
+      await axios.post(
+        "http://localhost:8000/auth/passupdate",
+        sendData,
+        { headers: { Authorization: `Bearer ${accessToken}` } }
+      );
+
+      if (sendData.nickname) {
+        // [1] 닉네임만 zustand에서 바꾸지 말고,
+        // [2] 서버에서 최신 정보 받아오기!
+        // 토큰에서 userId만 가져옴
+        const authRes = await axios.get('http://localhost:8000/auth/protected', {
+          headers: { Authorization: `Bearer ${accessToken}` }
+        });
+        const { userId } = authRes.data.user;
+
+        // 최신 프로필 fetch
+        const profileRes = await axios.get(`http://localhost:8000/auth/${userId}`, {
+          headers: { Authorization: `Bearer ${accessToken}` }
+        });
+        const profile = Array.isArray(profileRes.data.comments) ? profileRes.data.comments[0] : profileRes.data;
+        setUser({ userId, nickname: profile.nickname });
+      }
+      console.log(sendData.nickname)
+
+      // 닉네임 변경 시 전역 업데이트
+      // if (sendData.nickname) {
+      //   setNickname(sendData.nickname);
+      // }
+
+      setMsg("회원 정보가 수정되었습니다.");
+      setErrMsg('');
+      reset({ nickname: sendData.nickname ?? nickname, password: "" });
+    } catch (err) {
+      if (axios.isAxiosError(err) && err.response?.data?.message) {
+        setErrMsg(err.response.data.message);
+        setMsg('');
+      }
+    }
+  };
+
+  // 폼 리셋(취소)
+  const handleCancel = () => {
+    reset({ nickname: nickname ?? "", password: "" });
+    setMsg("");
+    setErrMsg('');
+  };
+
+  // 탈퇴
+  // const handleResign = async () => {
+  //   if (!window.confirm("정말로 탈퇴하시겠습니까?")) return;
+  //   try {
+  //     await axios.delete(`http://localhost:8000/auth/del/${userId}`, {
+  //       headers: { Authorization: `Bearer ${accessToken}` },
+  //     });
+  //     clearTokens();
+  //     clearUser();
+  //     window.location.href = "/";
+  //   } catch {
+  //     alert("탈퇴에 실패했습니다.");
+  //   }
+  // };
+
+  // 모달 내 취소/확인 함수
+  const handleCancelResign = () => {
+    setResignModalOpen(false);
+  }
+
+  const handleConfirmResign = async () => {
+    try {
+      await axios.delete(`http://localhost:8000/auth/del/${userId}`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      clearTokens();
+      clearUser();
+      window.location.href = "/";
+    } catch {
+      alert("탈퇴에 실패했습니다.");
+    }
+  };
+
   return (
     <>
       {/* 유저 정보 수정 */}
       <div className="space-y-8">
-        <div>
+        <form onSubmit={ handleSubmit(onValid) }>
           <h2 className="font-semibold text-lg mb-2">회원 정보 수정</h2>
-          <NicknameForm />
-          <PasswordForm />
+          <NicknameForm { ...register("nickname") } error={errors.nickname?.message}/>
+          <PasswordForm { ...register("password") } error={errors.password?.message}/>
           <UpdateButton />
-          <CancelButton />
-        </div>
+          <CancelButton onClick={ handleCancel } />
+          {
+            msg
+              ? <div className="mt-2 text-center text-green-600 text-sm">{ msg }</div>
+              : errMsg
+                ? <div className="mt-2 text-center text-red-500 text-sm">{ errMsg }</div>
+                : null
+          }
+        </form>
 
         <div>
           <h2 className="font-semibold text-lg mb-2">회원 탈퇴</h2>
-          <ResignButton />
+          <ResignButton onClick={() => setResignModalOpen(true)}/>
         </div>
       </div>
+      {/* 탈퇴 모달 */}
+      {
+        resignModalOpen && (
+          <div
+            className="fixed inset-0 bg-black/30 flex items-center justify-center z-40"
+            onClick={handleCancelResign}
+          >
+            <div
+              className="bg-white p-6 rounded-lg shadow-lg min-w-[300px] max-w-sm"
+              onClick={e => e.stopPropagation()} // 모달 내용 클릭시 닫힘 방지
+            >
+              <h2 className="text-lg font-bold mb-3">회원 탈퇴</h2>
+              <div className="mb-6">정말로 탈퇴하시겠습니까?</div>
+              <div className="flex justify-end gap-2">
+                <button
+                  className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
+                  onClick={handleCancelResign}
+                >
+                  취소
+                </button>
+                <button
+                  className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+                  onClick={handleConfirmResign}
+                >
+                  탈퇴
+                </button>
+              </div>
+            </div>
+          </div>
+        )
+      }
     </>
   )
 }
