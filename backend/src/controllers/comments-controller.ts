@@ -53,10 +53,21 @@ export class CommentsController{
       return res.status(404).json({message:"수정 실패"});
   };
 
+  //삭제 상태 변경
   async deleteComment(req: Request, res: Response, next: NextFunction):Promise<any>{
     const userId = req.user!.userId; 
     const commentId=parseInt(req.params.commentId, 10);
     const deleteComment=await commentsServices.deleteComment(userId,commentId); 
+    if(!deleteComment)
+      return res.status(404).json({message:"삭제 실패"});
+    else      
+      return res.status(200).json({message:"삭제 성공"});
+  };
+
+  //실제 삭제
+  async deleteComment2(req: Request, res: Response, next: NextFunction):Promise<any>{
+    const commentId=parseInt(req.params.commentId, 10);
+    const deleteComment=await commentsServices.deleteComment2(commentId); 
     if(!deleteComment)
       return res.status(404).json({message:"삭제 실패"});
     else      

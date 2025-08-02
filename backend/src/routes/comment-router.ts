@@ -327,8 +327,8 @@ router.put('/comment/update',authenticateToken,commentsController.updateComment)
    *
    * /comment/{commentId}:
    *   delete:
-   *     summary: 댓글 삭제
-   *     description: "특정 댓글을 삭제합니다. (현재 기준으론 대댓글까지 삭제됨)"
+   *     summary: 댓글 삭제 (상태 변경)
+   *     description: "특정 댓글을 삭제합니다. (실제 삭제는 아니고 status수정 + 내용을 [삭제된 댓글입니다]로 변경)"
    *     tags: [Comment]
    *     security:
    *       - bearerAuth: []  # Access Token 보안 스키마 적용
@@ -400,6 +400,84 @@ router.put('/comment/update',authenticateToken,commentsController.updateComment)
    *                   example: '댓글을 찾을 수 없습니다.'
    */
   router.delete('/comment/:commentId',authenticateToken,commentsController.deleteComment)
+
+
+   /**
+   * @swagger
+   *
+   * /comment/del/{commentId}:
+   *   delete:
+   *     summary: 댓글 실제로 삭제 (관리용)
+   *     description: "특정 댓글을 삭제합니다. (대댓글 까지 삭제됨)"
+   *     tags: [Comment]
+   *     parameters:
+   *       - in: path
+   *         name: commentId
+   *         schema:
+   *           type: integer
+   *         required: true
+   *         description: "삭제할 댓글의 아이디"
+   *         example: 1
+   *     responses:
+   *       200:
+   *         description: 댓글 삭제 성공
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 message:
+   *                   type: string
+   *                   example: '댓글 삭제 성공'
+   *                 comment:
+   *                   type: object
+   *                   properties:
+   *                     commentId:
+   *                       type: integer
+   *                       example: 1
+   *                     userId:
+   *                       type: integer
+   *                       example: 1
+   *                     reviewId:
+   *                       type: integer
+   *                       example: 10
+   *                     content:
+   *                       type: string
+   *                       example: "삭제된 댓글 내용입니다."
+   *                     createdAt:
+   *                       type: string
+   *                       format: date-time
+   *                       example: "2023-07-23T10:00:00Z"
+   *                     updatedAt:
+   *                       type: string
+   *                       format: date-time
+   *                       example: "2023-07-23T10:00:00Z"
+   *                     parentId:
+   *                       type: integer
+   *                       nullable: true
+   *                       example: null
+   *       400:
+   *         description: 유효하지 않은 요청 파라미터
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 message:
+   *                   type: string
+   *                   example: '유효하지 않은 commentId 형식입니다.'
+   *       404:
+   *         description: 댓글을 찾을 수 없음
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 message:
+   *                   type: string
+   *                   example: '댓글을 찾을 수 없습니다.'
+   */
+  router.delete('/comment/del/:commentId',commentsController.deleteComment2)
 
   /**
  * @swagger
