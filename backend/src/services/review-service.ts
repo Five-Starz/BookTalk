@@ -19,12 +19,13 @@ class ReviewService {
     content: string;
     userId: number;
   }) {
-    // 0. 이미 존재하는 리뷰인지 체크
-    if (await reviewRepository.hasUserReviewedBook(data.userId,data.isbn)) {
+    // 0. 책정보가 Books테이블에 없다면 DB에 저장 -> 잘라낸 isbn-13 받아옴
+    const slicedISBN = await bookRepository.ensureBookExists(data);
+
+    // 1. slicedISBN으로 이미 존재하는 리뷰인지 체크
+    if (await reviewRepository.hasUserReviewedBook(data.userId,slicedISBN)) {
       throw new Error('[review-service error]이미 해당 도서에 리뷰를 작성하셨습니다.');
     };
-    // 1. 책정보가 Books테이블에 없다면 DB에 저장 -> 잘라낸 isbn-13 받아옴
-    const slicedISBN = await bookRepository.ensureBookExists(data);
 
     // 2. 리뷰 등록
     return await reviewRepository.createReview({
