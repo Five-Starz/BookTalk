@@ -373,7 +373,7 @@ export const ReviewCollection = () => {
                 <div className="flex gap-2">
                   <button
                     className="px-2 py-1 rounded text-sm border border-gray-300 hover:bg-gray-100"
-                    onClick={() => navigate(`/reviews/${review.reviewId}`)}
+                    onClick={() => navigate(`/edit/${review.reviewId}`)}
                   >
                     수정
                   </button>
@@ -650,6 +650,7 @@ export const Settings = () => {
         const profile = Array.isArray(profileRes.data.comments) ? profileRes.data.comments[0] : profileRes.data;
         setUser({ userId, nickname: profile.nickname });
       }
+      console.log(sendData.nickname)
 
       setMsg("회원 정보가 수정되었습니다.");
       setErrMsg('');

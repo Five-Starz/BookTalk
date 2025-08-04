@@ -1,17 +1,21 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { useBookDetails } from '../hooks/useBook'; // 책 정보 불러오는 훅
-
-import { RatingStar, useReviewForm } from '../hooks/useReview'; 
+import { useBookDetailsInMyPage } from '../hooks/useBook'
+import { RatingStar, useReviewForm, useReviewDetails } from '../hooks/useReview';
 
 
 const EditReview: React.FC = () => {
-  const { isbn } = useParams<{ isbn: string }>(); 
+  const { reviewId: reviewIdParam } = useParams<{ reviewId: string }>();
+  const reviewId = reviewIdParam ? parseInt(reviewIdParam, 10) : undefined;
 
-  // 책 정보 로딩 훅 (이 훅은 그대로 여기에 둡니다. 폼 훅은 이 데이터를 받아서 사용해요.)
-  const { bookData, isLoading: isLoadingBook, error: errorBook } = useBookDetails(isbn || '');
+  // ✅ 1. reviewId로 기존 리뷰 정보를 불러옵니다.
+  const { reviewData: existingReview, isLoadingReview, errorReview } = useReviewDetails(reviewId);
 
-  // ✅ useReviewForm 훅 사용
+  // ✅ 2. 기존 리뷰에 포함된 책 ISBN을 사용하여 책 정보를 불러옵니다.
+  const bookIsbn = existingReview?.book.isbn;
+  const { bookData, isLoading: isLoadingBook, error: errorBook } = useBookDetailsInMyPage(bookIsbn);
+
+  // ✅ 3. useReviewForm 훅에 existingReview 데이터를 전달합니다.
   const {
     formData,
     handleChange,
@@ -20,23 +24,21 @@ const EditReview: React.FC = () => {
     isSubmitting,
     submitError,
     submitSuccess
-  } = useReviewForm({ initialIsbn: isbn || '', bookData });
+  } = useReviewForm({ bookData, existingReview });
 
 
-  // 로딩/에러/책 없음 상태 처리 (이전과 동일)
-  if (isLoadingBook) {
-    return <div className="p-4 text-center">책 정보 로딩 중...</div>;
+  if (isLoadingReview || isLoadingBook) {
+    return <div className="p-4 text-center">리뷰 정보 로딩 중...</div>;
   }
-  if (errorBook) {
-    return <div className="p-4 text-center text-red-500">책 정보를 불러오는데 오류가 발생했습니다: {errorBook}</div>;
+  if (errorReview || errorBook) {
+    return <div className="p-4 text-center text-red-500">정보를 불러오는데 오류가 발생했습니다: {errorReview || errorBook}</div>;
   }
-  if (!bookData) {
-    return <div className="p-4 text-center">리뷰를 작성할 책 정보를 찾을 수 없습니다. (유효한 ISBN이 필요합니다.)</div>;
+  if (!existingReview || !bookData) {
+    return <div className="p-4 text-center">수정할 리뷰 정보를 찾을 수 없습니다.</div>;
   }
 
   return (
     <div className="flex justify-between items-start gap-4">
-      {/* 썸네일과 책 정보 표시 (이전과 동일) */}
       <img
         className='hidden lg:block rounded-lg max-w-fit min-h-[300px] object-contain'
         src={bookData.thumbnail} 
@@ -59,8 +61,8 @@ const EditReview: React.FC = () => {
               <div className='text-center'>
                 <h4 className='hidden mb-2 lg:block'>평점</h4>
                 <RatingStar 
-                  ratingIndex={formData.rating} // 현재 평점 전달
-                  setRatingIndex={handleRatingChange} // 평점 변경 함수 전달
+                  ratingIndex={formData.rating}
+                  setRatingIndex={handleRatingChange}
                 />
               </div>
             </div>
@@ -84,12 +86,11 @@ const EditReview: React.FC = () => {
               className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
               disabled={isSubmitting}
             >
-              {isSubmitting ? '리뷰 작성 중...' : '리뷰 작성 완료'}
+              {isSubmitting ? '리뷰 수정 중...' : '리뷰 수정 완료'}
             </button>
           </div>
-
           {submitError && <p className="text-red-500 text-sm mt-4">{submitError}</p>}
-          {submitSuccess && <p className="text-green-500 text-sm mt-4">리뷰가 성공적으로 작성되었습니다!</p>}
+          {submitSuccess && <p className="text-green-500 text-sm mt-4">리뷰가 성공적으로 수정되었습니다!</p>}
         </form>
       </div>
     </div>

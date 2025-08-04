@@ -43,7 +43,7 @@ const ReviewsSection = ({ reviews, isLoading, error, bookData }: ReviewsSectionP
           </div>
           <div className='block flex-wrap gap-2 sm:hidden'>
             {reviews.slice(0, 1).map(review => (
-              <Link to={`/review/${review.reviewId}`} state={{bookData}} className='w-[calc(100%)]'>
+              <Link to={`/review/${review.reviewId}`} state={{bookData, review}} className='w-[calc(100%)]'>
                 <ReviewCard key={review.reviewId} review={review} />
               </Link>
             ))}

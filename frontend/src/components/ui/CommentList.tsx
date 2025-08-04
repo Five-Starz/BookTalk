@@ -49,6 +49,10 @@ const CommentList: React.FC<CommentListProps> = ({ reviewId }) => {
     return <div className="p-4 text-center text-red-500">{errorComments}</div>;
   }
 
+  if (comments.length === 0) {
+    return <div>아직 댓글이 없습니다. 첫 번째 댓글을 남겨주세요!</div>;
+  }
+
   return (
     <div className="mt-8">
       <h3 className="text-xl font-bold mb-4">댓글 {comments.length}</h3>
