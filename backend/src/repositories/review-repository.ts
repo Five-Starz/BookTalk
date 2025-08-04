@@ -88,5 +88,12 @@ class ReviewRepository {
       where:{userId}
     });
   };
-}
+
+  async findById(reviewId:number){
+    return await prisma.reviews.findUnique({
+      where:{reviewId}
+    });
+  };
+} 
+  
 export default ReviewRepository

@@ -100,5 +100,10 @@ class ReviewService {
   async UserReviewCount(userId:number){
     return reviewRepository.UserReviewCount(userId);
   };
+
+  async findById(reviewId:number){
+    return reviewRepository.findById(reviewId);
+  };
+
 }
 export default ReviewService
