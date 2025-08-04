@@ -75,8 +75,47 @@ const router: Router = express.Router();
  *    responses:
  *      201:
  *        description: 리뷰 등록 성공
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                reviewId:
+ *                  type: integer
+ *                  example: 123
+ *                message:
+ *                  type: string
+ *                  example: "리뷰가 성공적으로 등록되었습니다."
  *      400:
- *        description: 잘못된 요청
+ *        description: 잘못된 요청 (필수 필드 누락, 형식 오류 등)
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                message:
+ *                  type: string
+ *                  example: "리뷰 작성에 필요한 정보를 확인해주세요."
+ *      401:
+ *        description: 인증 실패 (토큰 없음 또는 유효하지 않음)
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                message:
+ *                  type: string
+ *                  example: "Access Token이 필요합니다."
+ *      500:
+ *        description: 서버 내부 오류
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                message:
+ *                  type: string
+ *                  example: "서버 오류로 리뷰 작성에 실패했습니다."
  */
 router.post('/reviews', authenticateToken, reviewController.createReview);
 
@@ -96,8 +135,55 @@ router.post('/reviews', authenticateToken, reviewController.createReview);
  *    responses:
  *      200:
  *        description: 리뷰 조회 성공
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: array
+ *              items:
+ *                type: object
+ *                properties:
+ *                  reviewId:
+ *                    type: integer
+ *                  userId:
+ *                    type: integer
+ *                  rating:
+ *                    type: number
+ *                    format: float
+ *                  content:
+ *                    type: string
+ *                  createdAt:
+ *                    type: string
+ *                    format: date-time
  *      400:
- *        description: 잘못된 요청
+ *        description: 잘못된 요청 (ISBN 누락 또는 형식 오류)
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                message:
+ *                  type: string
+ *                  example: "ISBN을 올바르게 입력해주세요."
+ *      404:
+ *        description: 해당 책에 대한 리뷰가 없음
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                message:
+ *                  type: string
+ *                  example: "해당 ISBN의 리뷰가 존재하지 않습니다."
+ *      500:
+ *        description: 서버 내부 오류
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                message:
+ *                  type: string
+ *                  example: "서버 오류로 리뷰 조회에 실패했습니다."
  */
 router.get('/reviews/search/:isbn', reviewController.searchReviewsByBook);
 
@@ -137,10 +223,71 @@ router.get('/reviews/search/:isbn', reviewController.searchReviewsByBook);
  *    responses:
  *      200:
  *        description: 리뷰 수정 성공
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                reviewId:
+ *                  type: integer
+ *                  example: 101
+ *                userId:
+ *                  type: integer
+ *                  example: 5
+ *                isbn:
+ *                  type: string
+ *                  example: "9788994492032"
+ *                rating:
+ *                  type: number
+ *                  format: float
+ *                  example: 4.5
+ *                content:
+ *                  type: string
+ *                  example: "정말 유익한 책이었습니다. 추천합니다!"
+ *                updatedAt:
+ *                  type: string
+ *                  format: date-time
+ *                  example: "2025-08-04T09:45:12.345Z"
  *      400:
- *        description: 잘못된 요청
+ *        description: 잘못된 요청 (파라미터 오류, body 누락 등)
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                message:
+ *                  type: string
+ *                  example: "수정할 내용을 확인해주세요."
+ *      401:
+ *        description: 인증 실패
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                message:
+ *                  type: string
+ *                  example: "Access Token이 필요합니다."
  *      404:
  *        description: 리뷰를 찾을 수 없음
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                message:
+ *                  type: string
+ *                  example: "해당 리뷰를 찾을 수 없습니다."
+ *      500:
+ *        description: 서버 내부 오류
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                message:
+ *                  type: string
+ *                  example: "서버 오류로 리뷰 수정에 실패했습니다."
  */
 router.patch('/reviews/:reviewId',authenticateToken, reviewController.updateReview);
 
@@ -162,10 +309,71 @@ router.patch('/reviews/:reviewId',authenticateToken, reviewController.updateRevi
  *    responses:
  *      200:
  *        description: 리뷰 삭제 성공
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                reviewId:
+ *                  type: integer
+ *                  example: 101
+ *                userId:
+ *                  type: integer
+ *                  example: 5
+ *                isbn:
+ *                  type: string
+ *                  example: "9788994492032"
+ *                rating:
+ *                  type: number
+ *                  format: float
+ *                  example: 3.5
+ *                content:
+ *                  type: string
+ *                  example: "삭제 전 리뷰 내용입니다."
+ *                deletedAt:
+ *                  type: string
+ *                  format: date-time
+ *                  example: "2025-08-04T10:03:27.000Z"
  *      400:
  *        description: 잘못된 요청
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                message:
+ *                  type: string
+ *                  example: "삭제할 리뷰 ID가 올바르지 않습니다."
+ *      401:
+ *        description: 인증 실패
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                message:
+ *                  type: string
+ *                  example: "Access Token이 필요합니다."
  *      404:
  *        description: 리뷰를 찾을 수 없음
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                message:
+ *                  type: string
+ *                  example: "해당 리뷰를 찾을 수 없습니다."
+ *      500:
+ *        description: 서버 내부 오류
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                message:
+ *                  type: string
+ *                  example: "서버 오류로 리뷰 삭제에 실패했습니다."
  */
 router.delete('/reviews/:reviewId', authenticateToken, reviewController.deleteReview);
 
@@ -189,8 +397,65 @@ router.delete('/reviews/:reviewId', authenticateToken, reviewController.deleteRe
  *    responses:
  *      200:
  *        description: 리뷰 조회 성공
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: array
+ *              items:
+ *                type: object
+ *                properties:
+ *                  reviewId:
+ *                    type: integer
+ *                  isbn:
+ *                    type: string
+ *                  rating:
+ *                    type: number
+ *                    format: float
+ *                  content:
+ *                    type: string
+ *                  createdAt:
+ *                    type: string
+ *                    format: date-time
  *      400:
  *        description: 잘못된 요청
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                message:
+ *                  type: string
+ *                  example: "userId가 올바르지 않습니다."
+ *      401:
+ *        description: 인증 실패
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                message:
+ *                  type: string
+ *                  example: "Access Token이 필요합니다."
+ *      404:
+ *        description: 해당 유저의 리뷰가 없음
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                message:
+ *                  type: string
+ *                  example: "해당 유저의 리뷰가 존재하지 않습니다."
+ *      500:
+ *        description: 서버 내부 오류
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                message:
+ *                  type: string
+ *                  example: "서버 오류로 리뷰 조회에 실패했습니다."
  */
 router.get('/reviews/user/:userId',optionalAuthToken,reviewController.findReviewByUserId)
 
@@ -210,9 +475,32 @@ router.get('/reviews/user/:userId',optionalAuthToken,reviewController.findReview
  *         example: 1
  *    responses:
  *      200:
- *        description: 리뷰 조회 성공
+ *        description: 리뷰 숫자 조회 성공
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: integer
+ *              example: 42          
  *      400:
  *        description: 잘못된 요청
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                message:
+ *                  type: string
+ *                  example: "userId가 올바르지 않습니다."
+ *      500:
+ *        description: 서버 내부 오류
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                message:
+ *                  type: string
+ *                  example: "서버 오류로 리뷰 숫자 조회에 실패했습니다."
  */
 router.get('/reviews/count/:userId',reviewController.UserReviewCount)
 

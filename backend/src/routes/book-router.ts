@@ -30,7 +30,46 @@ const router: Router = express.Router();
  *        description: 검색할 책 제목
  *    responses:
  *      200:
- *       description: 검색 결과 반환 성공
+ *        description: 검색 결과 반환 성공
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: array
+ *              items:
+ *                type: object
+ *                properties:
+ *                  title:
+ *                    type: string
+ *                  authors:
+ *                    type: array
+ *                    items:
+ *                      type: string
+ *                  publisher:
+ *                    type: string
+ *                  thumbnail:
+ *                    type: string
+ *                  isbn:
+ *                    type: string
+ *      400:
+ *        description: 검색어 누락 또는 형식 오류
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                message:
+ *                  type: string
+ *                  example: "검색어를 입력해주세요."
+ *      500:
+ *        description: 서버 내부 오류
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                message:
+ *                  type: string
+ *                  example: "도서 검색 중 서버 오류가 발생했습니다."
  */
 router.get('/books/search', bookController.getSearchedBooks);
 
@@ -49,7 +88,54 @@ router.get('/books/search', bookController.getSearchedBooks);
  *        description: 검색할 책 ISBN
  *    responses:
  *      200:
- *       description: 도서정보 반환 성공
+ *        description: 도서정보 반환 성공
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                isbn:
+ *                  type: string
+ *                title:
+ *                  type: string
+ *                authors:
+ *                  type: string
+ *                publisher:
+ *                  type: string
+ *                description:
+ *                  type: string
+ *                thumbnail:
+ *                  type: string
+ *      400:
+ *        description: 잘못된 ISBN
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                message:
+ *                  type: string
+ *                  example: "유효하지 않은 ISBN입니다."
+ *      404:
+ *        description: 해당 ISBN의 책 정보 없음
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                message:
+ *                  type: string
+ *                  example: "해당 ISBN에 대한 책 정보를 찾을 수 없습니다."
+ *      500:
+ *        description: 서버 내부 오류
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                message:
+ *                  type: string
+ *                  example: "도서 정보를 불러오는 중 서버 오류가 발생했습니다."
  */
 router.get('/books/info/:isbn', bookController.getBookInfo);
 
@@ -83,7 +169,7 @@ router.get('/books/info/:isbn', bookController.getBookInfo);
  *                  description: 리뷰 개수
  *                  example: 12
  *      400:
- *        description: "잘못된 요청 (예: ISBN 없음, 리뷰 개수 부족)"
+ *        description: "잘못된 요청 (예: ISBN 없음 또는 리뷰 개수 부족)"
  *        content:
  *          application/json:
  *            schema:
@@ -116,7 +202,42 @@ router.get('/books/averageRating/:isbn', bookController.getAverageRatingByBook);
  *    tags: [Book]
  *    responses:
  *      200:
- *       description: 랜덤 도서들 반환 성공
+ *        description: 랜덤 도서들 반환 성공
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: array
+ *              items:
+ *                type: object
+ *                properties:
+ *                  isbn:
+ *                    type: string
+ *                  title:
+ *                    type: string
+ *                  authors:
+ *                    type: string
+ *                  thumbnail:
+ *                    type: string
+ *      404:
+ *        description: 추천할 도서가 없음
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                message:
+ *                  type: string
+ *                  example: "추천 가능한 도서가 없습니다."
+ *      500:
+ *        description: 서버 내부 오류
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                message:
+ *                  type: string
+ *                  example: "랜덤 도서를 불러오는 중 서버 오류가 발생했습니다.."
  */
 router.get('/books/random', bookController.getRandomBooks)
 
