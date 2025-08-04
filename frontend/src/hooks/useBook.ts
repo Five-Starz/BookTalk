@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios, { type AxiosResponse } from 'axios';
 import type { BookDetail } from '../types/BookType';
 import type { ReviewDetail } from '../types/ReviewType';
 import { decodeHtml } from '../utils/decodeHtml';
@@ -130,7 +130,6 @@ export const useReviews = (isbn: string | undefined): UseReviewsResult => {
   const [reviews, setReviews] = useState<ReviewDetail[] | null>(null);
   const [isLoadingReviews, setIsLoadingReviews] = useState<boolean>(false);
   const [errorReviews, setErrorReviews] = useState<string | null>(null);
-
   useEffect(() => {
     if (!isbn) {
       setErrorReviews("리뷰를 불러올 ISBN이 없습니다.");
@@ -147,7 +146,20 @@ export const useReviews = (isbn: string | undefined): UseReviewsResult => {
         const response = await axios.get(requestUrl);
         setIsLoadingReviews(true);
 
+        let responseCount:AxiosResponse<number>;
+        let requestUrl2:string
+        let responseComment:AxiosResponse<number>
+        for(let i=0;i<response.data.length;i++){
+          responseCount = await axios.post(`http://localhost:8000/likes/count`, {
+           reviewId: `${response.data[i].reviewId}`
+          });
+          response.data[i].rating=responseCount.data;
+          requestUrl2=`http://localhost:8000/comment/review/count/${response.data[i].reviewId}`;
+          responseComment=await axios.get(requestUrl2);
+          response.data[i].commentCount=responseComment.data;
+        }
         setReviews(response.data);
+
       } catch (err) {
         console.error('리뷰 데이터 불러오기 에러 (useReviews):', err);
         if (axios.isAxiosError(err)) {
