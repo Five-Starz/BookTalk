@@ -6,6 +6,7 @@ export interface ReviewDetail {
   rating: number;
   content: string;
   userId: number;
+  commentCount:number;
 }
 
 export interface UseReviewFormProps {
