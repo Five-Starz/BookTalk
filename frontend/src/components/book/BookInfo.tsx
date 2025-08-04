@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { getPrimaryIsbn } from '../../utils/getPrimaryIsbn';
 
 const BookInfo = ({ book }: { book: BookDetail }) => {
-  
+
   if (!book) {
     return (
       <div className="flex justify-center items-center h-48 text-red-500">
