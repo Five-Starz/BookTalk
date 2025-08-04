@@ -60,14 +60,8 @@ class ReviewService {
       throw new Error('[review-service error] 사용자가 해당 책에 작성한 리뷰가 존재하지 않습니다.');
     };
 
-    // 1. 특정 사용자의 특정 책 reviewId 가져오기
-    const reviewId = await reviewRepository.getReviewIdByUserIdAndISBN(data.userId);
-    if (reviewId == undefined) {
-      throw new Error('[review-service error] 사용자가 해당 책에 작성한 reviewId를 가져올 수 없습니다.')
-    };
-
-    // 2. 리뷰 수정
-    return await reviewRepository.updateReview(reviewId, {
+    // 1. 리뷰 수정
+    return await reviewRepository.updateReview(data.reviewId, {
       rating: data.rating,
       content: data.content,
       userId: data.userId,
