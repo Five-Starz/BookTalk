@@ -29,7 +29,7 @@ class MainController {
     return res.json({ books });
   }
 
-  // // 5. 보고싶어요 수가 많은 책 (want 10)
+  // 5. 보고싶어요 수가 많은 책 (want 10)
   async getMostWished10Books(req:Request, res:Response): Promise<Response> {
     const books = await mainService.fetchMostWishedBooks();
     return res.json({ books });
