@@ -2,13 +2,6 @@ interface BaseInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   error?: string;
 }
 
-export const Form = () => {
-  return (
-    <div>
-
-    </div>
-  )
-}
 
 export const NicknameForm = ({ error, ...rest } :BaseInputProps) => {
   return (

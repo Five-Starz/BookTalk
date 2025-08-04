@@ -5,7 +5,7 @@ import { useBookDetails } from '../hooks/useBook'; // 책 정보 불러오는 �
 import { RatingStar, useReviewForm } from '../hooks/useReview'; 
 
 
-const WriteReview: React.FC = () => {
+const EditReview: React.FC = () => {
   const { isbn } = useParams<{ isbn: string }>(); 
 
   // 책 정보 로딩 훅 (이 훅은 그대로 여기에 둡니다. 폼 훅은 이 데이터를 받아서 사용해요.)
@@ -96,4 +96,4 @@ const WriteReview: React.FC = () => {
   );
 };
 
-export default WriteReview;
+export default EditReview;

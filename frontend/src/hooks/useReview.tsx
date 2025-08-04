@@ -5,6 +5,7 @@ import axios from 'axios';
 
 import type { ReviewSubmitData, UseReviewFormProps, UseReviewFormResult } from '../types/ReviewType'; // 제출용 리뷰 데이터 타입 임포트
 import type { RevCommentSubmitData, UseRevCommentFormProps, UseRevCommentFormResult } from '../types/CommentTypes'
+import type { Comment } from '../types/CommentTypes';
 import { FaStar } from 'react-icons/fa'
 import { getPrimaryIsbn } from "../utils/getPrimaryIsbn";
 
@@ -83,8 +84,7 @@ export const RatingStar: React.FC<RatingStarProps> = ({ ratingIndex, setRatingIn
 
 
 
-
-export const useReviewForm = ({ initialIsbn, bookData }: UseReviewFormProps): UseReviewFormResult => {
+export const useReviewForm = ({ initialIsbn, bookData, existingReview }: UseReviewFormProps): UseReviewFormResult => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState<ReviewSubmitData>({
@@ -155,7 +155,6 @@ export const useReviewForm = ({ initialIsbn, bookData }: UseReviewFormProps): Us
         Authorization: `Bearer ${accessToken}`
       } : {};
 
-      // ✅ axios.post의 세 번째 인자로 headers 객체를 정확히 전달했는지 확인합니다.
       const response = await axios.post('http://localhost:8000/reviews', formData, {
         headers: headers
       });
@@ -193,33 +192,50 @@ export const useReviewForm = ({ initialIsbn, bookData }: UseReviewFormProps): Us
 
 export const useRevCommentForm = ({ reviewId, userId }: UseRevCommentFormProps): UseRevCommentFormResult => {
 
-  const [formData, setFormData] = useState<RevCommentSubmitData>({
-    reviewId: reviewId || '',
-    parentId?: '',
+  // ✅ formData 초기화: reviewId와 userId는 props에서, parentId는 null, content는 빈 문자열
+  const initialFormData: RevCommentSubmitData = {
+    reviewId: reviewId,
+    parentId: null, // 초기 parentId는 null (최상위 댓글)
     userId: userId,
     content: ''
-  });
+  };
 
+  const [formData, setFormData] = useState<RevCommentSubmitData>(initialFormData);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState<boolean>(false);
 
-  // 입력 필드 변경 핸들러
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData(prevData => ({
-      ...prevData,
-      [name]: name === 'rating' || name === 'publishedYear' ? Number(value) : value
+  // ✅ content 입력 변경 핸들러
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setFormData(prev => ({
+      ...prev,
+      content: e.target.value
     }));
+  };
+
+  // ✅ parentId 설정 함수 (대댓글 작성 시 호출)
+  const setReplyToComment = (parentId: number | null) => {
+    setFormData(prev => ({
+      ...prev,
+      parentId: parentId,
+      content: '' // 대댓글 모드 진입 시 내용 초기화 (선택 사항)
+    }));
+  };
+
+  // ✅ 폼 초기화 함수
+  const resetForm = () => {
+    setFormData(initialFormData);
+    setSubmitError(null);
+    setSubmitSuccess(false);
   };
 
   // 폼 제출 핸들러
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    if (!formData.reviewId || !formData.content ) {
-      setSubmitError("내용을 입력해 주세요");
-      return; 
+    if (!formData.content.trim()) { // 내용이 비어있는지 확인 (공백만 있는 경우도 포함)
+      setSubmitError("댓글 내용을 입력해 주세요.");
+      return;
     }
 
     setIsSubmitting(true);
@@ -232,18 +248,17 @@ export const useRevCommentForm = ({ reviewId, userId }: UseRevCommentFormProps):
         Authorization: `Bearer ${accessToken}`
       } : {};
 
-      // ✅ axios.post의 세 번째 인자로 headers 객체를 정확히 전달했는지 확인합니다.
-      const response = await axios.post('http://localhost:8000/reviews', formData, {
+      const response = await axios.post(`http://localhost:8000/comment/add`, formData, {
         headers: headers
       });
-
-      console.log('리뷰 작성 성공:', response.data);
+      console.log('댓글 작성 성공:', response.data);
       setSubmitSuccess(true);
+      resetForm(); // 성공 후 폼 초기화
 
     } catch (error) {
-      console.error('리뷰 작성 실패:', error);
+      console.error('댓글 작성 실패:', error);
       if (axios.isAxiosError(error)) {
-        setSubmitError(error.response?.data?.message || "리뷰 작성 중 오류가 발생했습니다.");
+        setSubmitError(error.response?.data?.message || "댓글 작성 중 오류가 발생했습니다.");
       } else {
         setSubmitError("알 수 없는 오류가 발생했습니다.");
       }
@@ -252,12 +267,109 @@ export const useRevCommentForm = ({ reviewId, userId }: UseRevCommentFormProps):
     }
   };
 
+  // reviewId 또는 userId가 변경될 때 formData 초기화
+  useEffect(() => {
+    setFormData(prev => ({
+      ...prev,
+      reviewId: reviewId,
+      userId: userId,
+      parentId: null, // reviewId가 변경되면 parentId도 초기화
+      content: ''
+    }));
+  }, [reviewId, userId]);
+
+
   return {
     formData,
     handleChange,
+    setReplyToComment,
     handleSubmit,
     isSubmitting,
     submitError,
-    submitSuccess
+    submitSuccess,
+    resetForm // 반환 값에 추가
   };
+};
+
+
+interface UseCommentsResult {
+  comments: Comment[];
+  isLoadingComments: boolean;
+  errorComments: string | null;
+}
+
+function nestComments(comments: Comment[]): Comment[] {
+  const commentMap = new Map<number, Comment>();
+  const rootComments: Comment[] = [];
+
+  // 1단계: 모든 댓글을 Map에 저장하고 replies 배열 초기화
+  comments.forEach(comment => {
+    commentMap.set(comment.commentId, { ...comment, replies: [] });
+  });
+
+  // 2단계: parentId에 따라 댓글을 부모의 replies에 추가하거나 rootComments에 추가
+  comments.forEach(comment => {
+    const currentComment = commentMap.get(comment.commentId)!;
+    if (currentComment.parentId !== null) {
+      const parentComment = commentMap.get(currentComment.parentId);
+      if (parentComment) {
+        parentComment.replies!.push(currentComment);
+      } else {
+        // 부모 댓글이 없는 경우 (예: 부모가 삭제됨), 루트 댓글로 처리
+        rootComments.push(currentComment);
+      }
+    } else {
+      rootComments.push(currentComment);
+    }
+  });
+
+  // 3단계: 댓글들을 정렬 (예: commentId 오름차순 또는 createdAt 오름차순)
+  rootComments.forEach(comment => {
+    if (comment.replies) {
+      comment.replies.sort((a, b) => a.commentId - b.commentId); // 또는 createdAt으로 정렬
+    }
+  });
+  rootComments.sort((a, b) => a.commentId - b.commentId); // 루트 댓글 정렬
+
+  return rootComments;
+}
+
+export const useComments = (reviewId: number): UseCommentsResult => {
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [isLoadingComments, setIsLoadingComments] = useState<boolean>(true);
+  const [errorComments, setErrorComments] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchComments = async () => {
+      setIsLoadingComments(true);
+      setErrorComments(null);
+
+      if (reviewId === undefined) {
+        setComments([]);
+        setIsLoadingComments(false);
+        return;
+      }
+
+      try {
+        // ✅ 댓글 API 엔드포인트는 reviewId에 따라 다를 수 있습니다.
+        const response = await axios.get(`http://localhost:8000/comment/review/${reviewId}`);
+        
+
+        // ✅ 계층 구조로 변환
+        const nestedComments = nestComments(response.data);
+        setComments(nestedComments);
+
+      } catch (err) {
+        console.error('댓글 불러오기 에러:', err);
+        setErrorComments('댓글을 불러오는 데 실패했습니다.');
+        setComments([]);
+      } finally {
+        setIsLoadingComments(false);
+      }
+    };
+
+    fetchComments();
+  }, [reviewId]);
+
+  return { comments, isLoadingComments, errorComments };
 };

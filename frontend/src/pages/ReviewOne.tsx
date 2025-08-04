@@ -1,9 +1,12 @@
 import React from 'react'
-import { useLocation } from 'react-router-dom'; // useNavigate도 훅 안으로 이동
+import { useParams, useLocation } from 'react-router-dom'; // useNavigate도 훅 안으로 이동
 import ReviewCard from '../components/ui/ReviewCard';
-import {useRevCommentForm} from '../hooks/useReview';
+import CommentList from '../components/ui/CommentList';
 
 const ReviewOne = () => {
+  const { reviewId: reviewIdParam } = useParams<{ reviewId: string }>(); // URL에서 reviewId 가져오기
+  const reviewId = reviewIdParam ? parseInt(reviewIdParam, 10) : undefined; // 숫자로 변환
+
   const location = useLocation();
 
   // state가 없을 경우를 대비해 기본값({})을 할당
@@ -13,22 +16,16 @@ const ReviewOne = () => {
   const bookInfo = reviewData?.book || bookData;
   const reviewInfo = reviewData || review;
 
-  // ✅ useReviewForm 훅 사용
-  const {
-    formData,
-    handleChange,
-    handleSubmit,
-    isSubmitting,
-    submitError,
-    submitSuccess
-  } = useRevCommentForm({ reviewId, });
+  const currentUserId = 1;
 
   if (!reviewInfo || !bookInfo) {
     // 두 변수 중 하나라도 없으면 로딩 중 상태로 처리
     return <div>리뷰 정보를 불러오는 중입니다...</div>;
   }
 
-  console.log(reviewInfo)
+  if (reviewId === undefined) {
+    return <div>잘못된 접근입니다.</div>;
+  }
 
   return (
     <div className="flex justify-between items-start gap-6">
@@ -64,31 +61,7 @@ const ReviewOne = () => {
               </div> */}
         </>
         <ReviewCard review={reviewInfo} />
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <textarea
-              id="content"
-              name="content"
-              value={formData.content}
-              onChange={handleChange}
-              rows={5}
-              className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6 leading-tight focus:outline-none focus:shadow-outline"
-              required
-            ></textarea>
-          </div>
-          <div className="flex items-center justify-between">
-            <button
-              type="submit"
-              className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? '리뷰 작성 중...' : '리뷰 작성 완료'}
-            </button>
-          </div>
-
-          {submitError && <p className="text-red-500 text-sm mt-4">{submitError}</p>}
-          {submitSuccess && <p className="text-green-500 text-sm mt-4">리뷰가 성공적으로 작성되었습니다!</p>}
-        </form>
+        <CommentList reviewId={reviewId} currentUserId={currentUserId} />
       </div>
     </div>
   );

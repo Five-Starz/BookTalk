@@ -5,8 +5,6 @@ import type { ReviewsSectionProps } from '../../types/ReviewType'; // 타입 임
 import { Link } from 'react-router-dom';
 
 const ReviewsSection = ({ reviews, isLoading, error, bookData }: ReviewsSectionProps) => {
-  console.log('book:', bookData)
-  console.log('review:', reviews)
 
   if (isLoading || !bookData) {
       return <div className='text-center'>리뷰를 불러오는 중입니다...</div>;
