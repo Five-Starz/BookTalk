@@ -25,7 +25,11 @@ export const useBookDetails = (isbn: string | undefined): UseBookDetailsResult =
     const fetchBookDetails = async () => {
       try {
         setError(null);
-
+        const bookmarkcount = await axios.post(`http://localhost:8000/bookmarks/count`, {
+          isbn: isbn
+        });
+        const bookrating = `http://localhost:8000/books/averageRating/${isbn}`; 
+        const responeRating=await axios.get(bookrating);
         // ✅ API 요청 URL을 /books/search?query={isbn}으로 변경
         const requestUrl = `http://localhost:8000/books/search?query=${isbn}`; 
 
@@ -44,7 +48,9 @@ export const useBookDetails = (isbn: string | undefined): UseBookDetailsResult =
             description: `${decodeHtml(rawBook.description)}`,
             authors: `${Array.isArray(rawBook.authors)
               ? rawBook.authors.map(author => decodeHtml(author))
-              : decodeHtml(rawBook.authors)}`,
+              : decodeHtml(rawBook.authors)}`,              
+            bookmarkCount:bookmarkcount.data,   
+            total_rating:parseInt(responeRating.data.avgRating,10),
           };
 
           setBookData(decodedBook);

@@ -32,7 +32,7 @@ const ReviewOne = () => {
       <div className='hidden lg:block w-[200px]'>
         <img
           className='rounded-xl max-w-fit min-h-[300px] object-contain'
-          src={bookInfo.thumbnail} 
+          src={bookInfo.thumbnail}
           alt={bookInfo.thumbnail + " 표지"}
         />
         <div>
@@ -45,7 +45,7 @@ const ReviewOne = () => {
           <div className='flex lg:hidden mb-4'>
             <img
               className='mr-4 rounded-lg max-w-fit max-h-[180px] object-contain'
-              src={bookInfo.thumbnail} 
+              src={bookInfo.thumbnail}
               alt={bookInfo.title + " 표지"}
             />
             <div className='lg:flex flex-grow justify-between'>

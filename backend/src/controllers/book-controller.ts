@@ -31,13 +31,22 @@ class BookController {
       if (!isbn || typeof isbn !== 'string') {
         return res.status(400).json({ message: '검색할 책 ISBN(params)을 입력해주세요. '})
       }
-      const rating = await bookService.getAverageRatingByBook(isbn);  // ISBN으로 책 검색 후 평균평점 계산해 받아와
-      console.log('[Book Controller] 서비스에서 받은 평균 평점: ', rating);
+      const result = await bookService.getAverageRatingByBook(isbn);  // ISBN으로 책 검색 후 평균평점 계산한 값과 리뷰개수 받아와
 
-      return res.status(200).json(rating);
+      if (!result || result.avgRating === null) {
+        return res.status(400).json({
+          message: '평점을 계산하기 위해서는 더 많은 리뷰가 필요합니다.',
+          reviewCount: result?.reviewCount ?? 0,  // 1이거나 없으면 0으로 보여줌
+        });
+      }
+
+      const { avgRating, reviewCount } = result;
+      console.log('[Book Controller] 서비스에서 받은 평균 평점: ', avgRating);
+
+      return res.status(200).json({avgRating, reviewCount});
     } catch(error) {
       console.error('[BookController] 도서 별 평균평점 조회 오류:', error);
-      res.status(500).json({ message: '도서 별 평균평점 조회 중 오류 발생' });
+      res.status(500).json({ message: '서버 오류로 평균 평점을 조회할 수 없습니다.' });
     }
   }
 

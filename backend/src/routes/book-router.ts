@@ -68,7 +68,43 @@ router.get('/books/info/:isbn', bookController.getBookInfo);
  *        description: 평균평점 조회할 책 ISBN
  *    responses:
  *      200:
- *       description: 평균평점 반환 성공
+ *        description: 평균평점 반환 성공
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                avgRating:
+ *                  type: number
+ *                  description: 계산된 평균 평점 (소수점 둘째 자리까지)
+ *                  example: 4.25
+ *                reviewCount:
+ *                  type: integer
+ *                  description: 리뷰 개수
+ *                  example: 12
+ *      400:
+ *        description: "잘못된 요청 (예: ISBN 없음, 리뷰 개수 부족)"
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                message:
+ *                  type: string
+ *                  example: 평점을 계산하기 위해서는 더 많은 리뷰가 필요합니다.
+ *                reviewCount:
+ *                  type: integer
+ *                  example: 1
+ *      500:
+ *        description: 서버 내부 오류
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                message:
+ *                  type: string
+ *                  example: 서버 오류로 평균 평점을 조회할 수 없습니다.
  */
 router.get('/books/averageRating/:isbn', bookController.getAverageRatingByBook);
 

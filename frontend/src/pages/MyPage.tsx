@@ -141,6 +141,7 @@ const MyPage = () => {
   )
 }
 
+// 💖 리뷰 모아보기
 export const ReviewCollection = () => {
   type Review = {
     reviewId: number;
@@ -307,6 +308,7 @@ export const ReviewCollection = () => {
   // 페이지 이동
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: "smooth" }); // 페이지 바뀔 때 맨 위로 스크롤 (선택)
   };
 
   // 로딩 상태 처리
@@ -352,11 +354,11 @@ export const ReviewCollection = () => {
             <div key={review.reviewId} className="bg-white rounded-lg border shadow p-5 mb-4 flex flex-col justify-between">
             {/* 책 제목 */}
               <div className="flex items-center mb-1">
-                <h3 className="font-semibold text-lg cursor-pointer" onClick={() => navigate(`/book/${review.isbn}`)}>{review.bookTitle || '책 제목 불러오기'}</h3>
+                <h3 className="font-semibold text-lg cursor-pointer" onClick={() => navigate(`/review/${review.reviewId}`)}>{review.bookTitle || '책 제목 불러오기'}</h3>
               </div>
 
               {/* 리뷰 내용 */}
-              <div className="text-gray-700 mt-2 line-clamp-4 flex-1 cursor-pointer" onClick={() => navigate(`/2345`)}>
+              <div className="text-gray-700 mt-2 line-clamp-4 flex-1 cursor-pointer" onClick={() => navigate(`/review/${review.reviewId}`)}>
                 {review.content}
               </div>
 
@@ -393,7 +395,7 @@ export const ReviewCollection = () => {
               <li
                 key={idx}
                 onClick={() => handlePageChange(idx + 1)}
-                className={`cursor-pointer px-2 ${currentPage === idx + 1 ? 'text-orange-500 font-bold' : ''}`}
+                className={`cursor-pointer px-2 ${currentPage === idx + 1 ? 'text-orange-500 font-bold' : 'hover:bg-gray-100'}`}
               >
                 {idx + 1}
               </li>
@@ -437,6 +439,7 @@ export const ReviewCollection = () => {
   )
 }
 
+// 💖 보고싶어요
 export const WantReadList = () => {
   type BookItem = {
     isbn: string;
@@ -452,6 +455,10 @@ export const WantReadList = () => {
 
   const [ bookmarks, setBookmarks ] = useState<BookItem[]>([]);
   const [ isLoading, setIsLoading ] = useState(true);
+
+  // 페이지 상태 관리
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 20;
 
   useEffect(() => {
     if (!userId) {
@@ -483,6 +490,7 @@ export const WantReadList = () => {
             }
           })
         );
+        bookDetails.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
         setBookmarks(bookDetails);
       } catch {
         setBookmarks([]);
@@ -492,6 +500,19 @@ export const WantReadList = () => {
     }
     fetchBookmarkData();
   }, [userId]);
+
+  // ✅ 페이지네이션 처리
+  const totalPages = Math.ceil(bookmarks.length / itemsPerPage);
+  const pagedBookmarks = bookmarks.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+   // 페이지 변경 핸들러
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: "smooth" }); // 페이지 바뀔 때 맨 위로 스크롤 (선택)
+  };
 
   if (isLoading) {
     return <div className="p-6 text-gray-400 text-center">불러오는 중...</div>;
@@ -506,7 +527,7 @@ export const WantReadList = () => {
       {/* 보고싶어요 */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {
-          bookmarks.map((book, idx) => (
+          pagedBookmarks.map((book, idx) => (
             <Link
               to={`/book/${book.isbn}`}
               key={book.isbn + idx}
@@ -521,10 +542,30 @@ export const WantReadList = () => {
           ))
         }
       </div>
+
+      {/* ✅ 페이지네이션 */}
+      <div className="flex justify-center mt-8">
+        <ul className="flex gap-2">
+          {Array.from({ length: totalPages }).map((_, idx) => (
+            <li
+              key={idx}
+              onClick={() => handlePageChange(idx + 1)}
+              className={`cursor-pointer px-3 py-1 rounded ${
+                currentPage === idx + 1
+                  ? "text-orange-600 font-bold"
+                  : "hover:bg-gray-100"
+              }`}
+            >
+              {idx + 1}
+            </li>
+          ))}
+        </ul>
+      </div>
     </>
   )
 }
 
+// 💖 유저 정보 수정
 export const Settings = () => {
   const updateSchema = z.object({
     nickname: z
@@ -611,11 +652,6 @@ export const Settings = () => {
       }
       console.log(sendData.nickname)
 
-      // 닉네임 변경 시 전역 업데이트
-      // if (sendData.nickname) {
-      //   setNickname(sendData.nickname);
-      // }
-
       setMsg("회원 정보가 수정되었습니다.");
       setErrMsg('');
       reset({ nickname: sendData.nickname ?? nickname, password: "" });
@@ -633,21 +669,6 @@ export const Settings = () => {
     setMsg("");
     setErrMsg('');
   };
-
-  // 탈퇴
-  // const handleResign = async () => {
-  //   if (!window.confirm("정말로 탈퇴하시겠습니까?")) return;
-  //   try {
-  //     await axios.delete(`http://localhost:8000/auth/del/${userId}`, {
-  //       headers: { Authorization: `Bearer ${accessToken}` },
-  //     });
-  //     clearTokens();
-  //     clearUser();
-  //     window.location.href = "/";
-  //   } catch {
-  //     alert("탈퇴에 실패했습니다.");
-  //   }
-  // };
 
   // 모달 내 취소/확인 함수
   const handleCancelResign = () => {

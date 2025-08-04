@@ -54,14 +54,24 @@ class MainRepository {
   // 4. 평점이 좋은 책 (good 10)
   async fetchTopRatedBooks(): Promise<Books[]> {
     return await prisma.books.findMany({
+      where: { 
+        totalRating: {
+          gt: 0,  // 0.0점 초과만
+        },
+      },
       orderBy: { totalRating: 'desc' },
       take: 10,
     });
   };
 
-  // 5. 보고싶어요 수가 많은 책 (want 10) - DB에 컬럼 추가함
+  // 5. 보고싶어요 수가 많은 책 (want 10)
   async fetchMostWishedBooks(): Promise<Books[]> {
     return await prisma.books.findMany({
+      where: {
+        bookmarkCount: {
+          gt: 0,  // 0보다 큰 것만
+        },
+      },
       orderBy: { bookmarkCount: 'desc' },
       take: 10,
     });
