@@ -607,7 +607,6 @@ export const Settings = () => {
         const profile = Array.isArray(profileRes.data.comments) ? profileRes.data.comments[0] : profileRes.data;
         setUser({ userId, nickname: profile.nickname });
       }
-      console.log(sendData.nickname)
 
       // 닉네임 변경 시 전역 업데이트
       // if (sendData.nickname) {
