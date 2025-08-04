@@ -1,13 +1,5 @@
 import { useState } from "react"
 
-export const Button = () => {
-  return (
-    <>
-      {/* 게시글 버튼 */}
-    </>
-  )
-}
-
 export const SignupButton = () => {
   return (
     <>

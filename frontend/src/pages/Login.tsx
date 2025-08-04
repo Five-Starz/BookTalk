@@ -11,6 +11,7 @@ import { z } from 'zod';
 import { useEffect, useState } from 'react';
 
 import { useAuthStore } from '../store/authStore';
+import { useUserStore } from '../store/userStore';
 
 const Login = () => {
   const [errorMsg, setErrorMsg] = useState('');
@@ -21,6 +22,7 @@ const Login = () => {
   // Zustand에서 로그인 상태 가져오기!
   const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
   const setTokens = useAuthStore((state) => state.setTokens);
+  const setUser = useUserStore((state) => state.setUser);
 
   // 로그인된 상태면 즉시 홈으로 이동 (새로고침 없이도 동작)
   useEffect(() => {
@@ -65,6 +67,8 @@ const Login = () => {
 
       // Zustand 전역 상태에 저장
       setTokens(res.data.accessToken, res.data.refreshToken); // 토큰 저장
+      const { user } = res.data;
+      setUser({ userId: user.userId, nickname: user.nickname });
 
       // navigate('/')는 없어도 됨: isLoggedIn이 true로 바뀌면 useEffect가 자동으로 이동시킴
       // navigate('/'); // 로그인 성공 후 홈으로 이동

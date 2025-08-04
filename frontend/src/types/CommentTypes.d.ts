@@ -8,6 +8,7 @@ export interface RevCommentSubmitData {
 export interface UseRevCommentFormProps {
   reviewId: number; // 댓글을 달 리뷰의 ID (필수)
   userId: number; // 현재 로그인한 유저의 ID (임시, 실제로는 인증 컨텍스트에서 가져오는 것이 좋음)
+  refetch: () => void;
 }
 
 export interface UseRevCommentFormResult {
@@ -18,7 +19,6 @@ export interface UseRevCommentFormResult {
   isSubmitting: boolean;
   submitError: string | null;
   submitSuccess: boolean;
-  resetForm: () => void; // 폼 초기화 함수 추가
 }
 
 export interface CommentUser {
