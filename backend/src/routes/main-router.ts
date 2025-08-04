@@ -23,7 +23,33 @@ const router: Router = express.Router();
  *    tags: [Main]
  *    responses:
  *      200:
- *       description: 좋아요 수가 많은 리뷰 3개 조회 성공
+ *        description: 좋아요 수가 많은 리뷰 3개 조회 성공
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: array
+ *              items:
+ *                type: object
+ *      404:
+ *        description: 리뷰가 존재하지 않음
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                message:
+ *                  type: string
+ *                  example: "좋아요 수가 많은 리뷰가 없습니다."
+ *      500:
+ *        description: 서버 내부 오류
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                message:
+ *                  type: string
+ *                  example: "좋아요 리뷰 조회 중 서버 오류 발생"
  */
 router.get('/main/reviews/liked', mainController.getMostLikedReviews);
 
@@ -35,7 +61,31 @@ router.get('/main/reviews/liked', mainController.getMostLikedReviews);
  *    tags: [Main]
  *    responses:
  *      200:
- *       description: 오늘의 랜덤 리뷰 1개 조회 성공
+ *        description: 오늘의 랜덤 리뷰 1개 조회 성공
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *      404:
+ *        description: 오늘의 랜덤 리뷰가 존재하지 않음
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                message:
+ *                  type: string
+ *                  example: "오늘의 랜덤 리뷰가 없습니다."
+ *      500:
+ *        description: 서버 내부 오류
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                message:
+ *                  type: string
+ *                  example: "랜덤 리뷰 조회 중 서버 오류 발생"
  */
 router.get('/main/reviews/random', mainController.getRandomReviewOfTheDay);
 
@@ -47,7 +97,33 @@ router.get('/main/reviews/random', mainController.getRandomReviewOfTheDay);
  *    tags: [Main]
  *    responses:
  *      200:
- *       description: 리뷰 수가 많은 책 (hot 10) 조회 성공
+ *        description: 리뷰 수가 많은 책 (hot 10) 조회 성공
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: array
+ *              items:
+ *                type: object
+ *      404:
+ *        description: 리뷰가 많은 책이 없음
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                message:
+ *                  type: string
+ *                  example: "리뷰 수가 많은 책이 없습니다."
+ *      500:
+ *        description: 서버 내부 오류
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                message:
+ *                  type: string
+ *                  example: "hot 책 조회 중 서버 오류 발생"
  */
 router.get('/main/books/hot', mainController.getMostReviewed10Books);
 
@@ -59,7 +135,33 @@ router.get('/main/books/hot', mainController.getMostReviewed10Books);
  *    tags: [Main]
  *    responses:
  *      200:
- *       description: 평점이 좋은 책 (good 10) 조회 성공
+ *        description: 평점이 좋은 책 (good 10) 조회 성공
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: array
+ *              items:
+ *                type: object
+ *      404:
+ *        description: 평점이 높은 책이 없음
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                message:
+ *                  type: string
+ *                  example: "평점이 높은 책이 없습니다."
+ *      500:
+ *        description: 서버 내부 오류
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                message:
+ *                  type: string
+ *                  example: "good 책 조회 중 서버 오류 발생"
  */
 router.get('/main/books/good', mainController.getHighestRated10Books);
 
@@ -71,7 +173,33 @@ router.get('/main/books/good', mainController.getHighestRated10Books);
  *    tags: [Main]
  *    responses:
  *      200:
- *       description: 보고싶어요 수가 많은 책 (want 10) 조회 성공
+ *        description: 보고싶어요 수가 많은 책 (want 10) 조회 성공
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: array
+ *              items:
+ *                type: object
+ *      404:
+ *        description: 보고싶어요 수가 많은 책이 없음
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                message:
+ *                  type: string
+ *                  example: "보고싶어요 수가 많은 책이 없습니다."
+ *      500:
+ *        description: 서버 내부 오류
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                message:
+ *                  type: string
+ *                  example: "want 책 조회 중 서버 오류 발생"
  */
 router.get('/main/books/want', mainController.getMostWished10Books);
 
