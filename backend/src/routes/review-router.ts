@@ -504,4 +504,47 @@ router.get('/reviews/user/:userId',optionalAuthToken,reviewController.findReview
  */
 router.get('/reviews/count/:userId',reviewController.UserReviewCount)
 
+
+
+/**
+ * @swagger
+ *
+ * /reviews/{reviewId}:
+ *   get:
+ *     summary: 리뷰 아이디 검색
+ *     description: "특정 유저가 등록한 북마크를 검색합니다."
+ *     tags: [Review]
+ *     parameters:
+ *       - in: path
+ *         name: reviewId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: "검색할 리뷰의 고유 아이디"
+ *         example: 1 
+ *     responses:
+ *      200:
+ *        description: 리뷰 조회 성공
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: array 
+ *              items:
+ *                type: object
+ *                properties:
+ *                  reviewId:
+ *                    type: integer
+ *                  isbn:
+ *                    type: string
+ *                  rating:
+ *                    type: number
+ *                    format: float
+ *                  content:
+ *                    type: string
+ *                  createdAt:
+ *                    type: string
+ *                    format: date-time
+ */
+router.get('/reviews/:reviewId',reviewController.findById);
+
 export default router;

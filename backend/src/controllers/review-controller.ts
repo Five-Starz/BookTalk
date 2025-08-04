@@ -172,5 +172,10 @@ class ReviewController {
       return res.status(500).json({ message: '서버 오류로 리뷰 숫자 조회에 실패했습니다.' });
     }
   }
+
+  async findById(req:express.Request, res:express.Response){
+    const reviewId=parseInt(req.params.reviewId,10)
+    res.status(200).json(await reviewService.findById(reviewId))
+  };
 }
 export default ReviewController
