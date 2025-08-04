@@ -21,15 +21,40 @@ export const useBookDetails = (isbn: string | undefined): UseBookDetailsResult =
       setIsLoading(false);
       return;
     }
-
+    
     const fetchBookDetails = async () => {
+      let averageRating = 0;
       try {
         setError(null);
         const bookmarkcount = await axios.post(`http://localhost:8000/bookmarks/count`, {
           isbn: isbn
         });
         const bookrating = `http://localhost:8000/books/averageRating/${isbn}`; 
-        const responeRating=await axios.get(bookrating);
+
+        try {
+          const responseRating=await axios.get(bookrating);
+          averageRating=parseInt(responseRating.data.avgRating, 10);
+        } catch (ratingError) {
+          // axios 에러인지 확인
+          if (axios.isAxiosError(ratingError) && ratingError.response) {
+            // 백엔드가 400 상태 코드와 특정 메시지를 보낼 경우
+            if (ratingError.response.status === 400 && 
+                ratingError.response.data?.message === '평점을 계산하기 위해서는 더 많은 리뷰가 필요합니다.') {
+              console.warn(`[useBookDetails] ${isbn} 책에 대한 평점 부족 에러 감지. 평점을 0으로 설정합니다.`);
+              averageRating = 0; // 에러 발생 시 0으로 설정
+            } else {
+              // 다른 종류의 400 에러이거나 다른 HTTP 에러일 경우
+              console.error(`[useBookDetails] 평점 API 호출 중 예상치 못한 에러:`, ratingError.response);
+              // 이 에러는 여기서 잡지만, 전체 프로세스를 중단시키지 않고 default 0을 사용
+              averageRating = 0; // 또는 -1 등 다른 기본값
+            }
+          } else {
+            // Axios 에러가 아닌 다른 종류의 에러 (네트워크 문제 등)
+            console.error(`[useBookDetails] 평점 API 호출 중 알 수 없는 에러:`, ratingError);
+            averageRating = 0; // 역시 0으로 처리하고 진행
+          }          
+        }
+
         // ✅ API 요청 URL을 /books/search?query={isbn}으로 변경
         const requestUrl = `http://localhost:8000/books/search?query=${isbn}`; 
 
@@ -50,7 +75,7 @@ export const useBookDetails = (isbn: string | undefined): UseBookDetailsResult =
               ? rawBook.authors.map(author => decodeHtml(author))
               : decodeHtml(rawBook.authors)}`,              
             bookmarkCount:bookmarkcount.data,   
-            total_rating:parseInt(responeRating.data.avgRating,10),
+            total_rating:averageRating,
           };
 
           setBookData(decodedBook);
