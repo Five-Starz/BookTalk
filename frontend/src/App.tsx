@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { Routes, Route } from 'react-router-dom'; // Link는 Header로 이동
 import './App.css';
+import axios from 'axios';
+import { useAuthStore } from './store/authStore';
+import { useUserStore } from './store/userStore';
 import Header from './components/ui/Header';
 import Footer from './components/ui/Footer';
 
@@ -20,6 +23,43 @@ import EditReview from './pages/EditReview';
 
 
 function App() {
+  const authStore = useAuthStore();
+  const userStore = useUserStore();
+
+  useEffect(() => {
+    // ✅ 앱이 처음 로드될 때 한 번만 실행됩니다.
+    const initializeUser = async () => {
+      const accessToken = authStore.accessToken;
+
+      if (accessToken) {
+        try {
+          // 토큰을 사용하여 보호된 엔드포인트에 요청
+          const response = await axios.get('http://localhost:8000/auth/protected', {
+            headers: { Authorization: `Bearer ${accessToken}` },
+          });
+
+          // 응답에서 사용자 ID와 닉네임 추출
+          // (서버 응답 구조에 맞게 수정 필요)
+          const { userId, nickname } = response.data.user;
+
+          // ✅ 1. 토큰이 유효하면 Zustand 유저 스토어 업데이트
+          userStore.setUser({ userId, nickname });
+          
+          // ✅ 2. Auth 스토어도 최신 상태로 동기화 (선택사항, 하지만 권장)
+          authStore.checkLogin();
+
+        } catch (error) {
+          // 토큰이 만료되었거나 유효하지 않은 경우
+          console.error('로그인 정보 동기화 실패:', error);
+          authStore.clearTokens();
+          userStore.clearUser();
+        }
+      }
+    };
+
+    initializeUser();
+  }, []); // ✅ 빈 배열을 넣어 한 번만 실행되도록 설정
+  
   return (
     <div className="flex flex-col min-h-screen">
       <Header />

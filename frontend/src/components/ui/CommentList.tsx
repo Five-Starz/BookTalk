@@ -1,18 +1,21 @@
 import React from 'react';
+import axios from 'axios';
 import { useComments, useRevCommentForm } from '../../hooks/useReview';
-
+import { useAuthStore } from '../../store/authStore';
+import { useUserStore } from '../../store/userStore';
 import CommentCard from './CommentCard';
 
 interface CommentListProps {
   reviewId: number;
-  currentUserId: number; // ✅ 현재 로그인한 유저의 ID (인증 시스템에서 가져와야 함)
 }
 
 const CommentList: React.FC<CommentListProps> = ({ reviewId }) => {
-  const { comments, isLoadingComments, errorComments } = useComments(reviewId);
-  // ✅ 현재 로그인한 유저 정보 (예시)
-  const isLoggedIn = true; // 실제 로그인 상태
-  const currentUserId = 123; // 실제 로그인 유저 ID
+  const { comments, isLoadingComments, refetch } = useComments(reviewId);
+
+  // ✅ 1. Zustand 스토어에서 전역 상태 가져오기
+  const { isLoggedIn, accessToken } = useAuthStore();
+  const { userId } = useUserStore();
+  console.log(isLoggedIn, userId)
 
   // ✅ 댓글 폼 훅 사용
   const {
@@ -23,16 +26,23 @@ const CommentList: React.FC<CommentListProps> = ({ reviewId }) => {
     isSubmitting,
     submitError,
     submitSuccess,
-  } = useRevCommentForm({ reviewId, userId: currentUserId });
+  } = useRevCommentForm({ reviewId, userId: userId || 0, refetch });
 
   const handleEditComment = (commentId: number, newContent: string) => {
     // 여기에 댓글 수정 API 호출 로직 구현
     console.log(`댓글 수정: ${commentId}, 내용: ${newContent}`);
   };
 
-  const handleDeleteComment = (commentId: number) => {
-    // 여기에 댓글 삭제 API 호출 로직 구현
-    console.log(`댓글 삭제: ${commentId}`);
+  const handleDeleteComment = async (commentId: number) => {
+    try {
+      await axios.delete(`http://localhost:8000/comment/${commentId}`,{
+        headers: { Authorization: `Bearer ${accessToken}` }
+      });
+      refetch();
+    } catch(e) {
+      console.log(e)
+      alert("댓글 삭제 실패했습니다.");
+    }
   };
 
   const handleReply = (parentId: number) => {
@@ -87,7 +97,7 @@ const CommentList: React.FC<CommentListProps> = ({ reviewId }) => {
             <CommentCard
               key={comment.commentId}
               comment={comment}
-              currentUserId={currentUserId}
+              currentUserId={userId}
               isLoggedIn={isLoggedIn}
               onEdit={handleEditComment}
               onDelete={handleDeleteComment}

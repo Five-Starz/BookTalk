@@ -236,12 +236,12 @@ export const useReviewDetails = (reviewId: number | undefined): UseReviewDetails
 
 
 
-export const useRevCommentForm = ({ reviewId, userId }: UseRevCommentFormProps): UseRevCommentFormResult => {
+export const useRevCommentForm = ({ reviewId, userId, refetch }: UseRevCommentFormProps): UseRevCommentFormResult => {
 
   const [formData, setFormData] = useState<RevCommentSubmitData>({
-    reviewId: reviewId || '',
-    parentId: '',
-    userId: userId,
+    reviewId: reviewId, // ✅ reviewId는 prop으로 받은 그대로 사용 (number 타입 유지)
+    parentId: null,    // ✅ parentId는 초기값을 null로 설정 (number | null 타입 유지)
+    userId: userId,    // ✅ userId는 prop으로 받은 그대로 사용
     content: ''
   });
 
@@ -249,13 +249,35 @@ export const useRevCommentForm = ({ reviewId, userId }: UseRevCommentFormProps):
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState<boolean>(false);
 
+  // 입력 필드 변경 핸들러
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setFormData(prev => ({ ...prev, content: e.target.value }));
+    setSubmitError(null); // 입력 시 에러 메시지 초기화
+    setSubmitSuccess(false); // 입력 시 성공 메시지 초기화
+  };
+
+  // 대댓글 대상 설정 핸들러
+  const setReplyToComment = (parentId: number | null) => {
+    setFormData(prev => ({ ...prev, parentId: parentId, content: '' })); // 대댓글 모드 진입 시 내용 초기화
+    setSubmitError(null);
+    setSubmitSuccess(false);
+  };
+
   // 폼 제출 핸들러
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    if (!formData.reviewId || !formData.content ) {
-      setSubmitError("내용을 입력해 주세요");
-      return; 
+    // ✅ 댓글 내용 유효성 검사 (공백만 있는 경우도 포함)
+    if (!formData.content.trim()) {
+      setSubmitError("댓글 내용을 입력해 주세요.");
+      return;
+    }
+
+    // ✅ userId 유효성 검사 (로그인 상태 확인)
+    // userId가 0이거나 null/undefined일 경우 로그인 필요 메시지
+    if (!userId) { // userId가 0이거나 null/undefined인 경우
+        setSubmitError("로그인이 필요합니다.");
+        return;
     }
 
     setIsSubmitting(true);
@@ -268,17 +290,37 @@ export const useRevCommentForm = ({ reviewId, userId }: UseRevCommentFormProps):
         Authorization: `Bearer ${accessToken}`
       } : {};
 
-      // ✅ axios.post의 세 번째 인자로 headers 객체를 정확히 전달했는지 확인합니다.
-      const response = await axios.post(`http://localhost:8000/comment/review/${reviewId}`, formData, {
-        headers: headers
-      });
+      // ✅ 백엔드 creatComment 함수 시그니처에 맞춰 명시적으로 데이터 전송
+      // creatComment(userId:number, reviewId:number, content:string, parentId?:number|null)
+      const response = await axios.post(
+        `http://localhost:8000/comment/add`, // ✅ 기존 URL 유지
+        {
+          userId: formData.userId,
+          reviewId: formData.reviewId,
+          content: formData.content.trim(), // 공백 제거 후 전송
+          parentId: formData.parentId // null 또는 number
+        },
+        { headers: headers }
+      );
       console.log('댓글 작성 성공:', response.data);
       setSubmitSuccess(true);
+      setFormData(prev => ({ // 댓글 작성 성공 후 폼 초기화
+        ...prev,
+        content: '',
+        parentId: null // 대댓글 모드 해제
+      }));
 
+      refetch();
     } catch (error) {
       console.error('댓글 작성 실패:', error);
       if (axios.isAxiosError(error)) {
+        // 서버에서 반환하는 에러 메시지가 있다면 사용
         setSubmitError(error.response?.data?.message || "댓글 작성 중 오류가 발생했습니다.");
+        // HTTP 상태 코드에 따른 추가 처리 (예: 401 Unauthorized)
+        if (error.response?.status === 401) {
+            setSubmitError("로그인이 만료되었거나 권한이 없습니다. 다시 로그인해주세요.");
+            // 필요하다면 로그아웃 처리 또는 로그인 페이지로 리다이렉트 로직 추가
+        }
       } else {
         setSubmitError("알 수 없는 오류가 발생했습니다.");
       }
@@ -289,6 +331,8 @@ export const useRevCommentForm = ({ reviewId, userId }: UseRevCommentFormProps):
 
   return {
     formData,
+    handleChange, // ✅ handleChange 함수를 반환 객체에 추가
+    setReplyToComment, // ✅ setReplyToComment 함수를 반환 객체에 추가
     handleSubmit,
     isSubmitting,
     submitError,
@@ -301,6 +345,7 @@ interface UseCommentsResult {
   comments: Comment[];
   isLoadingComments: boolean;
   errorComments: string | null;
+  refetch: () => void;
 }
 
 function nestComments(comments: Comment[]): Comment[] {
@@ -339,41 +384,39 @@ function nestComments(comments: Comment[]): Comment[] {
   return rootComments;
 }
 
-export const useComments = (reviewId: number | undefined): UseCommentsResult => {
+export const useComments = (reviewId: number): UseCommentsResult => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [isLoadingComments, setIsLoadingComments] = useState<boolean>(true);
   const [errorComments, setErrorComments] = useState<string | null>(null);
 
+  // ✅ 데이터를 불러오는 로직을 별도의 함수로 분리
+  const fetchComments = async () => {
+    setIsLoadingComments(true);
+    setErrorComments(null);
+
+    if (reviewId === undefined) {
+      setComments([]);
+      setIsLoadingComments(false);
+      return;
+    }
+
+    try {
+      const response = await axios.get(`http://localhost:8000/comment/review/${reviewId}`);
+      const nestedComments = nestComments(response.data);
+      setComments(nestedComments);
+    } catch (err) {
+      console.error('댓글 불러오기 에러:', err);
+      setErrorComments('댓글을 불러오는 데 실패했습니다.');
+      setComments([]);
+    } finally {
+      setIsLoadingComments(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchComments = async () => {
-      setIsLoadingComments(true);
-      setErrorComments(null);
-
-      if (reviewId === undefined ) {
-        setComments([]);
-        setIsLoadingComments(false);
-        return;
-      }
-
-      try {
-        // ✅ 댓글 API 엔드포인트는 reviewId에 따라 다를 수 있습니다.
-        const response = await axios.get(`http://localhost:8000/comment/review/${reviewId}`);
-
-        // ✅ 계층 구조로 변환
-        const nestedComments = nestComments(response.data);
-        setComments(nestedComments);
-
-      } catch (err) {
-        console.error('댓글 불러오기 에러:', err);
-        setErrorComments('댓글을 불러오는 데 실패했습니다.');
-        setComments([]);
-      } finally {
-        setIsLoadingComments(false);
-      }
-    };
-
     fetchComments();
   }, [reviewId]);
 
-  return { comments, isLoadingComments, errorComments };
+  // ✅ refetch 함수를 반환 객체에 추가
+  return { comments, isLoadingComments, errorComments, refetch: fetchComments };
 };

@@ -1,11 +1,13 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../../store/authStore';
+import { useUserStore } from '../../store/userStore';
 import { useState } from 'react';
 
 const Header = () => {
   // Zustand에서 로그인 상태 및 토큰 삭제 액션 가져오기
   const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
   const removeTokens = useAuthStore((state) => state.clearTokens);
+  const { clearUser } = useUserStore();
 
   const [ searchQuery, setSearchQuery ] = useState('');
 
@@ -15,6 +17,7 @@ const Header = () => {
   // 로그아웃 버튼 클릭 시 전역 상태/로컬스토리지 모두 반영
   const handleLogout = () => {
     removeTokens(); // Zustand 상태(및 localStorage)에서 토큰 제거 및 isLoggedIn false로
+    clearUser();
     navigate('/');  // 홈으로 이동
   };
 
