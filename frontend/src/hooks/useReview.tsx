@@ -339,7 +339,7 @@ function nestComments(comments: Comment[]): Comment[] {
   return rootComments;
 }
 
-export const useComments = (reviewId: number): UseCommentsResult => {
+export const useComments = (reviewId: number | undefined): UseCommentsResult => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [isLoadingComments, setIsLoadingComments] = useState<boolean>(true);
   const [errorComments, setErrorComments] = useState<string | null>(null);
@@ -349,7 +349,7 @@ export const useComments = (reviewId: number): UseCommentsResult => {
       setIsLoadingComments(true);
       setErrorComments(null);
 
-      if (reviewId === undefined) {
+      if (reviewId === undefined ) {
         setComments([]);
         setIsLoadingComments(false);
         return;
@@ -358,7 +358,6 @@ export const useComments = (reviewId: number): UseCommentsResult => {
       try {
         // ✅ 댓글 API 엔드포인트는 reviewId에 따라 다를 수 있습니다.
         const response = await axios.get(`http://localhost:8000/comment/review/${reviewId}`);
-        
 
         // ✅ 계층 구조로 변환
         const nestedComments = nestComments(response.data);

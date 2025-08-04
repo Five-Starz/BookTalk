@@ -10,7 +10,6 @@ interface CommentListProps {
 
 const CommentList: React.FC<CommentListProps> = ({ reviewId }) => {
   const { comments, isLoadingComments, errorComments } = useComments(reviewId);
-
   // ✅ 현재 로그인한 유저 정보 (예시)
   const isLoggedIn = true; // 실제 로그인 상태
   const currentUserId = 123; // 실제 로그인 유저 ID
@@ -43,14 +42,6 @@ const CommentList: React.FC<CommentListProps> = ({ reviewId }) => {
 
   if (isLoadingComments) {
     return <div className="p-4 text-center">댓글을 불러오는 중입니다...</div>;
-  }
-
-  if (errorComments) {
-    return <div className="p-4 text-center text-red-500">{errorComments}</div>;
-  }
-
-  if (comments.length === 0) {
-    return <div>아직 댓글이 없습니다. 첫 번째 댓글을 남겨주세요!</div>;
   }
 
   return (
