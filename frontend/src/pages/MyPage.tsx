@@ -373,7 +373,7 @@ export const ReviewCollection = () => {
                 <div className="flex gap-2">
                   <button
                     className="px-2 py-1 rounded text-sm border border-gray-300 hover:bg-gray-100"
-                    onClick={() => navigate(`/reviews/${review.reviewId}`)}
+                    onClick={() => navigate(`/edit/${review.reviewId}`)}
                   >
                     수정
                   </button>

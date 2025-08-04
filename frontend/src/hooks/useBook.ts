@@ -83,6 +83,64 @@ export const useBookDetails = (isbn: string | undefined): UseBookDetailsResult =
   return { bookData, isLoading, error };
 };
 
+export const useBookDetailsInMyPage = (isbn: string | undefined): UseBookDetailsResult => {
+  const [bookData, setBookData] = useState<BookDetail | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!isbn) {
+      // ISBN이 없으면 에러 처리 후 함수 종료
+      setError("책 정보를 불러올 ISBN이 없습니다.");
+      setIsLoading(false);
+      return;
+    }
+
+    const fetchBookDetails = async () => {
+      setIsLoading(true);
+      setError(null);
+      
+      try {
+        // 기존에 사용하던 카카오 API 호출 주소로 책 정보 가져오기
+        const requestUrl = `http://localhost:8000/books/info/${isbn}`;
+        const response = await axios.get<BookDetail[]>(requestUrl);
+        
+        if (response.data && response.data.length > 0) {
+          const book = response.data[0];
+
+          const decodedBook: BookDetail = {
+            ...book,
+            title: `${decodeHtml(book.title)}`,
+            description: `${decodeHtml(book.description)}`,
+            authors: `${Array.isArray(book.authors)
+              ? book.authors.map(author => decodeHtml(author))
+              : decodeHtml(book.authors)}`,            
+            // 기존 API 응답에 없는 값은 기본값으로 설정
+            bookmarkCount: 0,
+            total_rating: 0,
+          };
+
+          setBookData(decodedBook);
+        } else {
+          setBookData(null);
+          setError('요청하신 ISBN에 해당하는 책을 찾을 수 없습니다.');
+        }
+
+      } catch (err) {
+        console.error('useBookDetailsInMyPage.ts: API 요청 에러 발생:', err);
+        setError('책 정보를 불러오는 중 알 수 없는 오류가 발생했습니다.');
+        setBookData(null);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchBookDetails();
+  }, [isbn]); // ISBN이 변경될 때마다 훅을 다시 실행
+
+  return { bookData, isLoading, error };
+};
+
 interface UseRecommendListResult {
   recommendList: BookDetail[] | null;
   isLoadingRecommended: boolean;

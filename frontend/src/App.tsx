@@ -16,6 +16,7 @@ import WriteReview from './pages/WriteReview';
 import SignUp from './pages/SignUp';
 import ProtectedRoute from './components/ProtectedRoute';
 import UserPage, { UserReviewCollection, UserWantReadList } from './pages/UserPage';
+import EditReview from './pages/EditReview';
 
 
 function App() {
@@ -35,6 +36,11 @@ function App() {
           <Route path="/reviews/:isbn" element={
             <ProtectedRoute>
               <WriteReview />
+            </ProtectedRoute>
+          } />
+          <Route path="/edit/:reviewId" element={
+            <ProtectedRoute>
+              <EditReview />
             </ProtectedRoute>
           } />
 

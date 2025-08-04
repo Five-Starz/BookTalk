@@ -9,7 +9,7 @@ export interface ReviewDetail {
 }
 
 export interface UseReviewFormProps {
-  initialIsbn: string; // 초기 ISBN (useParams에서 가져온 값)
+  initialIsbn?: string; // 초기 ISBN (useParams에서 가져온 값)
   bookData: BookDetail | null; // useBookDetails 훅에서 가져온 책 데이터
   existingReview?: ReviewDetail | null; // 기존 리뷰 데이터를 받기 위한 새 속성
 }

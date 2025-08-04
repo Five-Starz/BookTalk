@@ -3,11 +3,13 @@ import React, { useState, useEffect, type FormEvent } from "react";
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
+import type { ReviewDetail } from '../types/ReviewType';
 import type { ReviewSubmitData, UseReviewFormProps, UseReviewFormResult } from '../types/ReviewType'; // 제출용 리뷰 데이터 타입 임포트
 import type { RevCommentSubmitData, UseRevCommentFormProps, UseRevCommentFormResult } from '../types/CommentTypes'
 import type { Comment } from '../types/CommentTypes';
 import { FaStar } from 'react-icons/fa'
 import { getPrimaryIsbn } from "../utils/getPrimaryIsbn";
+import { decodeHtml } from '../utils/decodeHtml';
 
 import '../index.css'
 
@@ -84,7 +86,7 @@ export const RatingStar: React.FC<RatingStarProps> = ({ ratingIndex, setRatingIn
 
 
 
-export const useReviewForm = ({ initialIsbn, bookData, existingReview }: UseReviewFormProps): UseReviewFormResult => {
+export const useReviewForm = ({ initialIsbn, bookData }: UseReviewFormProps): UseReviewFormResult => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState<ReviewSubmitData>({
@@ -155,6 +157,7 @@ export const useReviewForm = ({ initialIsbn, bookData, existingReview }: UseRevi
         Authorization: `Bearer ${accessToken}`
       } : {};
 
+      // ✅ axios.post의 세 번째 인자로 headers 객체를 정확히 전달했는지 확인합니다.
       const response = await axios.post('http://localhost:8000/reviews', formData, {
         headers: headers
       });
@@ -187,55 +190,85 @@ export const useReviewForm = ({ initialIsbn, bookData, existingReview }: UseRevi
   };
 };
 
+interface UseReviewDetailsResult {
+  reviewData: ReviewDetail | null;
+  isLoadingReview: boolean;
+  errorReview: string | null;
+}
+
+export const useReviewDetails = (reviewId: number | undefined): UseReviewDetailsResult => {
+  const [reviewData, setReviewData] = useState<ReviewDetail | null>(null);
+  const [isLoadingReview, setIsLoadingReview] = useState<boolean>(true);
+  const [errorReview, setErrorReview] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchReview = async () => {
+      setIsLoadingReview(true);
+      setErrorReview(null);
+      setReviewData(null); // 데이터 초기화
+
+      if (reviewId === undefined) {
+        setIsLoadingReview(false);
+        return;
+      }
+
+      try {
+        // ✅ 리뷰 상세 정보를 가져오는 API 엔드포인트에 맞게 수정
+        const response = await axios.get<ReviewDetail>(`http://localhost:8000/reviews/${reviewId}`);
+        
+        // ✅ 응답 데이터 디코딩 (필요한 필드만)
+        const rawReview = response.data;
+        // const decodedReview: ReviewDetail = {
+        //   ...rawReview,
+        //   content: decodeHtml(rawReview.content),
+        //   // book 정보도 디코딩이 필요하다면 여기에 추가
+        //   book: {
+        //     ...rawReview.book,
+        //     title: decodeHtml(rawReview.book.title),
+        //     authors: Array.isArray(rawReview.book.authors)
+        //       ? rawReview.book.authors.map(author => decodeHtml(author))
+        //       : decodeHtml(rawReview.book.authors),
+        //     description: decodeHtml(rawReview.book.description),
+        //   }
+        // };
+
+        setReviewData(rawReview);
+      } catch (err) {
+        console.error('리뷰 상세 정보 불러오기 에러:', err);
+        setErrorReview('리뷰 정보를 불러오는 데 실패했습니다.');
+      } finally {
+        setIsLoadingReview(false);
+      }
+    };
+
+    fetchReview();
+  }, [reviewId]);
+
+  return { reviewData, isLoadingReview, errorReview };
+};
 
 
 
 export const useRevCommentForm = ({ reviewId, userId }: UseRevCommentFormProps): UseRevCommentFormResult => {
 
-  // ✅ formData 초기화: reviewId와 userId는 props에서, parentId는 null, content는 빈 문자열
-  const initialFormData: RevCommentSubmitData = {
-    reviewId: reviewId,
-    parentId: null, // 초기 parentId는 null (최상위 댓글)
+  const [formData, setFormData] = useState<RevCommentSubmitData>({
+    reviewId: reviewId || '',
+    parentId: '',
     userId: userId,
     content: ''
-  };
+  });
 
-  const [formData, setFormData] = useState<RevCommentSubmitData>(initialFormData);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState<boolean>(false);
-
-  // ✅ content 입력 변경 핸들러
-  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setFormData(prev => ({
-      ...prev,
-      content: e.target.value
-    }));
-  };
-
-  // ✅ parentId 설정 함수 (대댓글 작성 시 호출)
-  const setReplyToComment = (parentId: number | null) => {
-    setFormData(prev => ({
-      ...prev,
-      parentId: parentId,
-      content: '' // 대댓글 모드 진입 시 내용 초기화 (선택 사항)
-    }));
-  };
-
-  // ✅ 폼 초기화 함수
-  const resetForm = () => {
-    setFormData(initialFormData);
-    setSubmitError(null);
-    setSubmitSuccess(false);
-  };
 
   // 폼 제출 핸들러
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    if (!formData.content.trim()) { // 내용이 비어있는지 확인 (공백만 있는 경우도 포함)
-      setSubmitError("댓글 내용을 입력해 주세요.");
-      return;
+    if (!formData.reviewId || !formData.content ) {
+      setSubmitError("내용을 입력해 주세요");
+      return; 
     }
 
     setIsSubmitting(true);
@@ -248,12 +281,12 @@ export const useRevCommentForm = ({ reviewId, userId }: UseRevCommentFormProps):
         Authorization: `Bearer ${accessToken}`
       } : {};
 
-      const response = await axios.post(`http://localhost:8000/comment/add`, formData, {
+      // ✅ axios.post의 세 번째 인자로 headers 객체를 정확히 전달했는지 확인합니다.
+      const response = await axios.post(`http://localhost:8000/comment/review/${reviewId}`, formData, {
         headers: headers
       });
       console.log('댓글 작성 성공:', response.data);
       setSubmitSuccess(true);
-      resetForm(); // 성공 후 폼 초기화
 
     } catch (error) {
       console.error('댓글 작성 실패:', error);
@@ -267,27 +300,12 @@ export const useRevCommentForm = ({ reviewId, userId }: UseRevCommentFormProps):
     }
   };
 
-  // reviewId 또는 userId가 변경될 때 formData 초기화
-  useEffect(() => {
-    setFormData(prev => ({
-      ...prev,
-      reviewId: reviewId,
-      userId: userId,
-      parentId: null, // reviewId가 변경되면 parentId도 초기화
-      content: ''
-    }));
-  }, [reviewId, userId]);
-
-
   return {
     formData,
-    handleChange,
-    setReplyToComment,
     handleSubmit,
     isSubmitting,
     submitError,
-    submitSuccess,
-    resetForm // 반환 값에 추가
+    submitSuccess
   };
 };
 
