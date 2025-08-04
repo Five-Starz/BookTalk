@@ -141,6 +141,7 @@ const MyPage = () => {
   )
 }
 
+// 💖 리뷰 모아보기
 export const ReviewCollection = () => {
   type Review = {
     reviewId: number;
@@ -438,7 +439,7 @@ export const ReviewCollection = () => {
   )
 }
 
-// 보고싶어요
+// 💖 보고싶어요
 export const WantReadList = () => {
   type BookItem = {
     isbn: string;
@@ -564,6 +565,7 @@ export const WantReadList = () => {
   )
 }
 
+// 💖 유저 정보 수정
 export const Settings = () => {
   const updateSchema = z.object({
     nickname: z
@@ -649,11 +651,6 @@ export const Settings = () => {
         setUser({ userId, nickname: profile.nickname });
       }
 
-      // 닉네임 변경 시 전역 업데이트
-      // if (sendData.nickname) {
-      //   setNickname(sendData.nickname);
-      // }
-
       setMsg("회원 정보가 수정되었습니다.");
       setErrMsg('');
       reset({ nickname: sendData.nickname ?? nickname, password: "" });
@@ -671,21 +668,6 @@ export const Settings = () => {
     setMsg("");
     setErrMsg('');
   };
-
-  // 탈퇴
-  // const handleResign = async () => {
-  //   if (!window.confirm("정말로 탈퇴하시겠습니까?")) return;
-  //   try {
-  //     await axios.delete(`http://localhost:8000/auth/del/${userId}`, {
-  //       headers: { Authorization: `Bearer ${accessToken}` },
-  //     });
-  //     clearTokens();
-  //     clearUser();
-  //     window.location.href = "/";
-  //   } catch {
-  //     alert("탈퇴에 실패했습니다.");
-  //   }
-  // };
 
   // 모달 내 취소/확인 함수
   const handleCancelResign = () => {
