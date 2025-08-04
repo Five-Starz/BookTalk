@@ -226,6 +226,7 @@ export const UserReviewCollection = () => {
   // 페이지 이동
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: "smooth" }); // 페이지 바뀔 때 맨 위로 스크롤 (선택)
   };
 
   // 로딩 상태 처리
