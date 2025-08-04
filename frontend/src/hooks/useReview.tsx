@@ -9,7 +9,7 @@ import type { RevCommentSubmitData, UseRevCommentFormProps, UseRevCommentFormRes
 import type { Comment } from '../types/CommentTypes';
 import { FaStar } from 'react-icons/fa'
 import { getPrimaryIsbn } from "../utils/getPrimaryIsbn";
-import { decodeHtml } from '../utils/decodeHtml';
+// import { decodeHtml } from '../utils/decodeHtml';
 
 import '../index.css'
 
@@ -218,20 +218,7 @@ export const useReviewDetails = (reviewId: number | undefined): UseReviewDetails
         
         // ✅ 응답 데이터 디코딩 (필요한 필드만)
         const rawReview = response.data;
-        // const decodedReview: ReviewDetail = {
-        //   ...rawReview,
-        //   content: decodeHtml(rawReview.content),
-        //   // book 정보도 디코딩이 필요하다면 여기에 추가
-        //   book: {
-        //     ...rawReview.book,
-        //     title: decodeHtml(rawReview.book.title),
-        //     authors: Array.isArray(rawReview.book.authors)
-        //       ? rawReview.book.authors.map(author => decodeHtml(author))
-        //       : decodeHtml(rawReview.book.authors),
-        //     description: decodeHtml(rawReview.book.description),
-        //   }
-        // };
-
+        console.log(rawReview)
         setReviewData(rawReview);
       } catch (err) {
         console.error('리뷰 상세 정보 불러오기 에러:', err);

@@ -97,16 +97,15 @@ export const useBookDetailsInMyPage = (isbn: string | undefined): UseBookDetails
     }
 
     const fetchBookDetails = async () => {
-      setIsLoading(true);
       setError(null);
+      setBookData(null); 
       
       try {
-        // 기존에 사용하던 카카오 API 호출 주소로 책 정보 가져오기
-        const requestUrl = `http://localhost:8000/books/info/${isbn}`;
-        const response = await axios.get<BookDetail[]>(requestUrl);
+        const response = await axios.get<BookDetail>(`http://localhost:8000/books/info/${isbn}`);
+        console.log(isbn)
         
-        if (response.data && response.data.length > 0) {
-          const book = response.data[0];
+        if (response.data) {
+          const book = response.data;
 
           const decodedBook: BookDetail = {
             ...book,
@@ -121,6 +120,7 @@ export const useBookDetailsInMyPage = (isbn: string | undefined): UseBookDetails
           };
 
           setBookData(decodedBook);
+          setIsLoading(true);
         } else {
           setBookData(null);
           setError('요청하신 ISBN에 해당하는 책을 찾을 수 없습니다.');
