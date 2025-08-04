@@ -37,22 +37,24 @@ class BookService {
   }
 
   // 2. 도서 별 평균평점 계산
-  async getAverageRatingByBook(isbn: string): Promise<number | null> {
+  async getAverageRatingByBook(isbn: string): Promise<{avgRating: number | null, reviewCount: number} | null> {
     console.log('[Book Service] 받은 isbn:', isbn);
+
     let rating: number[] | null = await bookRepository.getAllRatingsByBook(isbn);  // 전체 점수 받아와
     console.log('[Book Service] Repository에서 받은 rating 배열:', rating);
 
-    // rating이 없으면 null 반환
+    // 리뷰가 없어서 평점이 없으면 평균평점 제공 불가
     if (!rating || rating.length === 0) return null;
+    // 리뷰 1개일때는 {평균평점 null, 리뷰개수} 는 반환
+    if (rating.length < 2) {
+      return { avgRating: null, reviewCount: rating.length }
+    }
 
     // 평균 계산
-    let sumRating = 0;
-    for (let i=0; i<rating.length; i++) {
-      sumRating += rating[i];
-    }
+    let sumRating = rating.reduce((sum, cur)=> sum + cur, 0);
     const avgRating = parseFloat((sumRating/rating.length).toFixed(2));
     
-    return avgRating;
+    return {avgRating, reviewCount: rating.length };
   }
 
   // 2. DB에 도서 검색
