@@ -27,7 +27,7 @@ export const Good10 = () => {
 
   return (
     <div className="slider-container w-full">
-      <h2 className='mb-4'>BookList</h2>
+      <h2 className='mb-4'>Good10</h2>
       <Swiper
         style={{
           '--swiper-navigation-color': '#000',
@@ -80,7 +80,7 @@ export const Want10 = () => {
 
   return (
     <div className="slider-container w-full">
-      <h2 className='mb-4'>BookList</h2>
+      <h2 className='mb-4'>Want10</h2>
       <Swiper
         style={{
           '--swiper-navigation-color': '#000',

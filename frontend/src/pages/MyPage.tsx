@@ -319,6 +319,8 @@ export const ReviewCollection = () => {
     return <div className="p-4 text-gray-500 flex justify-center items-center h-40">작성한 리뷰가 없습니다.</div>
   }
 
+  console.log(reviews)
+
   return (
     <>
       {/* 리뷰 리스트 */}
@@ -350,7 +352,7 @@ export const ReviewCollection = () => {
             <div key={review.reviewId} className="bg-white rounded-lg border shadow p-5 mb-4 flex flex-col justify-between">
             {/* 책 제목 */}
               <div className="flex items-center mb-1">
-                <h3 className="font-semibold text-lg cursor-pointer" onClick={() => navigate(`/2345`)}>{review.bookTitle || '책 제목 불러오기'}</h3>
+                <h3 className="font-semibold text-lg cursor-pointer" onClick={() => navigate(`/book/${review.isbn}`)}>{review.bookTitle || '책 제목 불러오기'}</h3>
               </div>
 
               {/* 리뷰 내용 */}
@@ -369,7 +371,7 @@ export const ReviewCollection = () => {
                 <div className="flex gap-2">
                   <button
                     className="px-2 py-1 rounded text-sm border border-gray-300 hover:bg-gray-100"
-                    onClick={() => navigate(`/edit-review/${review.reviewId}`)}
+                    onClick={() => navigate(`/reviews/${review.reviewId}`)}
                   >
                     수정
                   </button>

@@ -51,61 +51,64 @@ const handleMainSlideChange = (swiper: SwiperClass) => {
     }
   };
   return (
-    <div className='mySwiper2-wrap relative flex items-center justify-between gap-8'>
-      <Swiper
-        style={{
-          '--swiper-navigation-color': '#000',
-        } as React.CSSProperties}
-        onSwiper={(swiper) => {
-          mainSwiperRef.current = swiper;
-        }}
-        // onSlideChange 이벤트 핸들러 추가
-        onSlideChange={handleMainSlideChange}      
-        loop={true}
-        spaceBetween={10}
-        thumbs={{ swiper: thumbsSwiper }}
-        navigation={{ prevEl: prevRef.current, nextEl: nextRef.current}}
-        modules={[Navigation, Thumbs]}
-        className="mySwiper2 w-full lg:w-[70%]"
-      >
-        {apiData.books.map((book: BookDetail) => ( // Book 인터페이스를 사용하여 타입 안전성 확보
-          <SwiperSlide> {/* key는 고유한 값으로 설정 (isbn이 적합) */}
-            <Link key={book.isbn} to={`/book/${book.isbn}`}>
-              <div className="flex justify-between">
-                {/* 메인 슬라이더 이미지: book.thumbnail 사용 */}
-                <img className='min-h-[300px] rounded-xl' src={book.thumbnail} alt={book.title} />
-                <div className="bg-orange-200 w-[calc(100%-230px)] rounded-xl rounded-bl-none p-6">
-                  <h2 className="mb-4">{book.title}</h2>
-                  {/* authors가 string[]이므로 join으로 문자열로 변환 */}
-                  <p className="author text-sm mb-10">{Array.isArray(book.authors) ? book.authors.join(', ') : book.authors}</p>
-                  {/* TODO: 여기에 실제 리뷰 내용이나 요약 등을 추가할 수 있습니다. */}
-                  <p>{book.description.substring(0, 100)}...</p> {/* 예시: contents 일부 표시 */}
+    <div>
+      <h2 className='mb-4'>Hot10</h2>
+      <div className='mySwiper2-wrap relative flex items-center justify-between gap-8'>
+        <Swiper
+          style={{
+            '--swiper-navigation-color': '#000',
+          } as React.CSSProperties}
+          onSwiper={(swiper) => {
+            mainSwiperRef.current = swiper;
+          }}
+          // onSlideChange 이벤트 핸들러 추가
+          onSlideChange={handleMainSlideChange}      
+          loop={true}
+          spaceBetween={10}
+          thumbs={{ swiper: thumbsSwiper }}
+          navigation={{ prevEl: prevRef.current, nextEl: nextRef.current}}
+          modules={[Navigation, Thumbs]}
+          className="mySwiper2 w-full lg:w-[70%]"
+        >
+          {apiData.books.map((book: BookDetail) => ( // Book 인터페이스를 사용하여 타입 안전성 확보
+            <SwiperSlide> {/* key는 고유한 값으로 설정 (isbn이 적합) */}
+              <Link key={book.isbn} to={`/book/${book.isbn}`}>
+                <div className="flex justify-between">
+                  {/* 메인 슬라이더 이미지: book.thumbnail 사용 */}
+                  <img className='min-h-[300px] rounded-xl' src={book.thumbnail} alt={book.title} />
+                  <div className="bg-orange-200 w-[calc(100%-230px)] rounded-xl rounded-bl-none p-6">
+                    <h2 className="mb-4">{book.title}</h2>
+                    {/* authors가 string[]이므로 join으로 문자열로 변환 */}
+                    <p className="author text-sm mb-10">{Array.isArray(book.authors) ? book.authors.join(', ') : book.authors}</p>
+                    {/* TODO: 여기에 실제 리뷰 내용이나 요약 등을 추가할 수 있습니다. */}
+                    <p>{book.description.substring(0, 100)}...</p> {/* 예시: contents 일부 표시 */}
+                  </div>
                 </div>
-              </div>
-            </Link>
-          </SwiperSlide>
-        ))}
-      </Swiper>
+              </Link>
+            </SwiperSlide>
+          ))}
+        </Swiper>
 
-      <div className="swiper-navigation">
-        <button className='swiper_prev swiper-button-prev' ref={prevRef}></button>
-        <button className='swiper_next swiper-button-next' ref={nextRef}></button>
+        <div className="swiper-navigation">
+          <button className='swiper_prev swiper-button-prev' ref={prevRef}></button>
+          <button className='swiper_next swiper-button-next' ref={nextRef}></button>
+        </div>
+        <Swiper
+          onSwiper={setThumbsSwiper}
+          spaceBetween={10}
+          slidesPerView={3}
+          loop={true}
+          watchSlidesProgress={true}
+          modules={[Navigation, Thumbs]}
+          className="mySwiper w-[30%] !hidden lg:!block"
+        >
+          {apiData.books.map((book: BookDetail) => ( // 썸네일 슬라이더 이미지: book.thumbnail 사용
+            <SwiperSlide key={book.isbn + "-thumb"}> {/* 썸네일도 고유한 key가 필요 */}
+              <img className='max-h-[150px] rounded-lg' src={book.thumbnail} alt={book.title + " thumbnail"} />
+            </SwiperSlide>
+          ))}
+        </Swiper>
       </div>
-      <Swiper
-        onSwiper={setThumbsSwiper}
-        spaceBetween={10}
-        slidesPerView={3}
-        loop={true}
-        watchSlidesProgress={true}
-        modules={[Navigation, Thumbs]}
-        className="mySwiper w-[30%] !hidden lg:!block"
-      >
-        {apiData.books.map((book: BookDetail) => ( // 썸네일 슬라이더 이미지: book.thumbnail 사용
-          <SwiperSlide key={book.isbn + "-thumb"}> {/* 썸네일도 고유한 key가 필요 */}
-            <img className='max-h-[150px] rounded-lg' src={book.thumbnail} alt={book.title + " thumbnail"} />
-          </SwiperSlide>
-        ))}
-      </Swiper>
     </div>
   )
 }
