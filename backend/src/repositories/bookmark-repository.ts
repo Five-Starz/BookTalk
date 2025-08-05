@@ -46,12 +46,18 @@ export class BookmarksRepository{
       }
     });
     if(deleteLike){
-      await prisma.books.update({
+      const countNum=await prisma.books.findUnique({
         where:{isbn},
-        data:{
-          bookmarkCount:{decrement:1} 
-        }
-      });
+        select:{bookmarkCount:true}
+      })
+      if(countNum?.bookmarkCount!==0){
+        await prisma.books.update({
+          where:{isbn},
+          data:{
+            bookmarkCount:{decrement:1} 
+          }
+        });
+      };
       return true;
     }else
       return false;
