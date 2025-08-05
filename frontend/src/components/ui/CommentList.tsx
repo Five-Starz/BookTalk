@@ -14,37 +14,41 @@ interface CommentListProps {
 const CommentList: React.FC<CommentListProps> = ({ reviewId }) => {
   const { comments, isLoadingComments, refetch } = useComments(reviewId);
 
-  // ✅ 1. Zustand 스토어에서 전역 상태 가져오기
+  // Zustand 스토어에서 전역 상태 가져오기
   const { isLoggedIn, accessToken } = useAuthStore();
-  const { userId } = useUserStore();
+  const { userId, nickname } = useUserStore();
 
-  // ✅ 댓글 폼 훅 사용
+  // 댓글 폼 훅 사용
   const {
     formData,
     handleChange,
-    setReplyToComment,
     handleSubmit,
     isSubmitting,
     submitError,
     submitSuccess,
   } = useRevCommentForm({ reviewId, userId: userId || 0, refetch });
 
-  // ✅ 1. 수정 상태 관리를 위한 state 추가
+  // 수정 상태 관리를 위한 state 추가
   const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
   const [editedContent, setEditedContent] = useState<string>('');
 
-  // ✅ 2. 댓글 수정 시작 핸들러
+  // 대댓글 작성 폼 상태
+  const [replyToParentId, setReplyToParentId] = useState<number | null>(null);
+  const [replyContent, setReplyContent] = useState<string>('');
+
+  // 댓글 수정 시작 핸들러
   const handleStartEdit = (commentId: number, currentContent: string) => {
     setEditingCommentId(commentId);
     setEditedContent(currentContent);
   };
 
-  // ✅ 3. 댓글 수정 취소 핸들러
+  // 댓글 수정 취소 핸들러
   const handleCancelEdit = () => {
     setEditingCommentId(null);
     setEditedContent('');
   };
 
+  // 댓글 수정 핸들러
   const handleEditComment = async (commentId: number) => {
     if (!editedContent.trim()) {
       alert("댓글 내용을 입력해주세요.");
@@ -66,6 +70,7 @@ const CommentList: React.FC<CommentListProps> = ({ reviewId }) => {
     }
   };
 
+  // 댓글 삭제 핸들러
   const handleDeleteComment = async (commentId: number) => {
     try {
       await axios.delete(`http://localhost:8000/comment/${commentId}`,{
@@ -78,10 +83,51 @@ const CommentList: React.FC<CommentListProps> = ({ reviewId }) => {
     }
   };
 
+  
+  // 대댓글 작성 핸들러
   const handleReply = (parentId: number) => {
-    // 대댓글 작성 폼을 띄우거나, 특정 UI 상태를 변경하는 로직
-    console.log(`대댓글 작성: 부모 ${parentId}`);
+    setReplyToParentId(parentId);
+    setReplyContent('');
   };
+
+  // 대댓글 폼 제출 핸들러 (새로 추가)
+  const handleReplySubmit = async (e: React.FormEvent, parentId: number) => {
+    e.preventDefault();
+    if (!replyContent.trim()) {
+        alert("댓글 내용을 입력해주세요.");
+        return;
+    }
+    if (!userId) {
+        alert("로그인이 필요합니다.");
+        return;
+    }
+
+    try {
+        await axios.post(
+            `http://localhost:8000/comment/add`,
+            {
+                userId: userId,
+                reviewId: reviewId,
+                content: replyContent.trim(),
+                parentId: parentId,
+            },
+            { headers: { Authorization: `Bearer ${accessToken}` } }
+        );
+        setReplyToParentId(null); // 폼 닫기
+        setReplyContent('');
+        refetch();
+    } catch(error) {
+        console.error('대댓글 작성 실패:', error);
+        alert("대댓글 작성에 실패했습니다.");
+    }
+  };
+
+  // 대댓글 폼 취소 핸들러
+  const handleReplyCancel = () => {
+      setReplyToParentId(null);
+      setReplyContent('');
+  };
+
 
   if (isLoadingComments) {
     return <div className="p-4 text-center">댓글을 불러오는 중입니다...</div>;
@@ -102,16 +148,6 @@ const CommentList: React.FC<CommentListProps> = ({ reviewId }) => {
         {submitError && <p className="text-red-500 text-sm mt-1">{submitError}</p>}
         {submitSuccess}
         <div className="flex justify-end gap-2 mt-2">
-          {formData.parentId !== null && ( // 대댓글 모드일 때만 '취소' 버튼 표시
-            <button
-              type="button"
-              className="px-4 py-2 text-gray-600 rounded-lg hover:bg-gray-200"
-              onClick={() => setReplyToComment(null)} // parentId 초기화
-              disabled={isSubmitting}
-            >
-              취소
-            </button>
-          )}
           <button
             type="submit"
             className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:bg-gray-400"
@@ -158,6 +194,7 @@ const CommentList: React.FC<CommentListProps> = ({ reviewId }) => {
                 </div>
               ) : (
                 // ✅ 일반 댓글 카드 (기존 CommentCard 사용)
+                <>
                 <CommentCard
                   key={comment.commentId}
                   comment={comment}
@@ -167,6 +204,40 @@ const CommentList: React.FC<CommentListProps> = ({ reviewId }) => {
                   onDelete={handleDeleteComment}
                   onReply={handleReply}
                 />
+                {replyToParentId === comment.commentId && (
+                  <form
+                      onSubmit={(e) => handleReplySubmit(e, comment.commentId)}
+                      className="p-4 rounded-lg bg-gray-50 my-4"
+                  >
+                    <div className="mb-2">
+                      <User nickname={nickname} width='6' />
+                    </div>
+                    <textarea
+                      className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm"
+                      placeholder="답글을 남겨주세요."
+                      value={replyContent}
+                      onChange={(e) => setReplyContent(e.target.value)}
+                      rows={2}
+                    />
+                    <div className="flex justify-end gap-2 mt-2">
+                      <button
+                        type="button"
+                        className="px-4 py-2 text-gray-600 rounded-lg hover:bg-gray-200 text-sm"
+                        onClick={handleReplyCancel}
+                      >
+                        취소
+                      </button>
+                      <button
+                        type="submit"
+                        className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:bg-gray-400 text-sm"
+                        disabled={!replyContent.trim()}
+                      >
+                        답글 작성
+                      </button>
+                    </div>
+                  </form>
+                )}
+                </>
               )}
             </div>
           ))}

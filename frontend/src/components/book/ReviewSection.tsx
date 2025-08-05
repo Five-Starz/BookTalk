@@ -3,6 +3,7 @@ import React from 'react';
 import ReviewCard from '../ui/ReviewCard'; // ReviewCard 임포트
 import type { ReviewsSectionProps } from '../../types/ReviewType'; // 타입 임포트
 import { Link } from 'react-router-dom';
+import { getPrimaryIsbn } from '../../utils/getPrimaryIsbn';
 
 const ReviewsSection = ({ reviews, isLoading, error, bookData }: ReviewsSectionProps) => {
 
@@ -15,13 +16,15 @@ const ReviewsSection = ({ reviews, isLoading, error, bookData }: ReviewsSectionP
   if (!reviews || reviews.length === 0) {
     return <div className='text-center'>이 책에 대한 리뷰가 아직 없습니다.</div>;
   }
+  console.log(reviews)
+  const isbn = getPrimaryIsbn(bookData.isbn);
 
   return (
     <div>
       <div className='flex justify-between mb-3 md:mb-6'>
         <h2>리뷰들</h2>
         {!isLoading && !error && reviews && reviews.length > 0 && (
-          <Link to='' className='text-[#999]'>더보기</Link>
+          <Link to={`/book/${isbn}/reviews`} className='text-[#999]'>더보기</Link>
         )}
       </div>
       
