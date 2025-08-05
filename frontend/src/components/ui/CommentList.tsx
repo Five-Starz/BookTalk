@@ -12,7 +12,7 @@ interface CommentListProps {
 }
 
 const CommentList: React.FC<CommentListProps> = ({ reviewId }) => {
-  const { comments, isLoadingComments, refetch } = useComments(reviewId);
+  const { comments, isLoadingComments, commentCount,refetch } = useComments(reviewId);
 
   // Zustand 스토어에서 전역 상태 가져오기
   const { isLoggedIn, accessToken } = useAuthStore();
@@ -128,14 +128,14 @@ const CommentList: React.FC<CommentListProps> = ({ reviewId }) => {
       setReplyContent('');
   };
 
-
+  
   if (isLoadingComments) {
     return <div className="p-4 text-center">댓글을 불러오는 중입니다...</div>;
   }
 
   return (
     <div className="mt-8">
-      <h3 className="text-xl font-bold mb-4">댓글 {comments.length}</h3>
+      <h3 className="text-xl font-bold mb-4">댓글 {commentCount}</h3>
       <form onSubmit={handleSubmit} className="mb-6">
         <textarea
           className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"

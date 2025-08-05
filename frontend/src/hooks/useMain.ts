@@ -78,7 +78,12 @@ export const use10List = (listType: string) => {
         setApiData({ books: decodedBooks });
         setIsLoading(true);
       } catch (err) {
-        setError('책 데이터를 불러오는 데 실패했습니다.');
+        switch(listType){
+          case 'want': setError('북마크 조회 중 오류 발생');
+            break;
+          case 'good': setError('평점순 조회 중 오류 발생');
+            break;
+        }
         console.error(`${listType} API 에러:`, err);
         setIsLoading(false);
       } finally {

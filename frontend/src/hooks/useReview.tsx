@@ -322,6 +322,10 @@ export const useReviewDetails = (reviewId: number | undefined): UseReviewDetails
         const response = await axios.get<ReviewDetail>(`http://localhost:8000/reviews/${reviewId}`);
         const requestUrl=`http://localhost:8000/comment/review/count/${reviewId}`;
         const responseComment=await axios.get(requestUrl);
+        const responseLikeCount = await axios.post(`http://localhost:8000/likes/count`, {
+           reviewId: `${reviewId}`
+          });
+          response.data.likeCount=responseLikeCount.data;
         // ✅ 응답 데이터 디코딩 (필요한 필드만)
         const rawReview = response.data;
         rawReview.commentCount=responseComment.data;
@@ -454,6 +458,7 @@ interface UseCommentsResult {
   comments: Comment[];
   isLoadingComments: boolean;
   errorComments: string | null;
+  commentCount:number;
   refetch: () => void;
 }
 
@@ -497,7 +502,7 @@ export const useComments = (reviewId: number): UseCommentsResult => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [isLoadingComments, setIsLoadingComments] = useState<boolean>(true);
   const [errorComments, setErrorComments] = useState<string | null>(null);
-
+  const [commentCount,setCommentCount]=useState<number>(0)
   // ✅ 데이터를 불러오는 로직을 별도의 함수로 분리
   const fetchComments = async () => {
     setIsLoadingComments(true);
@@ -511,6 +516,8 @@ export const useComments = (reviewId: number): UseCommentsResult => {
 
     try {
       const response = await axios.get(`http://localhost:8000/comment/review/${reviewId}`);
+      const responseComment=await axios.get(`http://localhost:8000/comment/review/count/${reviewId}`);
+      setCommentCount(responseComment.data);
       const nestedComments = nestComments(response.data);
       setComments(nestedComments);
     } catch (err) {
@@ -527,5 +534,5 @@ export const useComments = (reviewId: number): UseCommentsResult => {
   }, [reviewId]);
 
   // ✅ refetch 함수를 반환 객체에 추가
-  return { comments, isLoadingComments, errorComments, refetch: fetchComments };
+  return { comments, isLoadingComments, errorComments,commentCount, refetch: fetchComments };
 };
