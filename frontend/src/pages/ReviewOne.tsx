@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import ReviewCard from '../components/ui/ReviewCard';
 import CommentList from '../components/ui/CommentList';
 import { useReviewDetails } from '../hooks/useReview';
@@ -32,37 +32,41 @@ const ReviewOne = () => {
   }
 
   return (
-    <div className="flex justify-between items-start gap-6">
-      <div className='hidden lg:block w-[200px]'>
-        <img
-          className='rounded-xl max-w-fit min-h-[300px] object-contain'
-          src={bookData.thumbnail}
-          alt={bookData.title + " 표지"}
-        />
-        <div>
-          <h3 className="mt-4 mb-2">{bookData.title}</h3>
-          <p>{Array.isArray(bookData.authors) ? bookData.authors.join(', ') : bookData.authors}</p>
-        </div>
-      </div>
-      <div className='flex-grow'>
-        <>
-          <div className='flex lg:hidden mb-4'>
+    <div className='pt-[105px] pb-[10%] md:pb-[200px]'>
+      <div className="flex justify-between items-start gap-6">
+        <div className='hidden lg:block w-[200px]'>
+          <Link to={`/book/${isbn}`}>
             <img
-              className='mr-4 rounded-lg max-w-fit max-h-[180px] object-contain'
+              className='rounded-xl max-w-fit min-h-[300px] object-contain'
               src={bookData.thumbnail}
               alt={bookData.title + " 표지"}
             />
-            <div className='lg:flex flex-grow justify-between'>
-              <div>
-                <h3 className="mb-2">{bookData.title}</h3>
-                <p>{Array.isArray(bookData.authors) ? bookData.authors.join(', ') : bookData.authors}</p>
+            <div>
+              <h3 className="mt-4 mb-2">{bookData.title}</h3>
+              <p>{Array.isArray(bookData.authors) ? bookData.authors.join(', ') : bookData.authors}</p>
+            </div>
+          </Link>
+        </div>
+        <div className='flex-grow'>
+          <>
+            <div className='flex lg:hidden mb-4'>
+              <img
+                className='mr-4 rounded-lg max-w-fit max-h-[180px] object-contain'
+                src={bookData.thumbnail}
+                alt={bookData.title + " 표지"}
+              />
+              <div className='lg:flex flex-grow justify-between'>
+                <div>
+                  <h3 className="mb-2">{bookData.title}</h3>
+                  <p>{Array.isArray(bookData.authors) ? bookData.authors.join(', ') : bookData.authors}</p>
+                </div>
               </div>
             </div>
-          </div>
-        </>
-        {/* ✅ ReviewCard에 데이터만 props로 전달 */}
-        <ReviewCard review={reviewData} />
-        <CommentList reviewId={reviewId} />
+          </>
+          {/* ✅ ReviewCard에 데이터만 props로 전달 */}
+          <ReviewCard review={reviewData} />
+          <CommentList reviewId={reviewId} />
+        </div>
       </div>
     </div>
   );

@@ -24,43 +24,45 @@ const ReviewList: React.FC = () => {
   }
   
   return (
-    <div className="flex justify-between items-start gap-6">
-      <div className='hidden lg:block w-[200px]'>
-        <img
-          className='rounded-xl max-w-fit min-h-[300px] object-contain'
-          src={bookData.thumbnail}
-          alt={bookData.title + " 표지"}
-        />
-        <div>
-          <h3 className="mt-4 mb-2">{bookData.title}</h3>
-          <p>{Array.isArray(bookData.authors) ? bookData.authors.join(', ') : bookData.authors}</p>
+    <div className='pt-[105px] pb-[10%] md:pb-[200px]'>
+      <div className="flex justify-between items-start gap-6">
+        <div className='hidden lg:block w-[200px]'>
+          <img
+            className='rounded-xl max-w-fit min-h-[300px] object-contain'
+            src={bookData.thumbnail}
+            alt={bookData.title + " 표지"}
+          />
+          <div>
+            <h3 className="mt-4 mb-2">{bookData.title}</h3>
+            <p>{Array.isArray(bookData.authors) ? bookData.authors.join(', ') : bookData.authors}</p>
+          </div>
         </div>
-      </div>
-      <div className='flex-grow'>
-        <>
-          <div className='flex lg:hidden mb-4'>
-            <img
-              className='mr-4 rounded-lg max-w-fit max-h-[180px] object-contain'
-              src={bookData.thumbnail}
-              alt={bookData.title + " 표지"}
-            />
-            <div className='lg:flex flex-grow justify-between'>
-              <div>
-                <h3 className="mb-2">{bookData.title}</h3>
-                <p>{Array.isArray(bookData.authors) ? bookData.authors.join(', ') : bookData.authors}</p>
+        <div className='flex-grow'>
+          <>
+            <div className='flex lg:hidden mb-4'>
+              <img
+                className='mr-4 rounded-lg max-w-fit max-h-[180px] object-contain'
+                src={bookData.thumbnail}
+                alt={bookData.title + " 표지"}
+              />
+              <div className='lg:flex flex-grow justify-between'>
+                <div>
+                  <h3 className="mb-2">{bookData.title}</h3>
+                  <p>{Array.isArray(bookData.authors) ? bookData.authors.join(', ') : bookData.authors}</p>
+                </div>
               </div>
             </div>
-          </div>
-        </>
-        {reviews && reviews.length > 0 && (
-          <div className='flex flex-wrap gap-2'>
-            {reviews.map(review => (
-              <Link to={`/review/${review.reviewId}`} state={{bookData, review}} className='w-[calc(100%)]'>
-                <ReviewCard key={review.reviewId} review={review} />
-              </Link>
-            ))}
-          </div>
-      )}
+          </>
+          {reviews && reviews.length > 0 && (
+            <div className='flex flex-wrap gap-2'>
+              {reviews.map(review => (
+                <Link to={`/review/${review.reviewId}`} state={{bookData, review}} className='w-[calc(100%)]'>
+                  <ReviewCard key={review.reviewId} review={review} />
+                </Link>
+              ))}
+            </div>
+        )}
+        </div>
       </div>
     </div>
   );

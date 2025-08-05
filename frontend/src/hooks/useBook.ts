@@ -173,30 +173,46 @@ interface UseRecommendListResult {
   errorRecommended: string | null;
 }
 
-export const useRecommendList = (): UseRecommendListResult => {
+export const useRecommendList = (isbn: string | undefined): UseRecommendListResult => {
   const [recommendList, setRecommendList] = useState<BookDetail[] | null>(null);
-  const [isLoadingRecommended, setIsLoadingRecommended] = useState<boolean>(false);
-  const [errorRecommended, setErrorRecommended] = useState<string | null>(null);
+  const [isLoadingRecommended, setIsLoading] = useState<boolean>(false);
+  const [errorRecommended, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    // ✅ isbn이 없을 경우 API 호출을 막는 가드 절
+    if (!isbn) {
+      return;
+    }
     const fetchRecommendList = async () => {
       try {
-        setErrorRecommended(null);
-        const response = await axios.get('http://localhost:8000/books/random');
-        // 백엔드 응답이 `documents` 필드 안에 배열을 주는 경우
-        setRecommendList(response.data.documents || []);
-        setIsLoadingRecommended(true);
+        setIsLoading(true);
+        setError(null);
+        
+        // axios.get의 제네릭 타입을 명시하여 응답 데이터의 타입을 명확히 합니다.
+        // 백엔드가 BookDetail[]을 직접 반환한다고 가정합니다.
+        const response = await axios.get<BookDetail[]>(`http://localhost:8000/books/random`);
+        
+        setRecommendList(response.data); 
+        setIsLoading(false);
+
       } catch (err) {
-        console.error('추천 도서 불러오기 에러 (useRecommendList):', err);
-        setErrorRecommended('추천 도서를 불러오는 데 실패했습니다.');
-        setIsLoadingRecommended(false);
+        // Axios 에러 처리 강화: Hot10에서 했던 것처럼 상세 에러 메시지 로깅
+        if (axios.isAxiosError(err)) {
+          // 서버에서 보낸 에러 응답 데이터를 콘솔에 출력
+          console.error('검색 결과 불러오기 실패 (Axios 에러):', err.response?.data || err.message);
+          // 사용자에게 더 친절한 에러 메시지
+          setError(`검색 결과를 불러오는 데 실패했습니다: ${err.response?.status} ${err.response?.statusText || ''} - ${err.response?.data?.message || '알 수 없는 서버 오류'}`);
+        } else {
+          console.error('검색 결과 불러오기 실패 (알 수 없는 에러):', err);
+          setError('검색 결과를 불러오는 중 알 수 없는 오류가 발생했습니다.');
+        }
       } finally {
-        setIsLoadingRecommended(false);
+        setIsLoading(false);
       }
     };
 
     fetchRecommendList();
-  }, []); // 컴포넌트 마운트 시 한 번만 실행
+  }, [isbn]);
 
   return { recommendList, isLoadingRecommended, errorRecommended };
 };

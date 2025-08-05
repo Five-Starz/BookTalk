@@ -21,9 +21,7 @@ export const Good10 = () => {
     if (!apiData || !apiData.books || apiData.books.length === 0) {
       return <div className="p-4 text-center">평점이 높은 책 데이터를 찾을 수 없습니다.</div>;
     }
-
     const goodBooks = apiData.books;
-
 
   return (
     <div className="slider-container w-full">
@@ -32,8 +30,20 @@ export const Good10 = () => {
         style={{
           '--swiper-navigation-color': '#000',
         } as React.CSSProperties}
-        slidesPerView={5}
-        
+        breakpoints={{
+          300: {
+            slidesPerView: 1,
+            spaceBetween: 0
+          },
+          768: {
+            slidesPerView: 3,
+            spaceBetween: 10
+          },
+          1024: {
+            slidesPerView: 5,
+            spaceBetween: 30
+          }
+        }}
         loop={true}
         navigation={true}
         watchSlidesProgress={true}
@@ -46,10 +56,10 @@ export const Good10 = () => {
             <SwiperSlide>
               <Link key={book.isbn} to={`/book/${book.isbn}`}>
                 {/* 메인 슬라이더 이미지: book.thumbnail 사용 */}
-                <img className='min-h-[280px] rounded-xl mb-4' src={book.thumbnail} alt={book.title} />
-                  <h4 className="mb-4">{book.title}</h4>
-                  {/* authors가 string[]이므로 join으로 문자열로 변환 */}
-                  <p className="text-sm mb-10">{Array.isArray(book.authors) ? book.authors.join(', ') : book.authors}</p>
+                <img className='object-cover max-h-[200px] md:min-h-[280px] rounded-xl mb-4' src={book.thumbnail} alt={book.title} />
+                <h4 className="mb-4">{book.title.length > 18 ? (book.title.slice(0,18)+'...'): book.title}</h4>
+                {/* authors가 string[]이므로 join으로 문자열로 변환 */}
+                <p className="text-sm mb-10">{Array.isArray(book.authors) ? book.authors.join(', ') : book.authors}</p>
               </Link>
             </SwiperSlide>
           )
@@ -74,9 +84,7 @@ export const Want10 = () => {
     if (!apiData || !apiData.books || apiData.books.length === 0) {
       return <div className="p-4 text-center">보고 싶어요 수가 많은 책 데이터를 찾을 수 없습니다.</div>;
     }
-
     const wantBooks = apiData.books;
-
 
   return (
     <div className="slider-container w-full">
@@ -85,7 +93,16 @@ export const Want10 = () => {
         style={{
           '--swiper-navigation-color': '#000',
         } as React.CSSProperties}
-        slidesPerView={5}
+        breakpoints={{
+          768: {
+            slidesPerView: 3,
+            spaceBetween: 20
+          },
+          1024: {
+            slidesPerView: 5,
+            spaceBetween: 30
+          }
+        }}
         loop={true}
         navigation={true}
         watchSlidesProgress={true}
@@ -98,9 +115,9 @@ export const Want10 = () => {
               <Link key={book.isbn} to={`/book/${book.isbn}`}>
                 {/* 메인 슬라이더 이미지: book.thumbnail 사용 */}
                 <img className='min-h-[280px] rounded-xl mb-4' src={book.thumbnail} alt={book.title} />
-                  <h4 className="mb-4">{book.title}</h4>
-                  {/* authors가 string[]이므로 join으로 문자열로 변환 */}
-                  <p className="text-sm mb-10">{Array.isArray(book.authors) ? book.authors.join(', ') : book.authors}</p>
+                <h4 className="mb-4">{book.title.length > 10 ? (book.title.slice(0,10)+'...'): book.title}</h4>
+                {/* authors가 string[]이므로 join으로 문자열로 변환 */}
+                <p className="text-sm mb-10">{Array.isArray(book.authors) ? book.authors.join(', ') : book.authors}</p>
               </Link>
             </SwiperSlide>
           )
