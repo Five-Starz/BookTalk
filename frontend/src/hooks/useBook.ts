@@ -60,7 +60,6 @@ export const useBookDetails = (isbn: string | undefined): UseBookDetailsResult =
 
         // ✅ 응답이 배열 형태임을 가정하고 제네릭 타입 설정
         const response = await axios.get<BookDetail[]>(requestUrl);
-        console.log(response)
         
         // 검색 결과가 배열로 오므로, 첫 번째 책을 사용
         if (response.data && response.data.length > 0) {
@@ -125,8 +124,6 @@ export const useBookDetailsInMyPage = (isbn: string | undefined): UseBookDetails
       setIsLoading(true);
       setError(null);
       setBookData(null);
-
-      console.log("useBookDetailsInMyPage 훅에 사용되는 isbn:", isbn);
       
       try {
         const response = await axios.get<BookDetail>(`http://localhost:8000/books/info/${isbn}`);
@@ -221,7 +218,6 @@ export const useReviews = (isbn: string | undefined): UseReviewsResult => {
     if (!isbn) {
       setErrorReviews("리뷰를 불러올 ISBN이 없습니다.");
       setIsLoadingReviews(false);
-      console.log('useReviews: ISBN이 없어 조기 반환');
       return;
     }
 
@@ -266,7 +262,6 @@ export const useReviews = (isbn: string | undefined): UseReviewsResult => {
         }
       } finally {
         setIsLoadingReviews(false);
-        console.log('useReviews: 로딩 종료');
       }
     };
 

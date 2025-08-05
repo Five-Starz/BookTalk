@@ -305,7 +305,6 @@ export const useReviewDetails = (reviewId: number | undefined): UseReviewDetails
   const [reviewData, setReviewData] = useState<ReviewDetail | null>(null);
   const [isLoadingReview, setIsLoadingReview] = useState<boolean>(true);
   const [errorReview, setErrorReview] = useState<string | null>(null);
-  console.log("useReviewDetails hook을 통해 가져오는 아이디와 데이터:", reviewId, reviewData);
 
   useEffect(() => {
     const fetchReview = async () => {
@@ -325,7 +324,6 @@ export const useReviewDetails = (reviewId: number | undefined): UseReviewDetails
         const responseComment=await axios.get(requestUrl);
         // ✅ 응답 데이터 디코딩 (필요한 필드만)
         const rawReview = response.data;
-        console.log("응답해서 가져온 데이터",rawReview)
         rawReview.commentCount=responseComment.data;
         setReviewData(rawReview);
         // ✅ 수정: 데이터 로딩 성공 후 로딩 상태를 false로 변경
@@ -353,7 +351,7 @@ export const useRevCommentForm = ({ reviewId, userId, refetch }: UseRevCommentFo
     reviewId: reviewId, // ✅ reviewId는 prop으로 받은 그대로 사용 (number 타입 유지)
     parentId: null,    // ✅ parentId는 초기값을 null로 설정 (number | null 타입 유지)
     userId: userId,    // ✅ userId는 prop으로 받은 그대로 사용
-    content: ''
+    content: '',
   });
 
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -413,7 +411,7 @@ export const useRevCommentForm = ({ reviewId, userId, refetch }: UseRevCommentFo
         },
         { headers: headers }
       );
-      console.log('댓글 작성 성공:', response.data);
+      console.log(response)
       setSubmitSuccess(true);
       setFormData(prev => ({ // 댓글 작성 성공 후 폼 초기화
         ...prev,
