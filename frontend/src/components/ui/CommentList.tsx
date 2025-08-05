@@ -89,7 +89,7 @@ const CommentList: React.FC<CommentListProps> = ({ reviewId }) => {
 
   return (
     <div className="mt-8">
-      <h3 className="text-xl font-bold mb-4">댓글 {comments.length}</h3>
+      <h3 className="text-xl font-bold mb-4">댓글 {comments.filter(comment => comment.status === 'NORMAL').length}</h3>
       <form onSubmit={handleSubmit} className="mb-6">
         <textarea
           className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
