@@ -27,7 +27,7 @@ const RecommendList = ({
           <div className='justify-between gap-2 hidden md:flex'>
             {recommendList.slice(0, 5).map((book) => (
               <Link to={`/book/${book.isbn}`}>
-                <BookCard key={book.isbn} book={book} width='full' />
+                <BookCard key={book.isbn} book={book} />
               </Link>
             ))}
           </div>
@@ -35,7 +35,7 @@ const RecommendList = ({
           <div className="flex justify-between gap-2 md:hidden">
             {recommendList.slice(0, 3).map((book) => (
               <Link to={`/book/${book.isbn}`}>
-                <BookCard key={book.isbn} book={book} width='full' />
+                <BookCard key={book.isbn} book={book} />
               </Link>
             ))}
           </div>

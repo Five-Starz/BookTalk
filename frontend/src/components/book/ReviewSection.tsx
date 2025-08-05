@@ -16,7 +16,7 @@ const ReviewsSection = ({ reviews, isLoading, error, bookData }: ReviewsSectionP
   if (!reviews || reviews.length === 0) {
     return <div className='text-center'>이 책에 대한 리뷰가 아직 없습니다.</div>;
   }
-  console.log(reviews)
+  
   const isbn = getPrimaryIsbn(bookData.isbn);
 
   return (
