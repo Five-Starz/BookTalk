@@ -45,19 +45,24 @@ const Book = () => {
 
   // isbn 값이 없는 경우는 useBookDetails 훅에서 이미 처리되었으므로 여기서 다시 확인할 필요는 없습니다.
   // (useBookDetails 훅의 early return 로직 때문)
-
   return (
     <div className='flex flex-col gap-12 md:gap-20'>
       <BookInfo book={bookData} />
 
       {/* ReviewsSection과 RecommendList는 이제 각 섹션의 로딩/에러/데이터 없음 상태를 스스로 처리합니다. */}
-      <ReviewsSection 
-        reviews={reviews} 
-        isLoading={isLoadingReviews} 
-        error={errorReviews}
-        bookData={bookData} // ✅ 부모 컴포넌트에서 bookData를 직접 전달
-      />
+      {errorReviews ? 
+      
+        <div className="flex justify-center items-center h-48">
+          리뷰가 존재하지 않습니다.
+        </div> : 
 
+        <ReviewsSection 
+          reviews={reviews} 
+          isLoading={isLoadingReviews} 
+          error={errorReviews}
+          bookData={bookData} // ✅ 부모 컴포넌트에서 bookData를 직접 전달
+        />
+      }
       <RecommendList
         recommendList={recommendList} 
         isLoading={isLoadingRecommended} 

@@ -15,15 +15,15 @@ import '../index.css'
 
 interface RatingStarProps {
   // `ratingIndex`는 현재 선택된(저장된) 평점 점수를 나타냅니다.
-  ratingIndex: number; 
+  ratingIndex: number;
   // `setRatingIndex`는 부모 컴포넌트의 평점 상태를 업데이트하는 함수입니다.
-  setRatingIndex: (newRating: number) => void; 
+  setRatingIndex: (newRating: number) => void;
 }
 
 export const RatingStar: React.FC<RatingStarProps> = ({ ratingIndex, setRatingIndex }) => {
   // `isHover`는 마우스 오버 상태를 로컬에서 관리하여 별점 아이콘의 시각적 효과를 제어합니다.
   const [, setIsHover] = useState<boolean[]>([false, false, false, false, false]);
-  
+
   // `displayScore`는 마우스 오버 시 일시적으로 보여줄 평점 점수를 추적합니다.
   // 마우스가 별점 영역을 벗어나면 `ratingIndex` (실제 저장된 점수)로 되돌아갑니다.
   const [displayScore, setDisplayScore] = useState<number>(ratingIndex);
@@ -145,7 +145,7 @@ export const useReviewForm = ({ initialIsbn, bookData, userId }: UseReviewFormPr
 
     if (!formData.isbn || !formData.content || formData.rating < 1 || formData.rating > 5) {
       setSubmitError("모든 필수 정보를 입력해 주세요.");
-      return; 
+      return;
     }
 
     setIsSubmitting(true);
@@ -157,7 +157,7 @@ export const useReviewForm = ({ initialIsbn, bookData, userId }: UseReviewFormPr
       const headers = accessToken ? {
         Authorization: `Bearer ${accessToken}`
       } : {};
-      
+
       const response = await axios.post('http://localhost:8000/reviews', formData, {
         headers: headers
       });
@@ -254,7 +254,7 @@ export const useEditReviewForm = ({ existingReview }: UseEditReviewFormProps): U
         content: formData.content,
         userId: existingReview.userId // 기존 리뷰의 userId를 사용
       };
-      
+
       // ✅ axios.put으로 리뷰 수정 API 호출
       // 백엔드 API 엔드포인트에 맞게 수정: reviews/{reviewId}
       const response = await axios.patch(`http://localhost:8000/reviews/${existingReview.reviewId}`, updateData, {
@@ -265,11 +265,11 @@ export const useEditReviewForm = ({ existingReview }: UseEditReviewFormProps): U
 
       console.log('리뷰 수정 성공:', response.data);
       setSubmitSuccess(true);
-      
+
       // 수정 후 해당 책 상세 페이지로 이동
       const finalIsbn = getPrimaryIsbn(existingReview.isbn);
       navigate(`/book/${finalIsbn}`);
-      
+
     } catch (error) {
       console.error('리뷰 수정 실패:', error);
       if (axios.isAxiosError(error)) {

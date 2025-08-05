@@ -1,6 +1,7 @@
 import React from 'react';
 import type { Comment } from '../../types/CommentTypes'
 import User from './User'; // 유저 닉네임을 표시하는 User 컴포넌트
+import { Link } from 'react-router-dom';
 
 interface CommentCardProps {
   comment: Comment;
@@ -25,7 +26,7 @@ const CommentCard: React.FC<CommentCardProps> = ({
   return (
     <div className={`p-3 mb-3 ${comment.parentId ? 'bg-gray-50 rounded-lg' : 'bg-white border-b border-[#eee]'}`}>
       <div className="flex justify-between items-center mb-2">
-        <User nickname={comment.users.nickname} width='6' />
+        <Link to={`/user/${comment.users.userId}`}><User nickname={comment.users.nickname} width='6' /></Link>
         <span className="text-sm text-gray-500">{new Date(comment.createdAt).toLocaleString()}</span>
       </div>
       <p className="text-gray-800">{comment.content}</p>
