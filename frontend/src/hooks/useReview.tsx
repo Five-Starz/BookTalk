@@ -261,14 +261,10 @@ export const useEditReviewForm = ({ existingReview }: UseEditReviewFormProps): U
         headers: headers
       });
 
-    console.log(5)
-
       console.log('리뷰 수정 성공:', response.data);
       setSubmitSuccess(true);
-
-      // 수정 후 해당 책 상세 페이지로 이동
-      const finalIsbn = getPrimaryIsbn(existingReview.isbn);
-      navigate(`/book/${finalIsbn}`);
+      
+      navigate(`/mypage/reviews`);
 
     } catch (error) {
       console.error('리뷰 수정 실패:', error);

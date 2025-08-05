@@ -20,5 +20,5 @@ export interface BookApiResponse {
 
 export interface BookCardProps {
   book: BookDetail; // 책 데이터 전체를 받을 prop 추가
-  width: string; // '1/3', 'full', '80', 'px-10' 등 Tailwind 클래스 문자열을 받음
+ // '1/3', 'full', '80', 'px-10' 등 Tailwind 클래스 문자열을 받음
 }

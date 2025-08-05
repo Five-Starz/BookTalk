@@ -94,7 +94,7 @@ const SearchList = () => {
               to={`/book/${finalIsbn}`} 
               className={`flex flex-col items-center p-2`}
             >
-              <BookCard book={book} width='full' />
+              <BookCard book={book} />
             </Link>
           );
         })}
