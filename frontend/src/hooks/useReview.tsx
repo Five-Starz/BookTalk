@@ -458,6 +458,7 @@ interface UseCommentsResult {
   comments: Comment[];
   isLoadingComments: boolean;
   errorComments: string | null;
+  commentCount:number;
   refetch: () => void;
 }
 
@@ -501,7 +502,7 @@ export const useComments = (reviewId: number): UseCommentsResult => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [isLoadingComments, setIsLoadingComments] = useState<boolean>(true);
   const [errorComments, setErrorComments] = useState<string | null>(null);
-
+  const [commentCount,setCommentCount]=useState<number>(0)
   // ✅ 데이터를 불러오는 로직을 별도의 함수로 분리
   const fetchComments = async () => {
     setIsLoadingComments(true);
@@ -515,6 +516,8 @@ export const useComments = (reviewId: number): UseCommentsResult => {
 
     try {
       const response = await axios.get(`http://localhost:8000/comment/review/${reviewId}`);
+      const responseComment=await axios.get(`http://localhost:8000/comment/review/count/${reviewId}`);
+      setCommentCount(responseComment.data);
       const nestedComments = nestComments(response.data);
       setComments(nestedComments);
     } catch (err) {
@@ -531,5 +534,5 @@ export const useComments = (reviewId: number): UseCommentsResult => {
   }, [reviewId]);
 
   // ✅ refetch 함수를 반환 객체에 추가
-  return { comments, isLoadingComments, errorComments, refetch: fetchComments };
+  return { comments, isLoadingComments, errorComments,commentCount, refetch: fetchComments };
 };
