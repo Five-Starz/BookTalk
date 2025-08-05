@@ -236,7 +236,7 @@ export const useReviews = (isbn: string | undefined): UseReviewsResult => {
           responseCount = await axios.post(`http://localhost:8000/likes/count`, {
            reviewId: `${response.data[i].reviewId}`
           });
-          response.data[i].rating=responseCount.data;
+          response.data[i].likeCount=responseCount.data;
           requestUrl2=`http://localhost:8000/comment/review/count/${response.data[i].reviewId}`;
           responseComment=await axios.get(requestUrl2);
           response.data[i].commentCount=responseComment.data;

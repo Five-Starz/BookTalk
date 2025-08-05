@@ -322,6 +322,10 @@ export const useReviewDetails = (reviewId: number | undefined): UseReviewDetails
         const response = await axios.get<ReviewDetail>(`http://localhost:8000/reviews/${reviewId}`);
         const requestUrl=`http://localhost:8000/comment/review/count/${reviewId}`;
         const responseComment=await axios.get(requestUrl);
+        const responseLikeCount = await axios.post(`http://localhost:8000/likes/count`, {
+           reviewId: `${reviewId}`
+          });
+          response.data.likeCount=responseLikeCount.data;
         // ✅ 응답 데이터 디코딩 (필요한 필드만)
         const rawReview = response.data;
         rawReview.commentCount=responseComment.data;

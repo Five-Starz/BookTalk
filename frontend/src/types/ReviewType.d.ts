@@ -9,6 +9,7 @@ export interface ReviewDetail {
   userId: number;
   commentCount: number;
   isbn: string;
+  likeCount:number;
 }
 
 export interface ReviewCardProps {
