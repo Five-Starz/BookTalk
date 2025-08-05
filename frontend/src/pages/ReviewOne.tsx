@@ -8,7 +8,6 @@ import { useBookDetailsInMyPage } from '../hooks/useBook'; // 책 정보만 가�
 const ReviewOne = () => {
   const { reviewId: reviewIdParam } = useParams<{ reviewId: string }>();
   const reviewId = reviewIdParam ? parseInt(reviewIdParam, 10) : undefined;
-  console.log(reviewId)
 
   // ✅ Step 1: reviewId를 사용하여 리뷰 정보를 가져옵니다.
   const { reviewData, isLoadingReview, errorReview } = useReviewDetails(reviewId);

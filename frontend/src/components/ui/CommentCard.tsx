@@ -21,42 +21,44 @@ const CommentCard: React.FC<CommentCardProps> = ({
   onReply,
 }) => {
   const isMyComment = comment.userId === currentUserId;
+  const isDeleted = comment.status === 'DELETED'; 
 
   return (
-    <div className={`p-3 rounded-lg mb-2 ${comment.parentId ? 'bg-gray-50' : 'bg-white'}`}>
+    <div className={`p-3 mb-3 ${comment.parentId ? 'bg-gray-50 rounded-lg' : 'bg-white border-b border-[#eee]'}`}>
       <div className="flex justify-between items-center mb-2">
         <Link to={`/user/${comment.users.userId}`}><User nickname={comment.users.nickname} width='6' /></Link>
         <span className="text-sm text-gray-500">{new Date(comment.createdAt).toLocaleString()}</span>
       </div>
       <p className="text-gray-800">{comment.content}</p>
 
-      {isLoggedIn && (
-      <div className="flex justify-end gap-2 mt-2 text-sm">
-        {isMyComment && (
-          <>
+      {isLoggedIn && !isDeleted && ( // 로그인 상태이고 삭제된 댓글이 아닐 때만 액션 버튼 표시
+        <div className="flex justify-end gap-2 mt-2 text-sm">
+          {isMyComment && (
+            <>
+              <button
+                className="text-blue-500 hover:underline"
+                onClick={() => onEdit(comment.commentId, comment.content)}
+              >
+                수정
+              </button>
+              <button
+                className="text-red-500 hover:underline"
+                onClick={() => onDelete(comment.commentId)}
+              >
+                삭제
+              </button>
+            </>
+          )}
+          {comment.parentId === null && ( // 최상위 댓글일 때만 답글 버튼 표시
             <button
-              className="text-blue-500 hover:underline"
-              onClick={() => onEdit(comment.commentId, comment.content)}
+              className="text-gray-600 hover:underline"
+              onClick={() => onReply(comment.commentId)}
             >
-              수정
+              답글
             </button>
-            <button
-              className="text-red-500 hover:underline"
-              onClick={() => onDelete(comment.commentId)}
-            >
-              삭제
-            </button>
-          </>
-        )}
-        {comment.parentId === null && (
-          <button
-            className="text-gray-600 hover:underline"
-            onClick={() => onReply(comment.commentId)}
-          >
-            답글
-          </button>
-        )}
-      </div>)}
+          )}
+        </div>
+      )}
 
       {/* 대댓글이 있다면 재귀적으로 CommentItem 렌더링 */}
       {comment.replies && comment.replies.length > 0 && (
