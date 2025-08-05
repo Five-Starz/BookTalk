@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 import type { ReviewDetail } from '../types/ReviewType';
-import type { ReviewSubmitData, UseReviewFormProps, UseReviewFormResult } from '../types/ReviewType'; // 제출용 리뷰 데이터 타입 임포트
+import type { ReviewSubmitData, UseReviewFormProps, UseReviewFormResult, UseEditReviewFormProps, UseEditReviewFormResult, ReviewEditedData } from '../types/ReviewType'; // 제출용 리뷰 데이터 타입 임포트
 import type { RevCommentSubmitData, UseRevCommentFormProps, UseRevCommentFormResult } from '../types/CommentTypes'
 import type { Comment } from '../types/CommentTypes';
 import { FaStar } from 'react-icons/fa'
@@ -86,7 +86,7 @@ export const RatingStar: React.FC<RatingStarProps> = ({ ratingIndex, setRatingIn
 
 
 
-export const useReviewForm = ({ initialIsbn, bookData }: UseReviewFormProps): UseReviewFormResult => {
+export const useReviewForm = ({ initialIsbn, bookData, userId }: UseReviewFormProps): UseReviewFormResult => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState<ReviewSubmitData>({
@@ -98,7 +98,8 @@ export const useReviewForm = ({ initialIsbn, bookData }: UseReviewFormProps): Us
     thumbnail: '',
     description: '',
     rating: 0,
-    content: ''
+    content: '',
+    userId: userId
   });
 
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -143,7 +144,7 @@ export const useReviewForm = ({ initialIsbn, bookData }: UseReviewFormProps): Us
     e.preventDefault();
 
     if (!formData.isbn || !formData.content || formData.rating < 1 || formData.rating > 5) {
-      setSubmitError("모든 필수 정보를 입력하고 평점을 1-5 사이로 설정해주세요.");
+      setSubmitError("모든 필수 정보를 입력해 주세요.");
       return; 
     }
 
@@ -156,8 +157,7 @@ export const useReviewForm = ({ initialIsbn, bookData }: UseReviewFormProps): Us
       const headers = accessToken ? {
         Authorization: `Bearer ${accessToken}`
       } : {};
-
-      // ✅ axios.post의 세 번째 인자로 headers 객체를 정확히 전달했는지 확인합니다.
+      
       const response = await axios.post('http://localhost:8000/reviews', formData, {
         headers: headers
       });
@@ -171,6 +171,109 @@ export const useReviewForm = ({ initialIsbn, bookData }: UseReviewFormProps): Us
       console.error('리뷰 작성 실패:', error);
       if (axios.isAxiosError(error)) {
         setSubmitError(error.response?.data?.message || "리뷰 작성 중 오류가 발생했습니다.");
+      } else {
+        setSubmitError("알 수 없는 오류가 발생했습니다.");
+      }
+      setIsSubmitting(false);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return {
+    formData,
+    handleChange,
+    handleRatingChange,
+    handleSubmit,
+    isSubmitting,
+    submitError,
+    submitSuccess
+  };
+};
+
+
+export const useEditReviewForm = ({ existingReview }: UseEditReviewFormProps): UseEditReviewFormResult => {
+  const navigate = useNavigate();
+
+  // 폼 초기 상태: 기존 리뷰 데이터로 채워 넣기
+  const [formData, setFormData] = useState<{ rating: number; content: string }>({
+    rating: Number(existingReview?.rating) || 0,
+    content: existingReview?.content || '' // ✅ 기존 리뷰 내용으로 초기화
+  });
+
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [submitSuccess, setSubmitSuccess] = useState<boolean>(false);
+
+  // 기존 리뷰 데이터가 비동기적으로 로드되면 폼 데이터 업데이트
+  useEffect(() => {
+    if (existingReview) {
+      setFormData({
+        rating: Number(existingReview.rating),
+        content: existingReview.content // ✅ 기존 리뷰 내용으로 업데이트
+      });
+    }
+  }, [existingReview]);
+
+  // 입력 필드 변경 핸들러
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prevData => ({
+      ...prevData,
+      [name]: name === 'rating' ? Number(value) : value
+    }));
+  };
+
+  // 평점 변경 핸들러
+  const handleRatingChange = (newRating: number) => {
+    setFormData(prevData => ({
+      ...prevData,
+      rating: newRating
+    }));
+  };
+
+  // ✅ 폼 제출 핸들러 (수정 로직)
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+
+    if (!existingReview || !formData.content || formData.rating < 1 || formData.rating > 5) {
+      setSubmitError("모든 필수 정보를 입력해 주세요.");
+      return;
+    }
+
+    setIsSubmitting(true);
+    setSubmitError(null);
+    setSubmitSuccess(false);
+
+    try {
+      const accessToken = localStorage.getItem('accessToken');
+      const headers = accessToken ? { Authorization: `Bearer ${accessToken}` } : {};
+
+      const updateData: ReviewEditedData = {
+        rating: formData.rating,
+        content: formData.content,
+        userId: existingReview.userId // 기존 리뷰의 userId를 사용
+      };
+      
+      // ✅ axios.put으로 리뷰 수정 API 호출
+      // 백엔드 API 엔드포인트에 맞게 수정: reviews/{reviewId}
+      const response = await axios.patch(`http://localhost:8000/reviews/${existingReview.reviewId}`, updateData, {
+        headers: headers
+      });
+
+    console.log(5)
+
+      console.log('리뷰 수정 성공:', response.data);
+      setSubmitSuccess(true);
+      
+      // 수정 후 해당 책 상세 페이지로 이동
+      const finalIsbn = getPrimaryIsbn(existingReview.isbn);
+      navigate(`/book/${finalIsbn}`);
+      
+    } catch (error) {
+      console.error('리뷰 수정 실패:', error);
+      if (axios.isAxiosError(error)) {
+        setSubmitError(error.response?.data?.message || "리뷰 수정 중 오류가 발생했습니다.");
       } else {
         setSubmitError("알 수 없는 오류가 발생했습니다.");
       }
@@ -190,6 +293,8 @@ export const useReviewForm = ({ initialIsbn, bookData }: UseReviewFormProps): Us
   };
 };
 
+
+
 interface UseReviewDetailsResult {
   reviewData: ReviewDetail | null;
   isLoadingReview: boolean;
@@ -200,6 +305,7 @@ export const useReviewDetails = (reviewId: number | undefined): UseReviewDetails
   const [reviewData, setReviewData] = useState<ReviewDetail | null>(null);
   const [isLoadingReview, setIsLoadingReview] = useState<boolean>(true);
   const [errorReview, setErrorReview] = useState<string | null>(null);
+  console.log("useReviewDetails hook을 통해 가져오는 아이디와 데이터:", reviewId, reviewData);
 
   useEffect(() => {
     const fetchReview = async () => {
@@ -218,11 +324,14 @@ export const useReviewDetails = (reviewId: number | undefined): UseReviewDetails
         
         // ✅ 응답 데이터 디코딩 (필요한 필드만)
         const rawReview = response.data;
-        console.log(rawReview)
+        console.log("응답해서 가져온 데이터",rawReview)
         setReviewData(rawReview);
+        // ✅ 수정: 데이터 로딩 성공 후 로딩 상태를 false로 변경
+        setIsLoadingReview(false);
       } catch (err) {
         console.error('리뷰 상세 정보 불러오기 에러:', err);
         setErrorReview('리뷰 정보를 불러오는 데 실패했습니다.');
+        setIsLoadingReview(false);
       } finally {
         setIsLoadingReview(false);
       }

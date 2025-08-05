@@ -2,31 +2,25 @@ import React from 'react'
 import User from './User';
 import type { ReviewCardProps } from '../../types/ReviewType';
 import { useUserNickname } from '../../hooks/useUser'
-import { useReviewDetails } from '../../hooks/useReview'; // useReviewDetails 훅 임포트
-import { useParams } from 'react-router-dom';
+// import { useReviewDetails } from '../../hooks/useReview'; // useReviewDetails 훅 임포트
+// import { useParams } from 'react-router-dom';
 
 
 const ReviewCard = ({review}: ReviewCardProps ) => {
-  const { reviewId: reviewIdParam } = useParams<{ reviewId: string }>();
-  const reviewId = reviewIdParam ? parseInt(reviewIdParam, 10) : undefined;
+  // const { reviewId: reviewIdParam } = useParams<{ reviewId: string }>();
+  // const reviewId = reviewIdParam ? parseInt(reviewIdParam, 10) : undefined;
   
   const { nickname } = useUserNickname(review?.userId);
-  const { reviewData, isLoadingReview, errorReview } = useReviewDetails(reviewId);
+  // const { reviewData, isLoadingReview, errorReview } = useReviewDetails(reviewId);
 
-  if (reviewId === undefined) {
-    return <div className="p-4 text-center">잘못된 접근입니다.</div>;
-  }
   
   // ✅ 로딩, 에러, 데이터 없음 상태를 훅의 값으로 처리합니다.
-  if (isLoadingReview) {
-    return <div className="p-4 text-center">리뷰 정보를 불러오는 중입니다...</div>;
-  }
-  if (errorReview) {
-    return <div className="p-4 text-center text-red-500">{errorReview}</div>;
-  }
-  if (!reviewData) {
-    return <div className="p-4 text-center">리뷰 정보를 찾을 수 없습니다.</div>;
-  }
+  // if (isLoadingReview) {
+  //   return <div className="p-4 text-center">리뷰 정보를 불러오는 중입니다...</div>;
+  // }
+  // if (errorReview) {
+  //   return <div className="p-4 text-center text-red-500">{errorReview}</div>;
+  // }
 
 
   return (

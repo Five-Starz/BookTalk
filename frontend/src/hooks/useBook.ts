@@ -110,7 +110,7 @@ export const useBookDetails = (isbn: string | undefined): UseBookDetailsResult =
 
 export const useBookDetailsInMyPage = (isbn: string | undefined): UseBookDetailsResult => {
   const [bookData, setBookData] = useState<BookDetail | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -122,12 +122,14 @@ export const useBookDetailsInMyPage = (isbn: string | undefined): UseBookDetails
     }
 
     const fetchBookDetails = async () => {
+      setIsLoading(true);
       setError(null);
-      setBookData(null); 
+      setBookData(null);
+
+      console.log("useBookDetailsInMyPage 훅에 사용되는 isbn:", isbn);
       
       try {
         const response = await axios.get<BookDetail>(`http://localhost:8000/books/info/${isbn}`);
-        console.log(isbn)
         
         if (response.data) {
           const book = response.data;
@@ -145,16 +147,18 @@ export const useBookDetailsInMyPage = (isbn: string | undefined): UseBookDetails
           };
 
           setBookData(decodedBook);
-          setIsLoading(true);
+          setIsLoading(false);
         } else {
           setBookData(null);
           setError('요청하신 ISBN에 해당하는 책을 찾을 수 없습니다.');
+          setIsLoading(false);
         }
 
       } catch (err) {
         console.error('useBookDetailsInMyPage.ts: API 요청 에러 발생:', err);
         setError('책 정보를 불러오는 중 알 수 없는 오류가 발생했습니다.');
         setBookData(null);
+        setIsLoading(false);
       } finally {
         setIsLoading(false);
       }

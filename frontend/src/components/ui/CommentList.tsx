@@ -1,8 +1,10 @@
 import React from 'react';
 import axios from 'axios';
+import { useState } from 'react';
 import { useComments, useRevCommentForm } from '../../hooks/useReview';
 import { useAuthStore } from '../../store/authStore';
 import { useUserStore } from '../../store/userStore';
+import User from './User';
 import CommentCard from './CommentCard';
 
 interface CommentListProps {
@@ -15,7 +17,6 @@ const CommentList: React.FC<CommentListProps> = ({ reviewId }) => {
   // ✅ 1. Zustand 스토어에서 전역 상태 가져오기
   const { isLoggedIn, accessToken } = useAuthStore();
   const { userId } = useUserStore();
-  console.log(isLoggedIn, userId)
 
   // ✅ 댓글 폼 훅 사용
   const {
@@ -28,9 +29,41 @@ const CommentList: React.FC<CommentListProps> = ({ reviewId }) => {
     submitSuccess,
   } = useRevCommentForm({ reviewId, userId: userId || 0, refetch });
 
-  const handleEditComment = (commentId: number, newContent: string) => {
-    // 여기에 댓글 수정 API 호출 로직 구현
-    console.log(`댓글 수정: ${commentId}, 내용: ${newContent}`);
+  // ✅ 1. 수정 상태 관리를 위한 state 추가
+  const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
+  const [editedContent, setEditedContent] = useState<string>('');
+
+  // ✅ 2. 댓글 수정 시작 핸들러
+  const handleStartEdit = (commentId: number, currentContent: string) => {
+    setEditingCommentId(commentId);
+    setEditedContent(currentContent);
+  };
+
+  // ✅ 3. 댓글 수정 취소 핸들러
+  const handleCancelEdit = () => {
+    setEditingCommentId(null);
+    setEditedContent('');
+  };
+
+  const handleEditComment = async (commentId: number) => {
+    if (!editedContent.trim()) {
+      alert("댓글 내용을 입력해주세요.");
+      return;
+    }
+
+    try {
+      await axios.put(
+        `http://localhost:8000/comment/update`,
+        { commentId: commentId, content: editedContent }, // ✅ body 객체 형식으로 전달
+        { headers: { Authorization: `Bearer ${accessToken}` } }
+      );
+      setEditingCommentId(null); // 수정 폼 닫기
+      setEditedContent('');
+      refetch(); // 수정 후 댓글 목록 다시 불러오기
+    } catch(e) {
+      console.error(e);
+      alert("댓글 수정 실패했습니다.");
+    }
   };
 
   const handleDeleteComment = async (commentId: number) => {
@@ -67,7 +100,7 @@ const CommentList: React.FC<CommentListProps> = ({ reviewId }) => {
           rows={3}
         ></textarea>
         {submitError && <p className="text-red-500 text-sm mt-1">{submitError}</p>}
-        {submitSuccess && <p className="text-green-500 text-sm mt-1">댓글이 성공적으로 작성되었습니다!</p>}
+        {submitSuccess}
         <div className="flex justify-end gap-2 mt-2">
           {formData.parentId !== null && ( // 대댓글 모드일 때만 '취소' 버튼 표시
             <button
@@ -94,15 +127,48 @@ const CommentList: React.FC<CommentListProps> = ({ reviewId }) => {
       ) : (
         <div>
           {comments.map(comment => (
-            <CommentCard
-              key={comment.commentId}
-              comment={comment}
-              currentUserId={userId}
-              isLoggedIn={isLoggedIn}
-              onEdit={handleEditComment}
-              onDelete={handleDeleteComment}
-              onReply={handleReply}
-            />
+            <div key={comment.commentId}>
+              {/* ✅ 5. 수정 중인 댓글인 경우와 아닌 경우를 조건부 렌더링 */}
+              {editingCommentId === comment.commentId ? (
+                // ✅ 수정 폼
+                <div className="p-4 mb-4">
+                  <User nickname={comment.users.nickname} width='6' />
+                  <textarea
+                    className="w-full mt-3 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    value={editedContent}
+                    onChange={(e) => setEditedContent(e.target.value)}
+                    rows={3}
+                  />
+                  <div className="flex justify-end gap-2 mt-2">
+                    <button
+                      type="button"
+                      className="px-4 py-2 text-gray-600 rounded-lg hover:bg-gray-200"
+                      onClick={handleCancelEdit}
+                    >
+                      취소
+                    </button>
+                    <button
+                      type="button"
+                      className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+                      onClick={() => handleEditComment(comment.commentId)}
+                    >
+                      저장
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                // ✅ 일반 댓글 카드 (기존 CommentCard 사용)
+                <CommentCard
+                  key={comment.commentId}
+                  comment={comment}
+                  currentUserId={userId}
+                  isLoggedIn={isLoggedIn}
+                  onEdit={handleStartEdit} // ✅ 수정 시작 핸들러 연결
+                  onDelete={handleDeleteComment}
+                  onReply={handleReply}
+                />
+              )}
+            </div>
           ))}
         </div>
       )}
