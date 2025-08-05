@@ -1,4 +1,4 @@
-import { Bookmarks } from "@prisma/client";
+import { Bookmarks,Books } from "@prisma/client";
 import { prisma } from "../utils/prisma";
 
 export class BookmarksRepository{
@@ -23,6 +23,12 @@ export class BookmarksRepository{
 
   //근데 한번 눌렀으면 또 못누르게 설정을 해야하는데 findByUserAndReview검색 후에 없으면 생성되도록 설정해야 함
   async create(userId:number, isbn:string):Promise<Bookmarks>{
+    await prisma.books.update({
+      where:{isbn},
+      data:{
+        bookmarkCount:{increment:1} 
+      }
+    });
     return await prisma.bookmarks.create({
       data:{userId,isbn}
     });
@@ -39,10 +45,16 @@ export class BookmarksRepository{
         }
       }
     });
-    if(deleteLike)
-      return true
-    else
-      return false
+    if(deleteLike){
+      await prisma.books.update({
+        where:{isbn},
+        data:{
+          bookmarkCount:{decrement:1} 
+        }
+      });
+      return true;
+    }else
+      return false;
   };  
 
   //특정 책 좋아요 개수
