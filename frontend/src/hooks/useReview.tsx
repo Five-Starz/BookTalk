@@ -321,10 +321,12 @@ export const useReviewDetails = (reviewId: number | undefined): UseReviewDetails
       try {
         // ✅ 리뷰 상세 정보를 가져오는 API 엔드포인트에 맞게 수정
         const response = await axios.get<ReviewDetail>(`http://localhost:8000/reviews/${reviewId}`);
-        
+        const requestUrl=`http://localhost:8000/comment/review/count/${reviewId}`;
+        const responseComment=await axios.get(requestUrl);
         // ✅ 응답 데이터 디코딩 (필요한 필드만)
         const rawReview = response.data;
         console.log("응답해서 가져온 데이터",rawReview)
+        rawReview.commentCount=responseComment.data;
         setReviewData(rawReview);
         // ✅ 수정: 데이터 로딩 성공 후 로딩 상태를 false로 변경
         setIsLoadingReview(false);
