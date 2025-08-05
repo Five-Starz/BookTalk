@@ -8,6 +8,7 @@ import { useBookDetailsInMyPage } from '../hooks/useBook'; // 책 정보만 가�
 const ReviewOne = () => {
   const { reviewId: reviewIdParam } = useParams<{ reviewId: string }>();
   const reviewId = reviewIdParam ? parseInt(reviewIdParam, 10) : undefined;
+  console.log(reviewId)
 
   // ✅ Step 1: reviewId를 사용하여 리뷰 정보를 가져옵니다.
   const { reviewData, isLoadingReview, errorReview } = useReviewDetails(reviewId);
@@ -19,8 +20,6 @@ const ReviewOne = () => {
   if (reviewId === undefined) {
     return <div>잘못된 접근입니다.</div>;
   }
-
-  const currentUserId = 1;
 
   // ✅ 로딩 및 에러 처리 로직을 통합합니다.
   if (isLoadingReview || isLoading) {
@@ -64,7 +63,7 @@ const ReviewOne = () => {
         </>
         {/* ✅ ReviewCard에 데이터만 props로 전달 */}
         <ReviewCard review={reviewData} />
-        <CommentList reviewId={reviewId} currentUserId={currentUserId} />
+        <CommentList reviewId={reviewId} />
       </div>
     </div>
   );

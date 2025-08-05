@@ -3,15 +3,17 @@ import { useParams } from 'react-router-dom';
 import { useBookDetails } from '../hooks/useBook'; // 책 정보 불러오는 훅
 
 import { RatingStar, useReviewForm } from '../hooks/useReview'; 
+import { useUserStore } from '../store/userStore';
 
 
 const WriteReview: React.FC = () => {
-  const { isbn } = useParams<{ isbn: string }>(); 
+  const { isbn } = useParams<{ isbn: string }>();
+  const {userId} = useUserStore();
 
   // 책 정보 로딩 훅 (이 훅은 그대로 여기에 둡니다. 폼 훅은 이 데이터를 받아서 사용해요.)
   const { bookData, isLoading: isLoadingBook, error: errorBook } = useBookDetails(isbn || '');
 
-  // ✅ useReviewForm 훅 사용
+  // ✅ useReviewForm 훅 사용 (currentUserId 전달)
   const {
     formData,
     handleChange,
@@ -20,7 +22,11 @@ const WriteReview: React.FC = () => {
     isSubmitting,
     submitError,
     submitSuccess
-  } = useReviewForm({ initialIsbn: isbn || '', bookData });
+  } = useReviewForm({ 
+    initialIsbn: isbn || '', 
+    bookData, 
+    userId: userId || 0
+  });
 
 
   // 로딩/에러/책 없음 상태 처리 (이전과 동일)

@@ -1,18 +1,22 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { useBookDetailsInMyPage } from '../hooks/useBook'
-import { RatingStar, useReviewForm, useReviewDetails } from '../hooks/useReview';
+import { RatingStar, useEditReviewForm, useReviewDetails } from '../hooks/useReview';
+import { useUserStore } from '../store/userStore';
 
 
 const EditReview: React.FC = () => {
   const { reviewId: reviewIdParam } = useParams<{ reviewId: string }>();
   const reviewId = reviewIdParam ? parseInt(reviewIdParam, 10) : undefined;
 
+  const {userId} = useUserStore();
+
   // ✅ 1. reviewId로 기존 리뷰 정보를 불러옵니다.
   const { reviewData: existingReview, isLoadingReview, errorReview } = useReviewDetails(reviewId);
+  console.log('기존 리뷰 정보:', existingReview)
 
   // ✅ 2. 기존 리뷰에 포함된 책 ISBN을 사용하여 책 정보를 불러옵니다.
-  const bookIsbn = existingReview?.book.isbn;
+  const bookIsbn = existingReview?.isbn;
   const { bookData, isLoading: isLoadingBook, error: errorBook } = useBookDetailsInMyPage(bookIsbn);
 
   // ✅ 3. useReviewForm 훅에 existingReview 데이터를 전달합니다.
@@ -24,7 +28,7 @@ const EditReview: React.FC = () => {
     isSubmitting,
     submitError,
     submitSuccess
-  } = useReviewForm({ bookData, existingReview });
+  } = useEditReviewForm({ existingReview, userId: userId || 0 });
 
 
   if (isLoadingReview || isLoadingBook) {
@@ -86,7 +90,7 @@ const EditReview: React.FC = () => {
               className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
               disabled={isSubmitting}
             >
-              {isSubmitting ? '리뷰 수정 중...' : '리뷰 수정 완료'}
+              {isSubmitting ? '리뷰 수정 중...' : '리뷰 수정'}
             </button>
           </div>
           {submitError && <p className="text-red-500 text-sm mt-4">{submitError}</p>}
