@@ -215,9 +215,11 @@ export const useReviewDetails = (reviewId: number | undefined): UseReviewDetails
       try {
         // ✅ 리뷰 상세 정보를 가져오는 API 엔드포인트에 맞게 수정
         const response = await axios.get<ReviewDetail>(`http://localhost:8000/reviews/${reviewId}`);
-        
+        const requestUrl=`http://localhost:8000/comment/review/count/${reviewId}`;
+        const responseComment=await axios.get(requestUrl);
         // ✅ 응답 데이터 디코딩 (필요한 필드만)
         const rawReview = response.data;
+        rawReview.commentCount=responseComment.data;
         console.log(rawReview)
         setReviewData(rawReview);
       } catch (err) {
