@@ -2,6 +2,7 @@ import React from 'react'
 import User from './User';
 import type { ReviewCardProps } from '../../types/ReviewType';
 import { useUserNickname } from '../../hooks/useUser'
+import { Link } from 'react-router-dom';
 // import { useReviewDetails } from '../../hooks/useReview'; // useReviewDetails 훅 임포트
 // import { useParams } from 'react-router-dom';
 
@@ -9,7 +10,7 @@ import { useUserNickname } from '../../hooks/useUser'
 const ReviewCard = ({review}: ReviewCardProps ) => {
   // const { reviewId: reviewIdParam } = useParams<{ reviewId: string }>();
   // const reviewId = reviewIdParam ? parseInt(reviewIdParam, 10) : undefined;
-  
+
   const { nickname } = useUserNickname(review?.userId);
   // const { reviewData, isLoadingReview, errorReview } = useReviewDetails(reviewId);
 
@@ -24,7 +25,9 @@ const ReviewCard = ({review}: ReviewCardProps ) => {
   return (
     <div className={`w-full bg-[#F6F6F6] rounded-lg p-4`}>
       <div className='flex flex-col gap-3'>
-        <User nickname={nickname} width='6' />
+        <Link to={`/user/${review.userId}`}>
+          <User nickname={nickname} width='6' />
+        </Link>
         <span className='block w-full h-[1px] bg-[#ddd]' />
         <div className="min-h-30 md:min-h-50 text-overflow">
           <p>{review.content}</p>
