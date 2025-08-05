@@ -7,7 +7,7 @@ import { Good10, Want10 } from '../components/main/BookList';
 
 const Home = () => {
   return (
-    <div className='flex flex-col gap-12 md:gap-20 pt-[105px] pb-[200px]'>
+    <div className='flex flex-col gap-12 md:gap-20 pt-[105px] pb-[10%] md:pb-[200px]'>
       <link
         rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"

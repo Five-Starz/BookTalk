@@ -41,62 +41,64 @@ const WriteReview: React.FC = () => {
   }
 
   return (
-    <div className="flex justify-between items-start gap-4">
-      {/* 썸네일과 책 정보 표시 (이전과 동일) */}
-      <img
-        className='hidden lg:block rounded-lg max-w-fit min-h-[300px] object-contain'
-        src={bookData.thumbnail} 
-        alt={bookData.title + " 표지"}
-      />
-      <div className='flex-grow'>
-        <div className='mb-4'>
-          <div className='flex'>
-            <img
-              className='block lg:hidden mr-4 rounded-lg max-w-fit max-h-[180px] object-contain'
-              src={bookData.thumbnail} 
-              alt={bookData.title + " 표지"}
-            />
-            <div className='lg:flex flex-grow justify-between'>
-              <div>
-                <h2 className="text-xl font-semibold mb-2">{bookData.title}</h2>
-                <p>{Array.isArray(bookData.authors) ? bookData.authors.join(', ') : bookData.authors}</p>
-                <p className='year text-sm mb-4'>{bookData.publishedYear ? bookData.publishedYear : '연도 정보 없음'}</p>
-              </div>
-              <div className='text-center'>
-                <h4 className='hidden mb-2 lg:block'>평점</h4>
-                <RatingStar 
-                  ratingIndex={formData.rating} // 현재 평점 전달
-                  setRatingIndex={handleRatingChange} // 평점 변경 함수 전달
-                />
+    <div className='pt-[105px] pb-[10%] md:pb-[200px]'>
+      <div className="flex justify-between items-start gap-4">
+        {/* 썸네일과 책 정보 표시 (이전과 동일) */}
+        <img
+          className='hidden lg:block rounded-lg max-w-fit min-h-[300px] object-contain'
+          src={bookData.thumbnail} 
+          alt={bookData.title + " 표지"}
+        />
+        <div className='flex-grow'>
+          <div className='mb-4'>
+            <div className='flex'>
+              <img
+                className='block lg:hidden mr-4 rounded-lg max-w-fit max-h-[180px] object-contain'
+                src={bookData.thumbnail} 
+                alt={bookData.title + " 표지"}
+              />
+              <div className='lg:flex flex-grow justify-between'>
+                <div>
+                  <h2 className="text-xl font-semibold mb-2">{bookData.title}</h2>
+                  <p>{Array.isArray(bookData.authors) ? bookData.authors.join(', ') : bookData.authors}</p>
+                  <p className='year text-sm mb-4'>{bookData.publishedYear ? bookData.publishedYear : '연도 정보 없음'}</p>
+                </div>
+                <div className='text-center'>
+                  <h4 className='hidden mb-2 lg:block'>평점</h4>
+                  <RatingStar 
+                    ratingIndex={formData.rating} // 현재 평점 전달
+                    setRatingIndex={handleRatingChange} // 평점 변경 함수 전달
+                  />
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <textarea
-              id="content"
-              name="content"
-              value={formData.content}
-              onChange={handleChange}
-              rows={5}
-              className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6 leading-tight focus:outline-none focus:shadow-outline"
-              required
-            ></textarea>
-          </div>
-          <div className="flex items-center justify-between">
-            <button
-              type="submit"
-              className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? '리뷰 작성 중...' : '리뷰 작성 완료'}
-            </button>
-          </div>
+          <form onSubmit={handleSubmit}>
+            <div className="mb-4">
+              <textarea
+                id="content"
+                name="content"
+                value={formData.content}
+                onChange={handleChange}
+                rows={5}
+                className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6 leading-tight focus:outline-none focus:shadow-outline"
+                required
+              ></textarea>
+            </div>
+            <div className="flex items-center justify-between">
+              <button
+                type="submit"
+                className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? '리뷰 작성 중...' : '리뷰 작성 완료'}
+              </button>
+            </div>
 
-          {submitError && <p className="text-red-500 text-sm mt-4">{submitError}</p>}
-          {submitSuccess && <p className="text-green-500 text-sm mt-4">리뷰가 성공적으로 작성되었습니다!</p>}
-        </form>
+            {submitError && <p className="text-red-500 text-sm mt-4">{submitError}</p>}
+            {submitSuccess && <p className="text-green-500 text-sm mt-4">리뷰가 성공적으로 작성되었습니다!</p>}
+          </form>
+        </div>
       </div>
     </div>
   );
