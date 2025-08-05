@@ -1,11 +1,9 @@
-import React from 'react'
 import User from './User';
 import type { ReviewCardProps } from '../../types/ReviewType';
 import { useUserNickname } from '../../hooks/useUser'
 import { Link } from 'react-router-dom';
 // import { useReviewDetails } from '../../hooks/useReview'; // useReviewDetails 훅 임포트
 // import { useParams } from 'react-router-dom';
-
 
 const ReviewCard = ({review}: ReviewCardProps ) => {
   // const { reviewId: reviewIdParam } = useParams<{ reviewId: string }>();
@@ -47,5 +45,7 @@ const ReviewCard = ({review}: ReviewCardProps ) => {
     </div>
   )
 }
+
+
 
 export default ReviewCard
