@@ -67,7 +67,7 @@ import { authenticateToken } from '../middlewares/auth-middleware';
  */
 router.get('/bookmarks/:userId',bookmakrsController.findById);
 
-/**
+/** 보고싶어요 등록
  * @swagger
  *
  * /bookmarks:
@@ -93,8 +93,7 @@ router.get('/bookmarks/:userId',bookmakrsController.findById);
  */
 router.post('/bookmarks',authenticateToken,bookmakrsController.create)
 
-
-/**
+/** 보고싶어요를 이미 눌렀는지 확인
  * @swagger
  *
  * /bookmarks/find:
@@ -121,7 +120,7 @@ router.post('/bookmarks',authenticateToken,bookmakrsController.create)
  */
 router.post('/bookmarks/find',bookmakrsController.findByUserAndIsbn)
 
-/**
+/** 보고싶어요를 삭제
  * @swagger
  *
  * /bookmarks/del:
@@ -147,7 +146,7 @@ router.post('/bookmarks/find',bookmakrsController.findByUserAndIsbn)
  */
 router.post('/bookmarks/del',authenticateToken,bookmakrsController.delete)
 
-/**
+/** 해당 책의 보고싶어요 숫자 검색
  * @swagger
  *
  * /bookmarks/count:
