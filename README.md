@@ -41,7 +41,7 @@ cd backend
 npm install
 npm run dev
 ```
-- 서버 기본 주소: http://localhost:4000
+- 서버 기본 주소: http://localhost:8000
 
 ### 2. 프론트엔드
 ```bash
