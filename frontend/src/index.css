@@ -38,21 +38,29 @@ h3{
     fill: rgb(216, 216, 216);
 }
 
+.swiper-button-prev, .swiper-button-next{
+  --swiper-navigation-color: '#000'
+}
 .swiper-button-prev:after, .swiper-button-next:after {
-  font-size: 1rem !important;
+  --swiper-navigation-size: 1rem;
+}
+.mySwiper-wrap .swiper-button-prev, .mySwiper-wrap .swiper-button-next{
+  top: var(--swiper-navigation-top-offset, 40%);
 }
 .mySwiper2-wrap .swiper-button-prev, .mySwiper2-wrap .swiper-button-next {
-  color: #000 !important;
   border: 1px solid #bbb;
   border-radius: 100%;
-  width: 40px !important;
-  height: 40px !important;
+  width: var(--swiper-navigation-size / 2.5rem);
+  height: var(--swiper-navigation-size / 2.5rem);
+}
+.mySwiper-wrap .swiper-button-prev{
+  left: var(--swiper-navigation-sides-offset, -5%);
+}
+.mySwiper-wrap .swiper-button-next {
+  right: var(--swiper-navigation-sides-offset, -5%);
 }
 .mySwiper2-wrap .swiper-button-prev{
-  left: -5% !important;
-}
-.mySwiper2-wrap .swiper-button-next{
-  right: 29.5% !important;
+  left: var(--swiper-navigation-sides-offset, -8%);
 }
 
 @media (min-width: 1281px) {
@@ -75,6 +83,9 @@ h3{
     -webkit-line-clamp: 12;
     -webkit-box-orient: vertical;
   }
+  .mySwiper2-wrap .swiper-button-next {
+    right: var(--swiper-navigation-sides-offset, -8%);
+  }
 }
 @media (max-width: 768px) {
   *{
@@ -95,8 +106,22 @@ h3{
   .text-overflow {
     -webkit-line-clamp: 8;
   }
+  .mySwiper-wrap .swiper-button-prev, .mySwiper2-wrap .swiper-button-prev{
+    left: var(--swiper-navigation-sides-offset, -10%);
+  }
+  .mySwiper-wrap .swiper-button-next, .mySwiper2-wrap .swiper-button-next{
+    right: var(--swiper-navigation-sides-offset, -10%);
+  }
 }
-
+@media (max-width: 500px){
+  .mySwiper2-wrap .swiper-button-prev:after, .mySwiper2-wrap .swiper-button-next:after {
+    --swiper-navigation-size: 0.8rem;
+  }
+  .mySwiper2-wrap .swiper-button-prev, .mySwiper2-wrap .swiper-button-next {
+  width: 1.8rem !important;
+  height: 1.8rem !important;
+  }
+}
 @media (max-width: 375px){
   h1,h1 span{
     font-size: 2rem;
