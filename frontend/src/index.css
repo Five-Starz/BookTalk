@@ -50,8 +50,8 @@ h3{
 .mySwiper2-wrap .swiper-button-prev, .mySwiper2-wrap .swiper-button-next {
   border: 1px solid #bbb;
   border-radius: 100%;
-  width: var(--swiper-navigation-size / 2.5rem);
-  height: var(--swiper-navigation-size / 2.5rem);
+  width: 2.5rem !important;
+  height: 2.5rem !important;
 }
 .mySwiper-wrap .swiper-button-prev{
   left: var(--swiper-navigation-sides-offset, -5%);
@@ -60,7 +60,7 @@ h3{
   right: var(--swiper-navigation-sides-offset, -5%);
 }
 .mySwiper2-wrap .swiper-button-prev{
-  left: var(--swiper-navigation-sides-offset, -8%);
+  left: var(--swiper-navigation-sides-offset, -5%);
 }
 
 @media (min-width: 1281px) {
@@ -71,6 +71,9 @@ h3{
 @media (max-width: 1280px) {
   main{
     width: 80%;
+  }
+  .mySwiper2-wrap .swiper-button-next {
+    right: var(--swiper-navigation-sides-offset, 29.5%);
   }
 }
 @media (max-width: 1024px) {
@@ -118,8 +121,8 @@ h3{
     --swiper-navigation-size: 0.8rem;
   }
   .mySwiper2-wrap .swiper-button-prev, .mySwiper2-wrap .swiper-button-next {
-  width: 1.8rem !important;
-  height: 1.8rem !important;
+    width: 1.8rem !important;
+    height: 1.8rem !important;
   }
 }
 @media (max-width: 375px){
