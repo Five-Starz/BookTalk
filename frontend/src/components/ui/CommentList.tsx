@@ -159,56 +159,31 @@ const CommentList: React.FC<CommentListProps> = ({ reviewId }) => {
       </form>
 
       {comments.length === 0 ? (
-        <p className="text-gray-600">아직 댓글이 없습니다. 첫 댓글을 남겨보세요!</p>
-      ) : (
-        <div>
-          {comments.map(comment => (
-            <div key={comment.commentId}>
-              {/* ✅ 5. 수정 중인 댓글인 경우와 아닌 경우를 조건부 렌더링 */}
-              {editingCommentId === comment.commentId ? (
-                // ✅ 수정 폼
-                <div className="p-4 mb-4">
-                  <User nickname={comment.users.nickname} width='6' />
-                  <textarea
-                    className="w-full mt-3 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-                    value={editedContent}
-                    onChange={(e) => setEditedContent(e.target.value)}
-                    rows={3}
-                  />
-                  <div className="flex justify-end gap-2 mt-2">
-                    <button
-                      type="button"
-                      className="px-4 py-2 text-gray-600 rounded-lg hover:bg-gray-200"
-                      onClick={handleCancelEdit}
-                    >
-                      취소
-                    </button>
-                    <button
-                      type="button"
-                      className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-                      onClick={() => handleEditComment(comment.commentId)}
-                    >
-                      저장
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                // ✅ 일반 댓글 카드 (기존 CommentCard 사용)
-                <>
-                <CommentCard
-                  key={comment.commentId}
-                  comment={comment}
-                  currentUserId={userId}
-                  isLoggedIn={isLoggedIn}
-                  onEdit={handleStartEdit} // ✅ 수정 시작 핸들러 연결
-                  onDelete={handleDeleteComment}
-                  onReply={handleReply}
-                />
-                {replyToParentId === comment.commentId && (
-                  <form
-                      onSubmit={(e) => handleReplySubmit(e, comment.commentId)}
-                      className="p-4 rounded-lg bg-gray-50 my-4"
-                  >
+      <p className="text-gray-600">아직 댓글이 없습니다. 첫 댓글을 남겨보세요!</p>
+    ) : (
+      <div>
+        {comments.map(comment => (
+          <div key={comment.commentId}>
+            <CommentCard
+              comment={comment}
+              currentUserId={userId}
+              isLoggedIn={isLoggedIn}
+              onEdit={handleStartEdit}
+              onDelete={handleDeleteComment}
+              onReply={handleReply}
+              // ✅ 수정 관련 props 전달
+              editingCommentId={editingCommentId}
+              editedContent={editedContent}
+              setEditedContent={setEditedContent}
+              handleCancelEdit={handleCancelEdit}
+              handleEditComment={handleEditComment}
+            />
+            {/* ✅ 대댓글 작성 폼은 이곳에 렌더링되도록 유지 */}
+            {replyToParentId === comment.commentId && (                  
+              <form
+                  onSubmit={(e) => handleReplySubmit(e, comment.commentId)}
+                  className="p-4 rounded-lg bg-gray-50 my-4"
+              >
                     <div className="mb-2">
                       <User nickname={nickname} width='6' />
                     </div>
@@ -235,9 +210,7 @@ const CommentList: React.FC<CommentListProps> = ({ reviewId }) => {
                         답글 작성
                       </button>
                     </div>
-                  </form>
-                )}
-                </>
+                </form>
               )}
             </div>
           ))}
