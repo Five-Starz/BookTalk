@@ -17,6 +17,12 @@ const BookInfo = ({ book }: { book: BookDetail }) => {
 
   const finalIsbn = getPrimaryIsbn(book.isbn);
 
+  const bookDataToSend = {
+    ...book,
+    isbn: finalIsbn,
+    authors: Array.isArray(book.authors) ? book.authors.join(', ') : book.authors,
+  };
+
   // 2) 처음 렌더링시 북마크 여부 확인
   useEffect(() => {
     const fetchIsBookmarked = async () => {
@@ -45,10 +51,11 @@ const BookInfo = ({ book }: { book: BookDetail }) => {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/x-www-form-urlencoded',
+          'Content-Type': 'application/json', // ✅ Content-Type 통일
         },
-        body: `isbn=${finalIsbn}`,
-      });
+          // ✅ body를 JSON 형태로 통일
+          body: JSON.stringify({ isbn: finalIsbn }), 
+        });
       setIsBookmarked(false);
       setBookmarkCount(prev => Math.max(0, prev - 1));
     } else {
@@ -57,11 +64,11 @@ const BookInfo = ({ book }: { book: BookDetail }) => {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/x-www-form-urlencoded',
+          'Content-Type': 'application/json',
         },
-        body: `isbn=${finalIsbn}`,
+        body: JSON.stringify(bookDataToSend),
       });
-      setIsBookmarked(true);
+      setIsBookmarked(false);
       setBookmarkCount(prev => prev + 1);
     }
   };
