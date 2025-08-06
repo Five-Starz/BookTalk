@@ -38,7 +38,7 @@ const Book = () => {
   if (!bookData) {
     return (
       <div className="flex justify-center items-center h-48">
-        해당 책 정보를 찾을 수 없습니다.
+        책 정보를 불러오는 중입니다...
       </div>
     );
   }

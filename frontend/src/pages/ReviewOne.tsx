@@ -48,7 +48,7 @@ const ReviewOne = () => {
           </Link>
         </div>
         <div className='flex-grow'>
-          <>
+          <Link to={`/book/${isbn}`}>
             <div className='flex lg:hidden mb-4'>
               <img
                 className='mr-4 rounded-lg max-w-fit max-h-[180px] object-contain'
@@ -62,7 +62,7 @@ const ReviewOne = () => {
                 </div>
               </div>
             </div>
-          </>
+          </Link>
           {/* ✅ ReviewCard에 데이터만 props로 전달 */}
           <ReviewCard review={reviewData} />
           <CommentList reviewId={reviewId} />
