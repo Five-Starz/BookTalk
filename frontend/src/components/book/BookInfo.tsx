@@ -70,7 +70,7 @@ const BookInfo = ({ book }: { book: BookDetail }) => {
         },
         body: JSON.stringify(bookDataToSend),
       });
-      setIsBookmarked(false);
+      setIsBookmarked(true);
       setBookmarkCount(prev => prev + 1);
     }
   };
