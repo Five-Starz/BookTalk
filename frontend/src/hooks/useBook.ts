@@ -183,6 +183,7 @@ export const useRecommendList = (isbn: string | undefined): UseRecommendListResu
     if (!isbn) {
       return;
     }
+
     const fetchRecommendList = async () => {
       try {
         setIsLoading(true);
