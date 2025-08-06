@@ -53,15 +53,25 @@ class MainRepository {
 
   // 4. 평점이 좋은 책 (good 10)
   async fetchTopRatedBooks(): Promise<Books[]> {
-    return await prisma.books.findMany({
+    const booksByRatingDesc = await prisma.books.findMany({
       where: { 
-        totalRating: {
-          gt: 0,  // 0.0점 초과만
+        totalRating: { gt: 0 }, // 평균평점 > 0
+      },
+      include: {  // 관련된 다른 테이블의 정보를 함께 가져오고 싶을때 사용
+        _count: { // 관계가 있는 테이블에 대해, 몇 개가 연결되어있는지 세어줌 : 리뷰 수(_count)
+          select: { reviews: true },  // reviews필드의 개수(리뷰개수) 가져옴 : 각 책마다 연결된 reviews가 몇개인지 계산
         },
       },
       orderBy: { totalRating: 'desc' },
-      take: 10,
     });
+    console.log('평균평점이 0점 초과인 책들 + 리뷰개수 포함 :',booksByRatingDesc);
+
+    const top10BooksWithAtLeast2Reviews = booksByRatingDesc // 리뷰 수가 2개 이상인 책만 필터링
+      .filter((book)=> book._count.reviews >=2) 
+      .slice(0, 10);  // 상위 10개만 자름
+    console.log('리뷰 수가 2개 이상인 책 10개 : ', top10BooksWithAtLeast2Reviews);
+
+    return top10BooksWithAtLeast2Reviews;
   };
 
   // 5. 보고싶어요 수가 많은 책 (want 10)
