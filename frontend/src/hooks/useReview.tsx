@@ -162,7 +162,7 @@ export const useReviewForm = ({ initialIsbn, bookData, userId }: UseReviewFormPr
         headers: headers
       });
 
-      console.log('리뷰 작성 성공:', response.data);
+      // console.log('리뷰 작성 성공:', response.data);
       setSubmitSuccess(true);
       const finalIsbn = getPrimaryIsbn(formData.isbn); // isbn 13자리 처리
       navigate(`/book/${finalIsbn}`); // 해당 책 상세 페이지로 이동
@@ -261,9 +261,9 @@ export const useEditReviewForm = ({ existingReview }: UseEditReviewFormProps): U
         headers: headers
       });
 
-      console.log('리뷰 수정 성공:', response.data);
+      // console.log('리뷰 수정 성공:', response.data);
       setSubmitSuccess(true);
-      
+
       navigate(`/mypage/reviews`);
 
     } catch (error) {
@@ -411,7 +411,7 @@ export const useRevCommentForm = ({ reviewId, userId, refetch }: UseRevCommentFo
         },
         { headers: headers }
       );
-      console.log(response)
+      // console.log(response)
       setSubmitSuccess(true);
       setFormData(prev => ({ // 댓글 작성 성공 후 폼 초기화
         ...prev,

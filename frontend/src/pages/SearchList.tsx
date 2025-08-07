@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useSearchParams } from 'react-router-dom';
 import { getPrimaryIsbn } from '../utils/getPrimaryIsbn';
 
-import type { BookDetail } from '../types/BookType'; 
+import type { BookDetail } from '../types/BookType';
 import BookCard from '../components/ui/BookCard';
 
 const SearchList = () => {
@@ -12,7 +12,7 @@ const SearchList = () => {
   const query = searchParams.get('query');
 
   // searchResults의 초기값을 null이 아닌 빈 배열로 변경 (Hot10과 동일하게)
-  const [searchResults, setSearchResults] = useState<BookDetail[]>([]); 
+  const [searchResults, setSearchResults] = useState<BookDetail[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -28,14 +28,14 @@ const SearchList = () => {
       try {
         setIsLoading(true);
         setError(null);
-        
+
         // axios.get의 제네릭 타입을 명시하여 응답 데이터의 타입을 명확히 합니다.
         // 백엔드가 BookDetail[]을 직접 반환한다고 가정합니다.
         const response = await axios.get<BookDetail[]>(`http://localhost:8000/books/search?query=${query}`);
-        
+
         // 응답 데이터가 바로 BookDetail[] 배열이라고 가정하고 설정
-        setSearchResults(response.data); 
-        console.log('검색 결과 데이터:', response.data);
+        setSearchResults(response.data);
+        // console.log('검색 결과 데이터:', response.data);
 
       } catch (err) {
         // Axios 에러 처리 강화: Hot10에서 했던 것처럼 상세 에러 메시지 로깅
@@ -80,18 +80,18 @@ const SearchList = () => {
       </div>
     );
   }
-    
+
   return (
     <div className="pt-[105px] pb-[10%] md:pb-[200px]">
       <h2 className="text-2xl font-bold mb-4">"{query}" 검색 결과</h2>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-8">
         {searchResults.map((book) => {
-          const finalIsbn = getPrimaryIsbn(book.isbn); 
+          const finalIsbn = getPrimaryIsbn(book.isbn);
 
           return (
-            <Link 
-              key={finalIsbn} 
-              to={`/book/${finalIsbn}`} 
+            <Link
+              key={finalIsbn}
+              to={`/book/${finalIsbn}`}
               className={`flex flex-col items-center p-2`}
             >
               <BookCard book={book} />

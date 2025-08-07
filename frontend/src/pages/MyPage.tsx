@@ -321,8 +321,6 @@ export const ReviewCollection = () => {
     return <div className="p-4 text-gray-500 flex justify-center items-center h-40">작성한 리뷰가 없습니다.</div>
   }
 
-  console.log(reviews)
-
   return (
     <>
       {/* 리뷰 리스트 */}
@@ -650,7 +648,6 @@ export const Settings = () => {
         const profile = Array.isArray(profileRes.data.comments) ? profileRes.data.comments[0] : profileRes.data;
         setUser({ userId, nickname: profile.nickname });
       }
-      console.log(sendData.nickname)
 
       setMsg("회원 정보가 수정되었습니다.");
       setErrMsg('');

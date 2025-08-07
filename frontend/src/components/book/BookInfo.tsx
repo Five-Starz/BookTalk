@@ -23,7 +23,7 @@ const BookInfo = ({ book }: { book: BookDetail }) => {
     authors: Array.isArray(book.authors) ? book.authors.join(', ') : book.authors,
   };
 
-  console.log(bookDataToSend)
+  // console.log(bookDataToSend)
 
   // 2) 처음 렌더링시 북마크 여부 확인
   useEffect(() => {
@@ -56,7 +56,7 @@ const BookInfo = ({ book }: { book: BookDetail }) => {
           'Content-Type': 'application/json', // ✅ Content-Type 통일
         },
           // ✅ body를 JSON 형태로 통일
-          body: JSON.stringify({ isbn: finalIsbn }), 
+          body: JSON.stringify({ isbn: finalIsbn }),
         });
       setIsBookmarked(false);
       setBookmarkCount(prev => Math.max(0, prev - 1));

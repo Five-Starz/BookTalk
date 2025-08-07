@@ -13,7 +13,7 @@ const EditReview: React.FC = () => {
 
   // ✅ 1. reviewId로 기존 리뷰 정보를 불러옵니다.
   const { reviewData: existingReview, isLoadingReview, errorReview } = useReviewDetails(reviewId);
-  console.log('기존 리뷰 정보:', existingReview)
+  // console.log('기존 리뷰 정보:', existingReview)
 
   // ✅ 2. 기존 리뷰에 포함된 책 ISBN을 사용하여 책 정보를 불러옵니다.
   const bookIsbn = existingReview?.isbn;
@@ -46,7 +46,7 @@ const EditReview: React.FC = () => {
       <div className="flex justify-between items-start gap-4">
         <img
           className='hidden lg:block rounded-lg max-w-fit min-h-[300px] object-contain'
-          src={bookData.thumbnail} 
+          src={bookData.thumbnail}
           alt={bookData.title + " 표지"}
         />
         <div className='flex-grow'>
@@ -54,7 +54,7 @@ const EditReview: React.FC = () => {
             <div className='flex'>
               <img
                 className='block lg:hidden mr-4 rounded-lg max-w-fit max-h-[180px] object-contain'
-                src={bookData.thumbnail} 
+                src={bookData.thumbnail}
                 alt={bookData.title + " 표지"}
               />
               <div className='lg:flex flex-grow justify-between'>
@@ -65,7 +65,7 @@ const EditReview: React.FC = () => {
                 </div>
                 <div className='text-center'>
                   <h4 className='hidden mb-2 lg:block'>평점</h4>
-                  <RatingStar 
+                  <RatingStar
                     ratingIndex={formData.rating}
                     setRatingIndex={handleRatingChange}
                   />
