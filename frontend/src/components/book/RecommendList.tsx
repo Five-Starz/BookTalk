@@ -15,6 +15,10 @@ const RecommendList = ({
   error 
 }: RecommendListProps) => {
 
+  const scrollToTop = () => {
+    window.scrollTo(0, 0);
+  };
+
   return (
     <div>
       <h2 className='mb-3 md:mb-6'>이런 책은 어떠세요?</h2>
@@ -26,7 +30,8 @@ const RecommendList = ({
           {/* 큰 화면 (md 이상): 5개 나열 */}
           <div className='justify-between gap-2 hidden md:flex'>
             {recommendList.slice(0, 5).map((book) => (
-              <Link to={`/book/${book.isbn}`}>
+              <Link to={`/book/${book.isbn}`}
+                onClick={scrollToTop}>
                 <BookCard key={book.isbn} book={book} />
               </Link>
             ))}
@@ -34,7 +39,8 @@ const RecommendList = ({
           {/* 작은 화면 (md 미만): 3개 나열 */}
           <div className="flex justify-between gap-2 md:hidden">
             {recommendList.slice(0, 3).map((book) => (
-              <Link to={`/book/${book.isbn}`}>
+              <Link to={`/book/${book.isbn}`}
+                onClick={scrollToTop}>
                 <BookCard key={book.isbn} book={book} />
               </Link>
             ))}

@@ -26,14 +26,23 @@ const RandomReview = () => {
 
   if (!reviews || reviews.length === 0) {
     return <div className="p-4 text-center">랜덤 리뷰 데이터를 찾을 수 없습니다.</div>;
-  }  
+  }
+
+  const thumbnailUrl = reviews[0].book.thumbnail;
 
   return (
     <Link key={reviews[0].reviewId}
       to={`/review/${reviews[0].reviewId}`}
       state={{ reviewData: reviews[0] }}
-      className='lg:w-2/5 lg:justify-between'>    
-      <div className='flex flex-col w-full rounded-lg p-4 gap-10 bg-[#D8D5AF]'>
+      className='lg:w-2/5 relative'>
+      {/* <div 
+      className='absolute inset-0 z-0 bg-cover bg-center rounded-lg lg:h-[320px]'
+      style={{ 
+        backgroundImage: `url(${thumbnailUrl})`,
+        filter: 'blur(5px)', // ✅ CSS filter 속성으로 블러 효과 적용
+      }}
+    ></div> */}
+      <div className='relative flex flex-col justify-between w-full bg-orange-300 gap-10 rounded-lg p-4 z-10 lg:min-h-[320px]'>
         <h2>오늘의 랜덤 리뷰</h2>
         <p className='text-center px-4'>{reviews[0].content}</p>
         <div className='flex gap-4 justify-center'>
