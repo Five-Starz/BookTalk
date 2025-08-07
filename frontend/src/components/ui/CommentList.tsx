@@ -77,13 +77,13 @@ const CommentList: React.FC<CommentListProps> = ({ reviewId }) => {
         headers: { Authorization: `Bearer ${accessToken}` }
       });
       refetch();
-    } catch(e) {
-      console.log(e)
+    } catch {
+      // console.log(e)
       alert("댓글 삭제 실패했습니다.");
     }
   };
 
-  
+
   // 대댓글 작성 핸들러
   const handleReply = (parentId: number) => {
     setReplyToParentId(parentId);
@@ -128,7 +128,7 @@ const CommentList: React.FC<CommentListProps> = ({ reviewId }) => {
       setReplyContent('');
   };
 
-  
+
   if (isLoadingComments) {
     return <div className="p-4 text-center">댓글을 불러오는 중입니다...</div>;
   }
@@ -179,7 +179,7 @@ const CommentList: React.FC<CommentListProps> = ({ reviewId }) => {
               handleEditComment={handleEditComment}
             />
             {/* ✅ 대댓글 작성 폼은 이곳에 렌더링되도록 유지 */}
-            {replyToParentId === comment.commentId && (                  
+            {replyToParentId === comment.commentId && (
               <form
                   onSubmit={(e) => handleReplySubmit(e, comment.commentId)}
                   className="p-4 rounded-lg bg-gray-50 my-4"
