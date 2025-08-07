@@ -1,11 +1,11 @@
 // [역할] req, res 처리 담당. 클라이언트 응답 전용
 import express from 'express';
-import ReviewService from '../services/review-service'
+import ReviewService from '../services/review-service';
 const reviewService = new ReviewService();
 
 class ReviewController {
   // 1. 리뷰 생성
-  async createReview(req:express.Request, res:express.Response): Promise<any> {
+  async createReview(req: express.Request, res: express.Response): Promise<any> {
     try {
       const {
         isbn,
@@ -18,9 +18,9 @@ class ReviewController {
         rating,
         content,
       } = req.body; // 리뷰생성시 필수로 받아와야 할 body값들
-      
+
       const userId = req.user?.userId; // swagger UI 같은 외부 도구에서 테스트할 때는 인증 토큰이 없거나, 미들웨어를 거치지 않기 때문에 req.user가 없는 상황이어서 임시로 1 할당 -> 나중에 테스트 끝나면 지워야해서 지웠음
-      if (!isbn || rating==null || !content || !userId) {
+      if (!isbn || rating == null || !content || !userId) {
         return res.status(400).json({ message: '리뷰 등록 정보가 부족합니다.' });
       }
 
@@ -39,9 +39,9 @@ class ReviewController {
 
       return res.status(201).json({
         reviewId: createdReview.reviewId,
-        message: '리뷰가 성공적으로 등록되었습니다.'
+        message: '리뷰가 성공적으로 등록되었습니다.',
       });
-    } catch(error: any) {
+    } catch (error: any) {
       if (error instanceof Error && error.message?.includes('이미 해당 도서에 리뷰')) {
         console.error('[ReviewController] 리뷰 중복 오류:', error);
         return res.status(409).json({ message: '이미 해당 도서에 리뷰를 작성하셨습니다.' });
@@ -53,7 +53,7 @@ class ReviewController {
   }
 
   // 2. 특정 책의 리뷰 조회
-  async searchReviewsByBook(req:express.Request, res:express.Response): Promise<any> {
+  async searchReviewsByBook(req: express.Request, res: express.Response): Promise<any> {
     try {
       const { isbn } = req.query; // 리뷰생성시 필수로 받아와야 할 parameters 값들
 
@@ -62,29 +62,28 @@ class ReviewController {
       }
 
       const reviewsByBook = await reviewService.searchReviewsByBook({
-        isbn: isbn as string
+        isbn: isbn as string,
       });
 
       if (reviewsByBook.length === 0) {
-        return res.status(404).json({ message: '해당 ISBN의 리뷰가 조재하지 않습니다.' })
+        return res.status(404).json({ message: '해당 ISBN의 리뷰가 조재하지 않습니다.' });
       }
 
-      return res.status(200).json(reviewsByBook);   // 조회된 특정 책의 리뷰들 반환
-    } catch(error) {
+      return res.status(200).json(reviewsByBook); // 조회된 특정 책의 리뷰들 반환
+    } catch (error) {
       console.error('[ReviewController] 특정 책의 리뷰 조회 오류:', error);
       res.status(500).json({ message: '서버 오류로 리뷰 조회에 실패했습니다' });
     }
   }
 
   // 3. 리뷰 수정
-  async updateReview(req:express.Request, res:express.Response): Promise<any> {
+  async updateReview(req: express.Request, res: express.Response): Promise<any> {
     try {
-      const { rating, content } = req.body;   // 리뷰수정 시 필수로 받아와야 할 body값들
+      const { rating, content } = req.body; // 리뷰수정 시 필수로 받아와야 할 body값들
       const reviewId = Number(req.params?.reviewId);
       const userId = req.user?.userId;
 
-      console.log(`rating=${rating}, content=${content}, userId=${userId}, reviewId=${reviewId}`);
-      if (rating==null || !content || !userId || !reviewId) {
+      if (rating == null || !content || !userId || !reviewId) {
         return res.status(400).json({ message: '수정할 내용을 확인해주세요' });
       }
 
@@ -92,33 +91,32 @@ class ReviewController {
         reviewId,
         rating,
         content,
-        userId
+        userId,
       });
 
       if (!updatedReview) {
-        return res.status(404).json({ message: '해당 리뷰를 찾을 수 없습니다.'})
+        return res.status(404).json({ message: '해당 리뷰를 찾을 수 없습니다.' });
       }
       return res.status(200).json(updatedReview); // 수정된 리뷰 반환
-    } catch(error) {
+    } catch (error) {
       console.error('[ReviewController] 리뷰 수정 오류:', error);
-      res.status(500).json({message: '리뷰 수정 중 서버 오류'});
+      res.status(500).json({ message: '리뷰 수정 중 서버 오류' });
     }
   }
 
   // 4. 리뷰 삭제
-  async deleteReview(req:express.Request, res:express.Response): Promise<any> {
+  async deleteReview(req: express.Request, res: express.Response): Promise<any> {
     try {
       const reviewId = Number(req.params?.reviewId);
       const userId = req.user?.userId;
 
-      console.log(`userId=${userId}, reviewId=${reviewId}`);
       if (!userId || !reviewId) {
         return res.status(400).json({ message: '삭제할 리뷰 ID가 올바르지 않습니다.' });
       }
 
       const deletedReview = await reviewService.deleteReview({
         reviewId,
-        userId
+        userId,
       });
 
       if (!deletedReview) {
@@ -126,56 +124,51 @@ class ReviewController {
       }
 
       return res.status(200).json(deletedReview); // 삭제된 리뷰 반환
-    } catch(error) {
+    } catch (error) {
       console.error('[ReviewController] 리뷰 삭제 오류:', error);
-      res.status(500).json({message: '리뷰 삭제 중 서버 오류'});
+      res.status(500).json({ message: '리뷰 삭제 중 서버 오류' });
     }
   }
 
   // 5. 특정 유저 리뷰 검색
-  async findReviewByUserId(req:express.Request, res:express.Response):Promise <any>{
+  async findReviewByUserId(req: express.Request, res: express.Response): Promise<any> {
     try {
-      //const userId=parseInt(req.params.userId, 10);
-      let userId:number = req.user?.userId ?? parseInt(req.params.userId, 10);
-      // console.log(userId)
-      // console.log(req.params.userId)
-      console.log(userId);
+      let userId: number = req.user?.userId ?? parseInt(req.params.userId, 10);
       if (!userId) {
         return res.status(400).json({ message: 'userId가 올바르지 않습니다.' });
       }
 
-      const userReviews=await reviewService.findReviewByUserId(userId);
+      const userReviews = await reviewService.findReviewByUserId(userId);
 
-      if(userReviews.length===0)
+      if (userReviews.length === 0)
         return res.status(400).json({ message: '해당 유저의 리뷰가 존재하지 않습니다.' });
 
       return res.status(200).json(userReviews);
-    } catch(error) {
+    } catch (error) {
       console.error('[ReviewController] 유저 리뷰 조회 오류:', error);
       return res.status(500).json({ message: '서버 오류로 리뷰 조회에 실패했습니다.' });
     }
   }
 
   //6. 특정 유저 리뷰 개수 조회
-  async UserReviewCount(req:express.Request, res:express.Response){
+  async UserReviewCount(req: express.Request, res: express.Response) {
     try {
-      const userId=parseInt(req.params.userId, 10);
+      const userId = parseInt(req.params.userId, 10);
       if (!userId) {
         return res.status(400).json({ message: 'userId가 올바르지 않습니다.' });
       }
 
-      const countReview=await reviewService.UserReviewCount(userId);
-      console.log(countReview)
+      const countReview = await reviewService.UserReviewCount(userId);
       res.status(200).json(countReview);
-    } catch(error) {
+    } catch (error) {
       console.error('[ReviewController] 유저 리뷰 수 조회 오류:', error);
       return res.status(500).json({ message: '서버 오류로 리뷰 숫자 조회에 실패했습니다.' });
     }
   }
 
-  async findById(req:express.Request, res:express.Response){
-    const reviewId=parseInt(req.params.reviewId,10)
-    res.status(200).json(await reviewService.findById(reviewId))
-  };
+  async findById(req: express.Request, res: express.Response) {
+    const reviewId = parseInt(req.params.reviewId, 10);
+    res.status(200).json(await reviewService.findById(reviewId));
+  }
 }
-export default ReviewController
+export default ReviewController;

@@ -1,30 +1,24 @@
 import { prisma } from '../utils/prisma';
-import { Reviews } from "@prisma/client";
+import { Reviews } from '@prisma/client';
 class ReviewRepository {
   // 리뷰 중복 여부 체크
-  async hasUserReviewedBook(userId: number,isbn: string) {
+  async hasUserReviewedBook(userId: number, isbn: string) {
     const isDuplicated = await prisma.reviews.findFirst({
       where: { userId, isbn },
     });
-    return !!isDuplicated;  // 반환값이 boolean일 때는 !!를 붙여줘야 한다.
+    return !!isDuplicated; // 반환값이 boolean일 때는 !!를 붙여줘야 한다.
   }
 
-
   // userId가 작성한 reviewId가 있는지 검증(없을시 수정, 삭제 불가)
-  async hasReviewByUser(reviewId:number, userId: number): Promise<boolean> {
+  async hasReviewByUser(reviewId: number, userId: number): Promise<boolean> {
     const existing = await prisma.reviews.findFirst({
       where: { userId, reviewId },
     });
-    return !!existing;  // 반환값이 boolean일 때는 !!를 붙여줘야 한다.
+    return !!existing; // 반환값이 boolean일 때는 !!를 붙여줘야 한다.
   }
 
   // 리뷰 등록
-  async createReview(data: {
-    isbn: string;
-    rating: number;
-    content: string;
-    userId: number;
-  }) {
+  async createReview(data: { isbn: string; rating: number; content: string; userId: number }) {
     return await prisma.reviews.create({
       data: {
         isbn: data.isbn,
@@ -54,11 +48,14 @@ class ReviewRepository {
   }
 
   // 리뷰 수정
-  async updateReview(reviewId: number, data: {
-    rating: number;
-    content: string;
-    userId: number;
-  }) {
+  async updateReview(
+    reviewId: number,
+    data: {
+      rating: number;
+      content: string;
+      userId: number;
+    }
+  ) {
     return await prisma.reviews.update({
       where: { reviewId },
       data: {
@@ -76,24 +73,23 @@ class ReviewRepository {
     });
   }
 
-
-  async findReviewByUserId(userId:number):Promise<Reviews[]>{
+  async findReviewByUserId(userId: number): Promise<Reviews[]> {
     return await prisma.reviews.findMany({
-      where:{userId}
-    })
-  };
+      where: { userId },
+    });
+  }
 
-  async UserReviewCount(userId:number){
+  async UserReviewCount(userId: number) {
     return await prisma.reviews.count({
-      where:{userId}
+      where: { userId },
     });
-  };
+  }
 
-  async findById(reviewId:number){
+  async findById(reviewId: number) {
     return await prisma.reviews.findUnique({
-      where:{reviewId}
+      where: { reviewId },
     });
-  };
-} 
-  
-export default ReviewRepository
+  }
+}
+
+export default ReviewRepository;
