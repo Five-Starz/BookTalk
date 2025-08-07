@@ -610,6 +610,10 @@ export const Settings = () => {
   const [ msg, setMsg ] = useState('');
   const [ errMsg, setErrMsg ] = useState('');
 
+  // 회원 탈퇴 문구
+  const [resignText, setResignText] = useState('');
+  const [resignError, setResignError] = useState('');
+
   // 탈퇴 모달
   const [ resignModalOpen, setResignModalOpen ] = useState(false);
 
@@ -707,9 +711,16 @@ export const Settings = () => {
   // 모달 내 취소/확인 함수
   const handleCancelResign = () => {
     setResignModalOpen(false);
+    setResignText('');
+    setResignError('');
   }
 
   const handleConfirmResign = async () => {
+    if (resignText.trim() !== '지금 탈퇴') {
+      setResignError('정확히 "지금 탈퇴"라고 입력해주세요.');
+      return;
+    }
+
     try {
       await axios.delete(`http://localhost:8000/auth/del/${userId}`, {
         headers: { Authorization: `Bearer ${accessToken}` },
@@ -718,7 +729,7 @@ export const Settings = () => {
       clearUser();
       window.location.href = "/";
     } catch {
-      alert("탈퇴에 실패했습니다.");
+      setResignError('탈퇴 중 오류가 발생했습니다.');
     }
   };
 
@@ -772,7 +783,25 @@ export const Settings = () => {
               onClick={e => e.stopPropagation()} // 모달 내용 클릭시 닫힘 방지
             >
               <h2 className="text-lg font-bold mb-3">회원 탈퇴</h2>
-              <div className="mb-6">정말로 탈퇴하시겠습니까?</div>
+              <p className="mb-2 text-sm text-gray-700">
+                정말 탈퇴하시려면 아래에 <strong>"지금 탈퇴"</strong>라고 입력해주세요.
+              </p>
+              {/* <div className="mb-6">정말로 탈퇴하시겠습니까?</div> */}
+              <input
+                type="text"
+                value={resignText}
+                onChange={(e) => {
+                  setResignText(e.target.value);
+                  setResignError('');
+                }}
+                placeholder="지금 탈퇴"
+                className="w-full border rounded px-3 py-2 text-sm mb-1 mb-4"
+              />
+              {
+                resignError && (
+                  <p className="text-red-500 text-sm mb-2">{resignError}</p>
+                )
+              }
               <div className="flex justify-end gap-2">
                 <button
                   className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
