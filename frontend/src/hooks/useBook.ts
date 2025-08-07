@@ -241,23 +241,27 @@ export const useReviews = (isbn: string | undefined): UseReviewsResult => {
       try {
         setErrorReviews(null);
 
-        const requestUrl = `http://localhost:8000/reviews/search/{isbn}?isbn=${isbn}`;
-        const response = await axios.get(requestUrl);
+        const requestUrl4 = `http://localhost:8000/reviews/search2/{isbn}?isbn=${isbn}`;
+        const response4 = await axios.get(requestUrl4);
         setIsLoadingReviews(true);
+        setReviews(response4.data);
+        // const requestUrl = `http://localhost:8000/reviews/search/{isbn}?isbn=${isbn}`;
+        // const response = await axios.get(requestUrl);
+        // setIsLoadingReviews(true);
 
-        let responseCount:AxiosResponse<number>;
-        let requestUrl2:string
-        let responseComment:AxiosResponse<number>
-        for(let i=0;i<response.data.length;i++){
-          responseCount = await axios.post(`http://localhost:8000/likes/count`, {
-           reviewId: `${response.data[i].reviewId}`
-          });
-          response.data[i].likeCount=responseCount.data;
-          requestUrl2=`http://localhost:8000/comment/review/count/${response.data[i].reviewId}`;
-          responseComment=await axios.get(requestUrl2);
-          response.data[i].commentCount=responseComment.data;
-        }
-        setReviews(response.data);
+        // let responseCount:AxiosResponse<number>;
+        // let requestUrl2:string
+        // let responseComment:AxiosResponse<number>
+        // for(let i=0;i<response.data.length;i++){
+        //   responseCount = await axios.post(`http://localhost:8000/likes/count`, {
+        //    reviewId: `${response.data[i].reviewId}`
+        //   });
+        //   response.data[i].likeCount=responseCount.data;
+        //   requestUrl2=`http://localhost:8000/comment/review/count/${response.data[i].reviewId}`;
+        //   responseComment=await axios.get(requestUrl2);
+        //   response.data[i].commentCount=responseComment.data;
+        // }
+        // setReviews(response.data);
 
       } catch (err) {
         console.error('리뷰 데이터 불러오기 에러 (useReviews):', err);

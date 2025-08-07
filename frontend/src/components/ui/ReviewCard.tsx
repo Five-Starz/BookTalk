@@ -12,10 +12,10 @@ const ReviewCard = ({review}: ReviewCardProps ) => {
   // const { reviewId: reviewIdParam } = useParams<{ reviewId: string }>();
   // const reviewId = reviewIdParam ? parseInt(reviewIdParam, 10) : undefined;
   const { nickname } = useUserNickname(review?.userId);
-
+  
   // 상태 관리
   const [isLiked, setIsLiked] = useState(false);
-  const [likeCount, setLikeCount] = useState(review.likeCount || 0);
+  const [likeCount, setLikeCount] = useState(review._count.likes || 0);
 
   // userId 가져오기 (Zustand 등)
   const userId = useUserStore((state) => state.userId);
@@ -102,7 +102,7 @@ const ReviewCard = ({review}: ReviewCardProps ) => {
               strokeLinecap="round"
               strokeLinejoin="round"
               className='size-5 lucide-message-square-icon lucide-message-square'><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-            {review.commentCount}
+            {review._count.comments}
           </button>
         </div>
       </div>

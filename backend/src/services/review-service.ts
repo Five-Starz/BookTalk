@@ -105,5 +105,12 @@ class ReviewService {
     return reviewRepository.findById(reviewId);
   };
 
+  async searchReviewsByISBN2(isbn: string){
+    return reviewRepository.searchReviewsByISBN2(isbn);
+  };
+  
+  async searchReviewsByReviewId(reviewId:number){
+    return reviewRepository.searchReviewsByReviewId(reviewId);
+  }
 }
 export default ReviewService

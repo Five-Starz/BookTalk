@@ -177,5 +177,35 @@ class ReviewController {
     const reviewId=parseInt(req.params.reviewId,10)
     res.status(200).json(await reviewService.findById(reviewId))
   };
+
+  async searchReviewsByISBN2(req:express.Request, res:express.Response){
+    try {
+      const { isbn } = req.query;    
+      if (!isbn) {
+        return res.status(400).json({ message: 'ISBN을 올바르게 입력해주세요' });
+      }
+      const test=await reviewService.searchReviewsByISBN2(isbn as string);
+      console.log(test)
+      return res.status(200).json(test); 
+    } catch (error) {
+      
+    }    
+  }
+
+  async searchReviewsByReviewId(req:express.Request, res:express.Response){
+    try {
+      const reviewId= parseInt(req.params.reviewId,10);    
+      if (!reviewId) {
+        return res.status(400).json({ message: 'reviewId을 올바르게 입력해주세요' });
+      }
+      const test=await reviewService.searchReviewsByReviewId(reviewId);
+      console.log(test)
+      //여기서 [0]을 쓴 이유 : repo에서 같은걸 사용하는데 findmany를 쓰기 때문에 []형태로 전달됨
+      //단일 reviewId로 검색하는 여기선 하나의 값만 필요함
+      return res.status(200).json(test[0]); 
+    } catch (error) {
+      
+    }    
+  }
 }
 export default ReviewController

@@ -314,18 +314,20 @@ export const useReviewDetails = (reviewId: number | undefined): UseReviewDetails
       }
 
       try {
+        const response2 = await axios.get<ReviewDetail>(`http://localhost:8000/reviews/search3/${reviewId}`);
+        setReviewData(response2.data);
         // ✅ 리뷰 상세 정보를 가져오는 API 엔드포인트에 맞게 수정
-        const response = await axios.get<ReviewDetail>(`http://localhost:8000/reviews/${reviewId}`);
-        const requestUrl=`http://localhost:8000/comment/review/count/${reviewId}`;
-        const responseComment=await axios.get(requestUrl);
-        const responseLikeCount = await axios.post(`http://localhost:8000/likes/count`, {
-           reviewId: `${reviewId}`
-          });
-          response.data.likeCount=responseLikeCount.data;
-        // ✅ 응답 데이터 디코딩 (필요한 필드만)
-        const rawReview = response.data;
-        rawReview.commentCount=responseComment.data;
-        setReviewData(rawReview);
+        // const response = await axios.get<ReviewDetail>(`http://localhost:8000/reviews/${reviewId}`);
+        // const requestUrl=`http://localhost:8000/comment/review/count/${reviewId}`;
+        // const responseComment=await axios.get(requestUrl);
+        // const responseLikeCount = await axios.post(`http://localhost:8000/likes/count`, {
+        //    reviewId: `${reviewId}`
+        //   });
+        //   response.data.likeCount=responseLikeCount.data;
+        // // ✅ 응답 데이터 디코딩 (필요한 필드만)
+        // const rawReview = response.data;
+        // rawReview.commentCount=responseComment.data;
+        // setReviewData(rawReview);
         // ✅ 수정: 데이터 로딩 성공 후 로딩 상태를 false로 변경
         setIsLoadingReview(false);
       } catch (err) {

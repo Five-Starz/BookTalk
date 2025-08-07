@@ -547,4 +547,38 @@ router.get('/reviews/count/:userId',reviewController.UserReviewCount)
  */
 router.get('/reviews/:reviewId',reviewController.findById);
 
+
+/** ISBN으로 리뷰 정보와 연관된 좋아요 및 댓글 수 한번에 출력하기
+ * @swagger
+ * /reviews/search2/{isbn}:
+ *  get:
+ *    summary: aa
+ *    tags: [Review]
+ *    parameters:
+ *      - name: isbn
+ *        in: query
+ *        required: true
+ *        schema:
+ *          type: string
+ *        description: 책 ISBN 번호
+ */
+router.get('/reviews/search2/:isbn', reviewController.searchReviewsByISBN2);
+
+/** reviewId로 리뷰 정보와 연관된 좋아요 및 댓글 수 한번에 출력하기
+ * @swagger
+ * /reviews/search3/{reviewId}:
+ *  get:
+ *    summary: aa
+ *    tags: [Review]
+ *    parameters:
+ *      - name: reviewId
+ *        in: query
+ *        required: true
+ *        schema:
+ *          type: integer
+ *        description: "검색할 유저의 고유 아이디"
+ */
+router.get('/reviews/search3/:reviewId', reviewController.searchReviewsByReviewId);
+
+
 export default router;

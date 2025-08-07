@@ -7,9 +7,8 @@ export interface ReviewDetail {
   rating: number;
   content: string;
   userId: number;
-  commentCount: number;
   isbn: string;
-  likeCount:number;
+  _count:{likes:number,comments:number}
 }
 
 export interface ReviewCardProps {

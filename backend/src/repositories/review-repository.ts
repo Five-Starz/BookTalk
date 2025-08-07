@@ -94,6 +94,34 @@ class ReviewRepository {
       where:{reviewId}
     });
   };
+
+  async searchReviewsByISBN2(isbn: string) {
+    return await prisma.reviews.findMany({
+      where: { isbn },
+      include:{
+        _count:{
+          select:{
+            likes:true,
+            comments:true
+          },
+        },
+      },
+    });
+  };
+
+  async searchReviewsByReviewId(reviewId:number) {
+    return await prisma.reviews.findMany({
+      where: { reviewId },
+      include:{
+        _count:{
+          select:{
+            likes:true,
+            comments:true
+          },
+        },
+      },
+    });
+  };
 } 
   
 export default ReviewRepository
