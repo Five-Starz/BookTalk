@@ -32,12 +32,14 @@ export const EmailForm = ({ error, ...rest } :BaseInputProps) => {
     </div>
   )
 }
-export const PasswordForm = ({ error, ...rest } :BaseInputProps) => {
+export const PasswordForm = ({ error, id='password', label='비밀번호', ...rest } :BaseInputProps & { label?: string; id?: string }) => {
   return (
     <div className="relative border-b">
-      <label className="absolute top-3 left-4 text-gray-600 text-xs" htmlFor='password'>비밀번호</label>
+      <label className="absolute top-3 left-4 text-gray-600 text-xs" htmlFor={id}>
+        { label }
+      </label>
       <input
-        id="password"
+        id={id}
         type="password"
         className="w-full px-4 pt-8 pb-1 bg-white text-black rounded-md text-base outline-none border-none"
         { ...rest }
