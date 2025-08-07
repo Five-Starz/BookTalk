@@ -26,18 +26,15 @@ export class BookmakrsController {
   // 보고싶어요 생성
   async create(req: Request, res: Response, next: NextFunction): Promise<any> {
     const userId = req.user!.userId;
-    const isbn = req.body.isbn;
+    const data = req.body;
 
     // 해당 isbn이 Books테이블에 없다면 등록
-    const existingBook = await bookmarksService.findBookByIsbn(isbn);
-    if (!existingBook) {
-      await bookmarksService.createBook(isbn);
-    }
+    const existingBook = await bookRepository.ensureBookExists(data);
 
-    const isLiked = await bookmarksService.findByUserAndIsbn(userId, isbn);
+    const isLiked = await bookmarksService.findByUserAndIsbn(userId, data.isbn);
 
     if (isLiked) return res.status(400).json({ message: '이미 보고 싶어요를 눌렀습니다' });
-    const createLike = await bookmarksService.create(userId, isbn);
+    const createLike = await bookmarksService.create(userId, data.isbn);
 
     if (createLike) return res.status(200).json(createLike);
     else return res.status(400).json({ message: '생성 실패' });
