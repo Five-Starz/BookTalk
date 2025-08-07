@@ -582,15 +582,27 @@ export const Settings = () => {
       .refine(val => !/\s/.test(val), "비밀번호에 공백을 포함할 수 없습니다.")
       .optional()
       .or(z.literal("")), // 빈 문자열 허용
+
+    currentPassword: z.string().min(1, "현재 비밀번호를 입력해주세요."),
+
+    newPassword: z
+      .string()
+      .min(8, "비밀번호는 8자 이상이어야 합니다.")
+      .max(20, "비밀번호는 20자 이하여야 합니다.")
+      .refine(val => !/\s/.test(val), "비밀번호에 공백을 포함할 수 없습니다.")
+      .optional()
+      .or(z.literal("")), // 빈 문자열 허용
+
+    confirmPassword: z.string().optional().or(z.literal("")),
   })
   .refine(data => data.nickname || data.password, {
     message: "닉네임 또는 비밀번호 중 하나 이상 입력해주세요.",
+  }).refine(data => data.newPassword === data.confirmPassword, {
+    message: "새 비밀번호와 확인이 일치하지 않습니다.",
+    path: ["confirmPassword"],
   });
 
-  type UpdateFormData = {
-    nickname?: string;
-    password?: string;
-  };
+  type UpdateFormData = z.infer<typeof updateSchema>;
 
   const { nickname, userId, clearUser, setUser } = useUserStore(); // setNickname
   const { accessToken, clearTokens } = useAuthStore();
@@ -602,13 +614,20 @@ export const Settings = () => {
   const [ resignModalOpen, setResignModalOpen ] = useState(false);
 
   // RHF 셋업
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<UpdateFormData>({
+    const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<UpdateFormData>({
     resolver: zodResolver(updateSchema),
     defaultValues: {
-      nickname: nickname ?? "",
-      password: "",
+      currentPassword: '',
+      nickname: nickname ?? '',
+      newPassword: '',
+      confirmPassword: '',
     },
-    mode: "onBlur"
+    mode: 'onBlur',
   });
 
   // 수정 요청
@@ -616,15 +635,23 @@ export const Settings = () => {
     setMsg("");
     setErrMsg('');
     try {
-      // 빈 문자열은 서버에 보내지 않음
-      const sendData: UpdateFormData = {};
-      if (data.nickname && data.nickname !== nickname) sendData.nickname = data.nickname;
-      if (data.password) sendData.password = data.password;
 
-      if (!Object.keys(sendData).length) {
+      const isNicknameChanged = data.nickname && data.nickname !== nickname;
+      const isPasswordChanged = data.newPassword && data.newPassword.length > 0;
+
+      if (!isNicknameChanged && !isPasswordChanged) {
         setErrMsg("변경사항이 없습니다.");
         return;
       }
+
+      // 빈 문자열은 서버에 보내지 않음
+      const sendData: UpdateFormData = {
+        currentPassword: data.currentPassword,
+      };
+      // if (data.nickname && data.nickname !== nickname) sendData.nickname = data.nickname;
+      // if (data.newPassword) sendData.newPassword = data.newPassword;
+      if (isNicknameChanged) sendData.nickname = data.nickname;
+      if (isPasswordChanged) sendData.password = data.newPassword;
 
       await axios.post(
         "http://localhost:8000/auth/passupdate",
@@ -651,7 +678,12 @@ export const Settings = () => {
 
       setMsg("회원 정보가 수정되었습니다.");
       setErrMsg('');
-      reset({ nickname: sendData.nickname ?? nickname, password: "" });
+      reset({
+        currentPassword: '',
+        nickname: data.nickname ?? nickname,
+        newPassword: '',
+        confirmPassword: '',
+      });
     } catch (err) {
       if (axios.isAxiosError(err) && err.response?.data?.message) {
         setErrMsg(err.response.data.message);
@@ -662,8 +694,13 @@ export const Settings = () => {
 
   // 폼 리셋(취소)
   const handleCancel = () => {
-    reset({ nickname: nickname ?? "", password: "" });
-    setMsg("");
+    reset({
+      currentPassword: '',
+      nickname: nickname ?? '',
+      newPassword: '',
+      confirmPassword: '',
+    });
+    setMsg('');
     setErrMsg('');
   };
 
@@ -691,8 +728,22 @@ export const Settings = () => {
       <div className="space-y-8">
         <form onSubmit={ handleSubmit(onValid) }>
           <h2 className="font-semibold text-lg mb-2">회원 정보 수정</h2>
+          <PasswordForm
+            label="현재 비밀번호"
+            {...register("currentPassword")}
+            error={errors.currentPassword?.message}
+          />
           <NicknameForm { ...register("nickname") } error={errors.nickname?.message}/>
-          <PasswordForm { ...register("password") } error={errors.password?.message}/>
+          <PasswordForm
+            label="새 비밀번호"
+            {...register("newPassword")}
+            error={errors.newPassword?.message}
+          />
+          <PasswordForm
+            label="새 비밀번호 확인"
+            {...register("confirmPassword")}
+            error={errors.confirmPassword?.message}
+          />
           <UpdateButton />
           <CancelButton onClick={ handleCancel } />
           {
