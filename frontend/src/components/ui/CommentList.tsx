@@ -78,7 +78,6 @@ const CommentList: React.FC<CommentListProps> = ({ reviewId }) => {
       });
       refetch();
     } catch {
-      // console.log(e)
       alert("댓글 삭제 실패했습니다.");
     }
   };
