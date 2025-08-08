@@ -32,9 +32,7 @@ const BestReview = () => {
 
   return (
     <div className='flex flex-col lg:w-3/5 gap-4'>
-      {reviews && reviews.length > 0 ? (
-        <Skeleton />
-      ) : (
+      {reviews && reviews.length > 0 && (
         <>
           {/* 첫 번째 리뷰의 책 정보를 사용 */}
           <Link key={reviews[0].reviewId}
