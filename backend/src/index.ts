@@ -41,19 +41,6 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-// let kakaoOptions = {
-//   url: 'https://dapi.kakao.com/v3/search/book?target=title',  // target에 해당하는 것을 적기
-//   method: 'GET',
-//   headers: {
-//     'Authorization': 'KakaoAK 54cf8e502eb7f2205d37646cafc2272c'
-//   },
-//   qs: {
-//     query : '강아지',     // 현재 책으로 검색할 것이라 책 제목을 적었다.
-//     size:5
-//   },
-//   encoding: 'UTF-8',
-//   }
-
 //kakaoApi
 app.get('/', async (req: Request, res: Response) => {
   console.log('클라이언트 요청 수신');
