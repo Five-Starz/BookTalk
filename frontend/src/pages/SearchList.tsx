@@ -20,19 +20,6 @@ const SearchList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 20;
 
-  // ✅ 페이지네이션 처리
-  const totalPages = Math.ceil(searchResults.length / itemsPerPage);
-  const pagedSearchResults = searchResults.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
-
-   // 페이지 변경 핸들러
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: "smooth" }); // 페이지 바뀔 때 맨 위로 스크롤 (선택)
-  };
-
   useEffect(() => {
     if (!query) {
       setSearchResults([]);
@@ -73,6 +60,19 @@ const SearchList = () => {
     fetchSearchResults();
   }, [query]);
 
+  // ✅ 페이지네이션 처리
+  const totalPages = Math.ceil(searchResults.length / itemsPerPage);
+  const pagedSearchResults = searchResults.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+   // 페이지 변경 핸들러
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: "smooth" }); // 페이지 바뀔 때 맨 위로 스크롤 (선택)
+  };
+
   if (isLoading) {
     return (
       <div className="p-4 text-center">
@@ -102,7 +102,7 @@ const SearchList = () => {
     <div className="pt-[105px] pb-[10%] md:pb-[200px]">
       <h2 className="text-2xl font-bold mb-4">"{query}" 검색 결과</h2>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-8">
-        {searchResults.map((book) => {
+        {pagedSearchResults.map((book) => {
           const finalIsbn = getPrimaryIsbn(book.isbn);
 
           return (
