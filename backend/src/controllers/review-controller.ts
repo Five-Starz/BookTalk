@@ -43,7 +43,10 @@ class ReviewController {
       });
     } catch (error: any) {
       if (error instanceof Error && error.message?.includes('이미 해당 도서에 리뷰')) {
-        console.error('[ReviewController] 리뷰 중복 오류:', error);
+        console.error('[ReviewController] 리뷰 중복 오류:', {
+        msg:error?.message,
+        stack:error?.stack,
+      });
         return res.status(409).json({ message: '이미 해당 도서에 리뷰를 작성하셨습니다.' });
       }
 
