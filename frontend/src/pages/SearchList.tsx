@@ -52,7 +52,6 @@ const SearchList = () => {
 
         // 응답 데이터가 바로 BookDetail[] 배열이라고 가정하고 설정
         setSearchResults(response.data);
-        // console.log('검색 결과 데이터:', response.data);
 
       } catch (err) {
         // Axios 에러 처리 강화: Hot10에서 했던 것처럼 상세 에러 메시지 로깅
