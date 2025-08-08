@@ -22,7 +22,7 @@ import axios from 'axios';
 
 const app = express();
 const swaggerSpec = swaggerJSDoc(swaggerOptions);
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT || 3000;  // Render가 PORT를 자동으로 할당
 
 // 모든 출처를 허용하는 방법 (개발 단계에서만 권장)
 app.use(cors({

@@ -2,9 +2,9 @@ import { Books, Reviews } from '@prisma/client';
 import { prisma } from '../utils/prisma';
 class MainRepository {
   // 1. 좋아요 수가 많은 리뷰
-  async fetchMostLiked3Reviews(): Promise<Reviews | null> {
-    // 1-1. 좋아요테이블에서 리뷰별 좋아요개수를 그룹화, 내림차순 정렬, 상위 1개 가져옴
-    const result = await prisma.likes.groupBy({
+  async fetchMostLiked3Reviews(): Promise<Reviews[]> {
+    // 1-1. 좋아요테이블에서 리뷰별 좋아요개수를 그룹화, 내림차순 정렬, 상위 3개 가져옴
+    const top3LikesGroupByReviewId = await prisma.likes.groupBy({
       by: ['reviewId'], // 리뷰ID별로 그룹화
       _count: {
         reviewId: true, // 각 그룹(리뷰) 내에서 reviewId 값이 몇 개 있는지(좋아요 개수) 세기
@@ -17,14 +17,17 @@ class MainRepository {
       take: 3, // 상위 3개 결과만 가져오기
     });
 
-    // 1-2. 결과가 없으면 null 반환 (좋아요가 하나도 없는 경우)
-    const mostLiked = result[0];
-    if (!mostLiked) return null;
+    // 1-2. 결과가 없으면 빈 배열 반환 (좋아요가 하나도 없는 경우)
+    if (top3LikesGroupByReviewId.length ===0) return [];
 
-    // 1-3. 가장 좋아요 많은 리뷰ID를 이용해 실제 리뷰 정보 조회 후 반환
-    return await prisma.reviews.findUnique({
+    // 1-3. 가장 좋아요 많은 top3 리뷰ID를 이용해 실제 리뷰 정보 조회 후 반환
+    const reviewIds: number[] = top3LikesGroupByReviewId.map((item)=> item.reviewId);
+
+    return await prisma.reviews.findMany({
       where: {
-        reviewId: mostLiked.reviewId,
+        reviewId: {
+          in: reviewIds,
+        },
       },
     });
   }
