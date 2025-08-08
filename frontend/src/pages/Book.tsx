@@ -1,5 +1,4 @@
 // BookPage.tsx
-import React from 'react';
 import { useParams } from 'react-router-dom';
 
 // ✨ 커스텀 훅 임포트
@@ -51,15 +50,15 @@ const Book = () => {
         <BookInfo book={bookData} />
 
         {/* ReviewsSection과 RecommendList는 이제 각 섹션의 로딩/에러/데이터 없음 상태를 스스로 처리합니다. */}
-        {errorReviews ? 
-        
+        {errorReviews ?
+
           <div className="flex justify-center items-center h-48">
             리뷰가 존재하지 않습니다.
-          </div> : 
+          </div> :
 
-          <ReviewsSection 
-            reviews={reviews} 
-            isLoading={isLoadingReviews} 
+          <ReviewsSection
+            reviews={reviews}
+            isLoading={isLoadingReviews}
             error={errorReviews}
             bookData={bookData} // ✅ 부모 컴포넌트에서 bookData를 직접 전달
           />
@@ -67,7 +66,7 @@ const Book = () => {
         <RecommendList
           recommendList={recommendList}
           isLoading={isLoadingRecommended}
-          error={errorRecommended} 
+          error={errorRecommended}
         />
       </div>
     </div>

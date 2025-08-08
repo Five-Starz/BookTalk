@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import { useState, useRef } from "react";
 import { Link } from 'react-router-dom';
 import { Swiper as SwiperClass } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -58,7 +58,7 @@ const handleMainSlideChange = (swiper: SwiperClass) => {
             mainSwiperRef.current = swiper;
           }}
           // onSlideChange 이벤트 핸들러 추가
-          onSlideChange={handleMainSlideChange}      
+          onSlideChange={handleMainSlideChange}
           loop={true}
           spaceBetween={10}
           thumbs={{ swiper: thumbsSwiper }}
@@ -69,7 +69,7 @@ const handleMainSlideChange = (swiper: SwiperClass) => {
           {apiData.books.map((book: BookDetail, index) => ( // Book 인터페이스를 사용하여 타입 안전성 확보
             <SwiperSlide> {/* key는 고유한 값으로 설정 (isbn이 적합) */}
               <Link key={book.isbn} to={`/book/${book.isbn}`}>
-                <div className="relative flex flex-col gap-4 items-center md:flex-row md:gap-0 md:justify-between">       
+                <div className="relative flex flex-col gap-4 items-center md:flex-row md:gap-0 md:justify-between">
                   {/* 순위 추가 */}
                   {index+1 === 1 ? (
                     <h3 className='absolute top-[-5px] left-[-5px] flex justify-center items-center bg-orange-600 rounded-full w-[2.5rem] h-[2.5rem] text-white z-10'>{index+1}</h3>

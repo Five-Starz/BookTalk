@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios, { type AxiosResponse } from 'axios';
+import axios from 'axios'; // type AxiosResponse
 import type { BookDetail } from '../types/BookType';
 import type { ReviewDetail } from '../types/ReviewType';
 import { decodeHtml } from '../utils/decodeHtml';
@@ -21,7 +21,7 @@ export const useBookDetails = (isbn: string | undefined): UseBookDetailsResult =
       setIsLoading(false);
       return;
     }
-    
+
     const fetchBookDetails = async () => {
       let averageRating = 0;
       try {
@@ -29,7 +29,7 @@ export const useBookDetails = (isbn: string | undefined): UseBookDetailsResult =
         const bookmarkcount = await axios.post(`http://localhost:8000/bookmarks/count`, {
           isbn: isbn
         });
-        const bookrating = `http://localhost:8000/books/averageRating/${isbn}`; 
+        const bookrating = `http://localhost:8000/books/averageRating/${isbn}`;
 
         try {
           const responseRating=await axios.get(bookrating);
@@ -38,7 +38,7 @@ export const useBookDetails = (isbn: string | undefined): UseBookDetailsResult =
           // axios 에러인지 확인
           if (axios.isAxiosError(ratingError) && ratingError.response) {
             // 백엔드가 400 상태 코드와 특정 메시지를 보낼 경우
-            if (ratingError.response.status === 400 && 
+            if (ratingError.response.status === 400 &&
                 ratingError.response.data?.message === '평점을 계산하기 위해서는 더 많은 리뷰가 필요합니다.') {
               console.warn(`[useBookDetails] ${isbn} 책에 대한 평점 부족 에러 감지. 평점을 0으로 설정합니다.`);
               averageRating = 0; // 에러 발생 시 0으로 설정
@@ -52,15 +52,15 @@ export const useBookDetails = (isbn: string | undefined): UseBookDetailsResult =
             // Axios 에러가 아닌 다른 종류의 에러 (네트워크 문제 등)
             console.error(`[useBookDetails] 평점 API 호출 중 알 수 없는 에러:`, ratingError);
             averageRating = 0; // 역시 0으로 처리하고 진행
-          }          
+          }
         }
 
         // ✅ API 요청 URL을 /books/search?query={isbn}으로 변경
-        const requestUrl = `http://localhost:8000/books/search?query=${isbn}`; 
+        const requestUrl = `http://localhost:8000/books/search?query=${isbn}`;
 
         // ✅ 응답이 배열 형태임을 가정하고 제네릭 타입 설정
         const response = await axios.get<BookDetail[]>(requestUrl);
-        
+
         // 검색 결과가 배열로 오므로, 첫 번째 책을 사용
         if (response.data && response.data.length > 0) {
           const rawBook = response.data[0];
@@ -72,8 +72,8 @@ export const useBookDetails = (isbn: string | undefined): UseBookDetailsResult =
             description: `${decodeHtml(rawBook.description)}`,
             authors: `${Array.isArray(rawBook.authors)
               ? rawBook.authors.map(author => decodeHtml(author))
-              : decodeHtml(rawBook.authors)}`,              
-            bookmarkCount:bookmarkcount.data,   
+              : decodeHtml(rawBook.authors)}`,
+            bookmarkCount:bookmarkcount.data,
             total_rating:averageRating,
           };
 
@@ -85,7 +85,7 @@ export const useBookDetails = (isbn: string | undefined): UseBookDetailsResult =
           setIsLoading(false);
         }
         setIsLoading(true);
-        
+
       } catch (err) {
         console.error('useBookDetails.ts: API 요청 에러 발생:', err);
         if (axios.isAxiosError(err)) {
@@ -124,10 +124,10 @@ export const useBookDetailsInMyPage = (isbn: string | undefined): UseBookDetails
       setIsLoading(true);
       setError(null);
       setBookData(null);
-      
+
       try {
         const response = await axios.get<BookDetail>(`http://localhost:8000/books/info/${isbn}`);
-        
+
         if (response.data) {
           const book = response.data;
 
@@ -137,7 +137,7 @@ export const useBookDetailsInMyPage = (isbn: string | undefined): UseBookDetails
             description: `${decodeHtml(book.description)}`,
             authors: `${Array.isArray(book.authors)
               ? book.authors.map(author => decodeHtml(author))
-              : decodeHtml(book.authors)}`,            
+              : decodeHtml(book.authors)}`,
             // 기존 API 응답에 없는 값은 기본값으로 설정
             bookmarkCount: 0,
             total_rating: 0,
@@ -188,12 +188,12 @@ export const useRecommendList = (isbn: string | undefined): UseRecommendListResu
       try {
         setIsLoading(true);
         setError(null);
-        
+
         // axios.get의 제네릭 타입을 명시하여 응답 데이터의 타입을 명확히 합니다.
         // 백엔드가 BookDetail[]을 직접 반환한다고 가정합니다.
         const response = await axios.get<BookDetail[]>(`http://localhost:8000/books/random`);
-        
-        setRecommendList(response.data); 
+
+        setRecommendList(response.data);
         setIsLoading(false);
 
       } catch (err) {
@@ -268,13 +268,13 @@ export const useReviews = (isbn: string | undefined): UseReviewsResult => {
         console.error('리뷰 데이터 불러오기 에러 (useReviews):', err);
         if (axios.isAxiosError(err)) {
           // ✅ Axios 에러 응답 상세 확인
-          console.error('useReviews: Axios 에러 응답:', err.response); 
+          console.error('useReviews: Axios 에러 응답:', err.response);
           // 400 에러 처리 추가
           if (err.response?.status === 400) {
             setErrorReviews(`리뷰 요청이 유효하지 않습니다: ${err.response?.data?.message || '잘못된 요청'}`);
           } else if (err.response?.status === 404) {
             // 이 경우 404 에러 메시지가 잘 나올 것입니다.
-            setErrorReviews('해당 책에 대한 리뷰를 찾을 수 없습니다.'); 
+            setErrorReviews('해당 책에 대한 리뷰를 찾을 수 없습니다.');
           } else {
             setErrorReviews('리뷰를 불러오는 데 실패했습니다.');
           }

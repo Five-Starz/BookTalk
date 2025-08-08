@@ -1,5 +1,4 @@
 // components/sections/ReviewsSection.tsx
-import React from 'react';
 import ReviewCard from '../ui/ReviewCard'; // ReviewCard 임포트
 import type { ReviewsSectionProps } from '../../types/ReviewType'; // 타입 임포트
 import { Link } from 'react-router-dom';
@@ -16,7 +15,7 @@ const ReviewsSection = ({ reviews, isLoading, error, bookData }: ReviewsSectionP
   if (!reviews || reviews.length === 0) {
     return <div className='text-center'>이 책에 대한 리뷰가 아직 없습니다.</div>;
   }
-  
+
   const isbn = getPrimaryIsbn(bookData.isbn);
 
   return (
@@ -27,7 +26,7 @@ const ReviewsSection = ({ reviews, isLoading, error, bookData }: ReviewsSectionP
           <Link to={`/book/${isbn}/reviews`} className='text-[#999]'>더보기</Link>
         )}
       </div>
-      
+
       {reviews && reviews.length > 0 && (
         <>
           <div className='hidden flex-wrap gap-2 lg:flex'>
