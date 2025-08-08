@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 
 import { Routes, Route } from 'react-router-dom'; // Link는 Header로 이동
 import './App.css';
@@ -44,7 +44,7 @@ function App() {
 
           // ✅ 1. 토큰이 유효하면 Zustand 유저 스토어 업데이트
           userStore.setUser({ userId, nickname });
-          
+
           // ✅ 2. Auth 스토어도 최신 상태로 동기화 (선택사항, 하지만 권장)
           authStore.checkLogin();
 
@@ -59,7 +59,7 @@ function App() {
 
     initializeUser();
   }, []); // ✅ 빈 배열을 넣어 한 번만 실행되도록 설정
-  
+
   return (
     <div className="flex flex-col min-h-screen">
       <Header />

@@ -1,4 +1,3 @@
-import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import ReviewCard from '../components/ui/ReviewCard';
 import CommentList from '../components/ui/CommentList';

@@ -1,4 +1,3 @@
-import React from 'react'
 import User from '../ui/User';
 import {useMainReviews} from '../../hooks/useMain'
 import { useUserNickname } from '../../hooks/useUser';
@@ -6,7 +5,7 @@ import { Link } from 'react-router-dom';
 
 const BestReview = () => {
   const { reviews, isLoadingReviews, errorReviews } = useMainReviews('liked');
-  
+
   // ✅ reviews 배열이 비어있지 않으면 첫 번째 리뷰의 userId를, 아니면 undefined를 사용
   const userId = reviews && reviews.length > 0 ? reviews[0].userId : undefined;
 

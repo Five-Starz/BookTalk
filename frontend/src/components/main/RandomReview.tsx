@@ -1,4 +1,3 @@
-import React from 'react'
 import User from '../ui/User'
 import {useMainReviews} from '../../hooks/useMain'
 import { useUserNickname } from '../../hooks/useUser';
@@ -28,16 +27,16 @@ const RandomReview = () => {
     return <div className="p-4 text-center">랜덤 리뷰 데이터를 찾을 수 없습니다.</div>;
   }
 
-  const thumbnailUrl = reviews[0].book.thumbnail;
+  // const thumbnailUrl = reviews[0].book.thumbnail;
 
   return (
     <Link key={reviews[0].reviewId}
       to={`/review/${reviews[0].reviewId}`}
       state={{ reviewData: reviews[0] }}
       className='lg:w-2/5 relative'>
-      {/* <div 
+      {/* <div
       className='absolute inset-0 z-0 bg-cover bg-center rounded-lg lg:h-[320px]'
-      style={{ 
+      style={{
         backgroundImage: `url(${thumbnailUrl})`,
         filter: 'blur(5px)', // ✅ CSS filter 속성으로 블러 효과 적용
       }}

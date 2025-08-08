@@ -158,7 +158,7 @@ export const useReviewForm = ({ initialIsbn, bookData, userId }: UseReviewFormPr
         Authorization: `Bearer ${accessToken}`
       } : {};
 
-      const response = await axios.post('http://localhost:8000/reviews', formData, {
+      await axios.post('http://localhost:8000/reviews', formData, { // const response =
         headers: headers
       });
 
@@ -257,7 +257,7 @@ export const useEditReviewForm = ({ existingReview }: UseEditReviewFormProps): U
 
       // ✅ axios.put으로 리뷰 수정 API 호출
       // 백엔드 API 엔드포인트에 맞게 수정: reviews/{reviewId}
-      const response = await axios.patch(`http://localhost:8000/reviews/${existingReview.reviewId}`, updateData, {
+      await axios.patch(`http://localhost:8000/reviews/${existingReview.reviewId}`, updateData, { // const response =
         headers: headers
       });
 
@@ -403,7 +403,7 @@ export const useRevCommentForm = ({ reviewId, userId, refetch }: UseRevCommentFo
 
       // ✅ 백엔드 creatComment 함수 시그니처에 맞춰 명시적으로 데이터 전송
       // creatComment(userId:number, reviewId:number, content:string, parentId?:number|null)
-      const response = await axios.post(
+      await axios.post( // const response =
         `http://localhost:8000/comment/add`, // ✅ 기존 URL 유지
         {
           userId: formData.userId,

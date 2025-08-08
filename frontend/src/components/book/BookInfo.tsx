@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { BookDetail } from '../../types/BookType';
 import { Link } from 'react-router-dom';
 import { getPrimaryIsbn } from '../../utils/getPrimaryIsbn';
