@@ -6,7 +6,7 @@ const mainRepository = new MainRepository();
 
 class MainService {
   // 1. 좋아요 수가 많은 리뷰
-  async fetchMostLiked3Reviews(): Promise<Reviews | null> {
+  async fetchMostLiked3Reviews(): Promise<Reviews[] | null> {
     return await mainRepository.fetchMostLiked3Reviews();
   }
 
