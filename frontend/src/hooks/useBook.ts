@@ -194,8 +194,6 @@ export const useRecommendList = (isbn: string | undefined): UseRecommendListResu
         const response = await axios.get<BookDetail[]>(`https://booktalk-server.onrender.com/books/random`);
 
         setRecommendList(response.data);
-        setIsLoading(false);
-
       } catch (err) {
         // Axios 에러 처리 강화: Hot10에서 했던 것처럼 상세 에러 메시지 로깅
         if (axios.isAxiosError(err)) {

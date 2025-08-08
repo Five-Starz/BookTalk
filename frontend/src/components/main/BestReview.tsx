@@ -2,6 +2,8 @@ import User from '../ui/User';
 import {useMainReviews} from '../../hooks/useMain'
 import { useUserNickname } from '../../hooks/useUser';
 import { Link } from 'react-router-dom';
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
 
 const BestReview = () => {
   const { reviews, isLoadingReviews, errorReviews } = useMainReviews('liked');
@@ -15,7 +17,8 @@ const BestReview = () => {
 
   // 로딩, 에러, 데이터 없음 상태 처리
   if (!isLoadingReviews) {
-    return <div className="p-4 text-center">베스트 리뷰 데이터를 불러오는 중입니다...</div>;
+    return <Skeleton />
+    // return <div className="p-4 text-center">베스트 리뷰 데이터를 불러오는 중입니다...</div>;
   }
 
   if (errorReviews) {
