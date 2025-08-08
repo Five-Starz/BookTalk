@@ -1,7 +1,3 @@
-// import './types/custom';  // nodemon 정상 사용 위해, 타입 병합만 유도함 (JS로 빌드 안됨)
-// import { prisma } from './utils/prisma'; // Prisma 클라이언트 임포트
-// import { PrismaClient } from '@prisma/client';
-
 import dotenv from 'dotenv';
 dotenv.config();
 import express, { Request, Response, NextFunction } from 'express';
@@ -21,14 +17,29 @@ import bookmakrsRouter from './routes/bookmark-router'
 import axios from 'axios';
 
 const app = express();
+
+// cors를 최상단에 위치시켜야 모든 요청에 적용됨 - 모든 출처를 허용하는 방법 (개발 단계에서만 권장)
+app.use(cors({
+  origin: (origin, callback) => {
+    const allowList = [
+      'https://5booktalk.netlify.app',
+      'https://localhost:3000',
+      'https://booktalk-server.onrender.com',
+      undefined,
+    ];
+    if (allowList.includes(origin) || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Now allowed by CORS'));
+    }
+  },
+  // [],   // ✅ React 앱 주소 정확히 명시
+  credentials: true                  // ✅ 쿠키 허용
+}));
+
 const swaggerSpec = swaggerJSDoc(swaggerOptions);
 const PORT = process.env.PORT || 3000;  // Render가 PORT를 자동으로 할당
 
-// 모든 출처를 허용하는 방법 (개발 단계에서만 권장)
-app.use(cors({
-  origin: 'https://5booktalk.netlify.app',   // ✅ React 앱 주소 정확히 명시
-  credentials: true                  // ✅ 쿠키 허용
-}));
 // 미들웨어 및 라우터
 app.use(express.urlencoded({extended:true}))
 app.use(express.json());
