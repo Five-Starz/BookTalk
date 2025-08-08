@@ -14,9 +14,10 @@ const BestReview = () => {
   // ✅ userId가 있을 때만 훅을 호출하도록 수정 (hooks는 조건부로 호출하면 안 되므로,
   //    userId를 인자로 넘겨주고 훅 내부에서 유효성을 검사하는 것이 올바른 패턴입니다)
   const { nickname } = useUserNickname(userId);
+  console.log(reviews)
 
   // 로딩, 에러, 데이터 없음 상태 처리
-  if (!isLoadingReviews) {
+  if (isLoadingReviews) {
     return <Skeleton />
     // return <div className="p-4 text-center">베스트 리뷰 데이터를 불러오는 중입니다...</div>;
   }
