@@ -18,11 +18,7 @@ class BookController {
       const books = await bookService.searchBooksByQuery(query); // 검색결과 책 목록들 받아와
       return res.status(200).json(books); // 결과 반환
     } catch (error:any) {
-      console.error('[BookController] 도서 검색 오류:', {
-        msg:error?.message,
-        stack:error?.stack,
-        cause:error?.cause,
-      });
+      console.error('[BookController] 도서 검색 오류:', error);
       res.status(500).json({ message: '도서 검색 중 오류가 발생했습니다.' });
     }
   }
