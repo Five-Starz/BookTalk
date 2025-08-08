@@ -18,10 +18,8 @@ class ReviewRepository {
   }
 
   // 리뷰 등록
-  async createReview(data: { isbn: string; rating: number; content: string; userId: number }) {
-    let a
-    try {
-      a=await prisma.reviews.create({
+  async createReview(data: { isbn: string; rating: number; content: string; userId: number }) {    
+    return await prisma.reviews.create({
       data: {
         isbn: data.isbn,
         rating: data.rating,
@@ -29,12 +27,6 @@ class ReviewRepository {
         userId: data.userId,
       },
     });
-    } catch (e) {
-      console.error('[getGoodBooks] DB error', e);
-    throw e;
-    }
-    
-    return a
   }
 
   // 특정 책의 리뷰 조회
