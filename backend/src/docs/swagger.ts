@@ -9,7 +9,7 @@ export const swaggerOptions: swaggerJSDoc.Options = {
       description: '우리 팀 프로젝트의 Swagger 명세서',
     },
     tags: [{ name: 'Review', description: '리뷰 관련 API' }],
-    servers: [{ url: 'http://localhost:8000', // 백엔드 주소
+    servers: [{ url: 'https://booktalk-server.onrender.com', // 백엔드 주소
       },
     ],
     components: {

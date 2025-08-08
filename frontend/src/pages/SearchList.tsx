@@ -48,7 +48,7 @@ const SearchList = () => {
 
         // axios.get의 제네릭 타입을 명시하여 응답 데이터의 타입을 명확히 합니다.
         // 백엔드가 BookDetail[]을 직접 반환한다고 가정합니다.
-        const response = await axios.get<BookDetail[]>(`http://localhost:8000/books/search?query=${query}`);
+        const response = await axios.get<BookDetail[]>(`https://booktalk-server.onrender.com/books/search?query=${query}`);
 
         // 응답 데이터가 바로 BookDetail[] 배열이라고 가정하고 설정
         setSearchResults(response.data);

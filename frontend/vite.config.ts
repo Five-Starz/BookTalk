@@ -13,17 +13,17 @@ export default defineConfig({
   server: {
     proxy: {
       '/auth': {
-        target: 'http://localhost:8000', // 백엔드 서버 주소로 변경
+        target: 'https://booktalk-server.onrender.com', // 백엔드 서버 주소로 변경
         changeOrigin: true,
         secure: false,
       },
       '/reviews': {
-        target: 'http://localhost:8000',
+        target: 'https://booktalk-server.onrender.com',
         changeOrigin: true,
         secure: false,
       },
       '/bookmarks': {
-        target: 'http://localhost:8000',
+        target: 'https://booktalk-server.onrender.com',
         changeOrigin: true,
         secure: false,
       }

@@ -12,7 +12,7 @@ const ReviewCard = ({review}: ReviewCardProps ) => {
   // const { reviewId: reviewIdParam } = useParams<{ reviewId: string }>();
   // const reviewId = reviewIdParam ? parseInt(reviewIdParam, 10) : undefined;
   const { nickname } = useUserNickname(review?.userId);
-  
+
   // 상태 관리
   const [isLiked, setIsLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(review._count.likes || 0);
@@ -25,7 +25,7 @@ const ReviewCard = ({review}: ReviewCardProps ) => {
   useEffect(() => {
     const checkLiked = async () => {
       if (!userId) return;
-      const res = await fetch("http://localhost:8000/likes/find", {
+      const res = await fetch("https://booktalk-server.onrender.com/likes/find", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: `userId=${userId}&reviewId=${review.reviewId}`,
@@ -44,7 +44,7 @@ const ReviewCard = ({review}: ReviewCardProps ) => {
     }
     if (isLiked) {
       // 해제
-      await fetch("http://localhost:8000/likes/del", {
+      await fetch("https://booktalk-server.onrender.com/likes/del", {
         method: "POST",
         headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/x-www-form-urlencoded" },
         body: `reviewId=${review.reviewId}`,
@@ -53,7 +53,7 @@ const ReviewCard = ({review}: ReviewCardProps ) => {
       setLikeCount((prev) => Math.max(0, prev - 1));
     } else {
       // 등록
-      await fetch("http://localhost:8000/likes", {
+      await fetch("https://booktalk-server.onrender.com/likes", {
         method: "POST",
         headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/x-www-form-urlencoded" },
         body: `reviewId=${review.reviewId}`,

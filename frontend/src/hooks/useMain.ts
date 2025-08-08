@@ -12,8 +12,8 @@ export const useMainReviews = (listType: string): UseReviewsResult => {
 
   useEffect(() => {
     const fetchReviews = async () => {
-      try {       
-        const response = await axios.get(`http://localhost:8000/main/reviews/${listType}`);
+      try {
+        const response = await axios.get(`https://booktalk-server.onrender.com/main/reviews/${listType}`);
         setIsLoadingReviews(true);
         const reviewData = response.data.reviews;
         const fetchedReviews = Array.isArray(reviewData) ? reviewData : [reviewData];
@@ -21,7 +21,7 @@ export const useMainReviews = (listType: string): UseReviewsResult => {
         if (fetchedReviews.length > 0) {
           const bookOfReview = await Promise.all(
             fetchedReviews.map(async (review) => {
-              const bookResponse = await axios.get<BookDetail>(`http://localhost:8000/books/info/${review.isbn}`);
+              const bookResponse = await axios.get<BookDetail>(`https://booktalk-server.onrender.com/books/info/${review.isbn}`);
               return {
                 ...review,
                 book: bookResponse.data
@@ -38,7 +38,7 @@ export const useMainReviews = (listType: string): UseReviewsResult => {
           // 에러 메시지를 좀 더 명확하게 수정합니다.
           const status = err.response?.status;
           if (status === 404) {
-            setErrorReviews('인기 리뷰를 찾을 수 없습니다.'); 
+            setErrorReviews('인기 리뷰를 찾을 수 없습니다.');
           } else {
             setErrorReviews('리뷰를 불러오는 데 실패했습니다.');
           }
@@ -64,9 +64,9 @@ export const use10List = (listType: string) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get<BookApiResponse>(`http://localhost:8000/main/books/${listType}`);
+        const response = await axios.get<BookApiResponse>(`https://booktalk-server.onrender.com/main/books/${listType}`);
         const rawBooks = response.data.books;
-        
+
         // ✅ 배열의 각 책 정보를 순회하며 필요한 필드를 디코딩
         const decodedBooks = rawBooks.map(book => ({
             ...book,

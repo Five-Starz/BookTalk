@@ -57,7 +57,7 @@ const CommentList: React.FC<CommentListProps> = ({ reviewId }) => {
 
     try {
       await axios.put(
-        `http://localhost:8000/comment/update`,
+        `https://booktalk-server.onrender.com/comment/update`,
         { commentId: commentId, content: editedContent }, // ✅ body 객체 형식으로 전달
         { headers: { Authorization: `Bearer ${accessToken}` } }
       );
@@ -73,7 +73,7 @@ const CommentList: React.FC<CommentListProps> = ({ reviewId }) => {
   // 댓글 삭제 핸들러
   const handleDeleteComment = async (commentId: number) => {
     try {
-      await axios.delete(`http://localhost:8000/comment/${commentId}`,{
+      await axios.delete(`https://booktalk-server.onrender.com/comment/${commentId}`,{
         headers: { Authorization: `Bearer ${accessToken}` }
       });
       refetch();
@@ -104,7 +104,7 @@ const CommentList: React.FC<CommentListProps> = ({ reviewId }) => {
 
     try {
         await axios.post(
-            `http://localhost:8000/comment/add`,
+            `https://booktalk-server.onrender.com/comment/add`,
             {
                 userId: userId,
                 reviewId: reviewId,

@@ -1,6 +1,6 @@
 # BookTalk 프로젝트
 
-책 리뷰 커뮤니티 'BookTalk'은 사용자 리뷰 작성, 댓글, 좋아요, 맞춤형 추천, 외부 도서 API 연동 기능을 갖춘 웹 서비스입니다.  
+책 리뷰 커뮤니티 'BookTalk'은 사용자 리뷰 작성, 댓글, 좋아요, 맞춤형 추천, 외부 도서 API 연동 기능을 갖춘 웹 서비스입니다.
 본 프로젝트는 3주간 진행되며, 프론트엔드와 백엔드로 나누어 개발합니다.
 
 ---
@@ -41,7 +41,7 @@ cd backend
 npm install
 npm run dev
 ```
-- 서버 기본 주소: http://localhost:8000
+- 서버 기본 주소: https://booktalk-server.onrender.com
 
 ### 2. 프론트엔드
 ```bash

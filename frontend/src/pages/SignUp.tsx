@@ -83,7 +83,7 @@ const SignUp = () => {
   const onValid = async (data: SignupFormData) => {
     try {
       // 여기에 실제 API 호출 코드 작성
-      await axios.post('http://localhost:8000/auth/signup', {
+      await axios.post('https://booktalk-server.onrender.com/auth/signup', {
         nickname: data.nickname,
         email: data.email,
         password: data.password
