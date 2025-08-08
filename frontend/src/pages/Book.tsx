@@ -8,6 +8,8 @@ import BookInfo from '../components/book/BookInfo';
 import RecommendList from '../components/book/RecommendList';
 import ReviewsSection from '../components/book/ReviewSection';
 
+import Skeleton from 'react-loading-skeleton';
+
 // BookPage는 이제 컨테이너 역할을 더욱 명확하게 수행합니다.
 const Book = () => {
   const { isbn } = useParams<{ isbn: string }>();
@@ -19,11 +21,12 @@ const Book = () => {
 
   // 최상위 로딩 및 에러 처리 (책 상세 정보 로딩에 집중)
   if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-48">
-        책 정보를 불러오는 중입니다...
-      </div>
-    );
+    return <Skeleton />
+    // return (
+    //   <div className="flex justify-center items-center h-48">
+    //     책 정보를 불러오는 중입니다...
+    //   </div>
+    // );
   }
 
   if (error) {
