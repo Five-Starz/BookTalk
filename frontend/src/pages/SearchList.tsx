@@ -20,19 +20,6 @@ const SearchList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 20;
 
-  // ✅ 페이지네이션 처리
-  const totalPages = Math.ceil(searchResults.length / itemsPerPage);
-  const pagedSearchResults = searchResults.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
-
-   // 페이지 변경 핸들러
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: "smooth" }); // 페이지 바뀔 때 맨 위로 스크롤 (선택)
-  };
-
   useEffect(() => {
     if (!query) {
       setSearchResults([]);
@@ -72,6 +59,19 @@ const SearchList = () => {
 
     fetchSearchResults();
   }, [query]);
+
+  // ✅ 페이지네이션 처리
+  const totalPages = Math.ceil(searchResults.length / itemsPerPage);
+  const pagedSearchResults = searchResults.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+   // 페이지 변경 핸들러
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: "smooth" }); // 페이지 바뀔 때 맨 위로 스크롤 (선택)
+  };
 
   if (isLoading) {
     return (
