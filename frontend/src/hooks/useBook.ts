@@ -25,6 +25,7 @@ export const useBookDetails = (isbn: string | undefined): UseBookDetailsResult =
     const fetchBookDetails = async () => {
       let averageRating = 0;
       try {
+        setIsLoading(true)
         setError(null);
         const bookmarkcount = await axios.post(`https://booktalk-server.onrender.com/bookmarks/count`, {
           isbn: isbn
@@ -82,19 +83,15 @@ export const useBookDetails = (isbn: string | undefined): UseBookDetailsResult =
           // 검색 결과가 없으면 에러 처리
           setBookData(null);
           setError('요청하신 ISBN에 해당하는 책을 찾을 수 없습니다.');
-          setIsLoading(false);
         }
-        setIsLoading(true);
 
       } catch (err) {
         console.error('useBookDetails.ts: API 요청 에러 발생:', err);
         if (axios.isAxiosError(err)) {
           console.error('useBookDetails.ts: Axios 에러 응답:', err.response);
           setError(`책 정보를 불러오는 데 실패했습니다: ${err.response?.status} - ${err.response?.data?.message || '알 수 없는 오류'}`);
-          setIsLoading(false);
         } else {
           setError('책 정보를 불러오는 중 알 수 없는 오류가 발생했습니다.');
-          setIsLoading(false);
         }
       } finally {
         setIsLoading(false);

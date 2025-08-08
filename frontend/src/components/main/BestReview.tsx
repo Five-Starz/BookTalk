@@ -32,7 +32,9 @@ const BestReview = () => {
 
   return (
     <div className='flex flex-col lg:w-3/5 gap-4'>
-      {reviews && reviews.length > 0 && (
+      {reviews && reviews.length > 0 ? (
+        <Skeleton />
+      ) : (
         <>
           {/* 첫 번째 리뷰의 책 정보를 사용 */}
           <Link key={reviews[0].reviewId}
@@ -61,16 +63,16 @@ const BestReview = () => {
                 state={{ reviewData: reviews[index] }}
               >
                 <div className="card card-side w-full md:w-[calc(50%-6px)] bg-gray-200 h-20">
-                <figure>
-                  <img
-                    src={review.book.thumbnail} // ✅ 책 이미지 사용
-                    alt={review.book.title} /> {/* ✅ 책 제목 사용 */}
-                </figure>
-                <div className='p-2 text-overflow'>
-                  <h4>{review.book.title}</h4> {/* ✅ 책 제목 사용 */}
-                  <p>{review.content}</p> {/* ✅ 리뷰 내용 사용 */}
+                  <figure>
+                    <img
+                      src={review.book.thumbnail} // ✅ 책 이미지 사용
+                      alt={review.book.title} /> {/* ✅ 책 제목 사용 */}
+                  </figure>
+                  <div className='p-2 text-overflow'>
+                    <h4>{review.book.title}</h4> {/* ✅ 책 제목 사용 */}
+                    <p>{review.content}</p> {/* ✅ 리뷰 내용 사용 */}
+                  </div>
                 </div>
-              </div>
               </Link>
             ))}
           </div>
