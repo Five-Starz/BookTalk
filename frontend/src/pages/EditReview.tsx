@@ -13,7 +13,6 @@ const EditReview: React.FC = () => {
 
   // ✅ 1. reviewId로 기존 리뷰 정보를 불러옵니다.
   const { reviewData: existingReview, isLoadingReview, errorReview } = useReviewDetails(reviewId);
-  // console.log('기존 리뷰 정보:', existingReview)
 
   // ✅ 2. 기존 리뷰에 포함된 책 ISBN을 사용하여 책 정보를 불러옵니다.
   const bookIsbn = existingReview?.isbn;

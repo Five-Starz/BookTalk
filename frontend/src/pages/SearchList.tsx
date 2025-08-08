@@ -20,6 +20,19 @@ const SearchList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 20;
 
+  // ✅ 페이지네이션 처리
+  const totalPages = Math.ceil(searchResults.length / itemsPerPage);
+  const pagedSearchResults = searchResults.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+   // 페이지 변경 핸들러
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: "smooth" }); // 페이지 바뀔 때 맨 위로 스크롤 (선택)
+  };
+
   useEffect(() => {
     if (!query) {
       setSearchResults([]);
@@ -39,7 +52,6 @@ const SearchList = () => {
 
         // 응답 데이터가 바로 BookDetail[] 배열이라고 가정하고 설정
         setSearchResults(response.data);
-        // console.log('검색 결과 데이터:', response.data);
 
       } catch (err) {
         // Axios 에러 처리 강화: Hot10에서 했던 것처럼 상세 에러 메시지 로깅
@@ -59,19 +71,6 @@ const SearchList = () => {
 
     fetchSearchResults();
   }, [query]);
-
-  // ✅ 페이지네이션 처리
-  const totalPages = Math.ceil(searchResults.length / itemsPerPage);
-  const pagedSearchResults = searchResults.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
-
-   // 페이지 변경 핸들러
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: "smooth" }); // 페이지 바뀔 때 맨 위로 스크롤 (선택)
-  };
 
   if (isLoading) {
     return (
