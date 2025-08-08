@@ -17,15 +17,15 @@ const Hot10 = () => {
 
     // 로딩, 에러, 데이터 없음 상태 처리
     if (isLoading) {
-      return <div className="p-4 text-center">리뷰가 많은 책 데이터를 불러오는 중입니다...</div>;
+      return <div className="p-4">리뷰가 많은 책 데이터를 불러오는 중입니다...</div>;
     }
 
     if (error) {
-      return <div className="p-4 text-center text-red-500">{error}</div>;
+      return <div className="p-4 text-red-500">{error}</div>;
     }
 
     if (!apiData || !apiData.books || apiData.books.length === 0) {
-      return <div className="p-4 text-center">리뷰가 많은 책 데이터를 찾을 수 없습니다.</div>;
+      return <div className="p-4">리뷰가 많은 책 데이터를 찾을 수 없습니다.</div>;
     }
 
 const handleMainSlideChange = (swiper: SwiperClass) => {
@@ -69,12 +69,12 @@ const handleMainSlideChange = (swiper: SwiperClass) => {
           {apiData.books.map((book: BookDetail, index) => ( // Book 인터페이스를 사용하여 타입 안전성 확보
             <SwiperSlide> {/* key는 고유한 값으로 설정 (isbn이 적합) */}
               <Link key={book.isbn} to={`/book/${book.isbn}`}>
-                <div className="flex flex-col gap-4 items-center md:flex-row md:gap-0 md:justify-between">       
+                <div className="relative flex flex-col gap-4 items-center md:flex-row md:gap-0 md:justify-between">       
                   {/* 순위 추가 */}
                   {index+1 === 1 ? (
-                    <h3 className='absolute top-0 left-0 bg-orange-800 rounded-full w-[2.5rem] h-[2.5rem] p-1 text-white'>{index+1}</h3>
+                    <h3 className='absolute top-[-5px] left-[-5px] flex justify-center items-center bg-orange-600 rounded-full w-[2.5rem] h-[2.5rem] text-white z-10'>{index+1}</h3>
                   ) : (
-                    <h4 className='absolute top-0 left-0 bg-white rounded-full w-[2rem] h-[2rem] p-1'>{index+1}</h4>
+                    <h4 className='absolute top-[-5px] left-[-5px] flex justify-center items-center bg-gray-200 rounded-full w-[2rem] h-[2rem] z-10'>{index+1}</h4>
                   )}
                   <img className='h-[200px] md:min-h-[300px] rounded-xl' src={book.thumbnail} alt={book.title} />
                   <div className="bg-orange-200 w-full md:w-[calc(100%-230px)] rounded-xl rounded-bl-none p-6">

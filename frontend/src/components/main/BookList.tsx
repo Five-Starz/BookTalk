@@ -65,9 +65,9 @@ export const Good10 = () => {
                 <Link key={book.isbn} to={`/book/${book.isbn}`}>
                   {/* 순위 추가 */}
                   {index+1 === 1 ? (
-                    <h3 className='absolute top-0 left-0 bg-orange-300 rounded-full w-[2.5rem] h-[2.5rem] p-1'>{index+1}</h3>
+                    <h3 className='absolute top-[-5px] left-[-5px] flex items-center justify-center bg-orange-300 rounded-full w-[2.5rem] h-[2.5rem] p-1 z-10'>{index+1}</h3>
                   ) : (
-                    <h4 className='absolute top-0 left-0 bg-white rounded-full w-[2rem] h-[2rem] p-1'>{index+1}</h4>
+                    <h4 className='absolute top-[-5px] left-[-5px] flex items-center justify-center bg-white rounded-full w-[2rem] h-[2rem] p-1 z-10'>{index+1}</h4>
                   )}
                   <img className='relative object-cover max-h-[200px] md:min-h-[280px] rounded-xl mb-4' src={book.thumbnail} alt={book.title} />
                   <h4 className="mb-4">{book.title.length > 18 ? (book.title.slice(0,18)+'...'): book.title}</h4>
@@ -144,9 +144,9 @@ export const Want10 = () => {
                 <Link key={book.isbn} to={`/book/${book.isbn}`}>
                   {/* 순위 추가 */}
                   {index+1 === 1 ? (
-                    <h3 className='absolute top-0 left-0 bg-orange-300 rounded-full w-[2.5rem] h-[2.5rem] p-1'>{index+1}</h3>
+                    <h3 className='absolute top-[-5px] left-[-5px] flex items-center justify-center bg-orange-300 rounded-full w-[2.5rem] h-[2.5rem] p-1 z-10'>{index+1}</h3>
                   ) : (
-                    <h4 className='absolute top-0 left-0 bg-white rounded-full w-[2rem] h-[2rem] p-1'>{index+1}</h4>
+                    <h4 className='absolute top-[-5px] left-[-5px] flex items-center justify-center bg-white rounded-full w-[2rem] h-[2rem] p-1 z-10'>{index+1}</h4>
                   )}
                   <img className='object-cover max-h-[200px] md:min-h-[280px] rounded-xl mb-4' src={book.thumbnail} alt={book.title} />
                   <h4 className="mb-4">{book.title.length > 18 ? (book.title.slice(0,18)+'...'): book.title}</h4>
