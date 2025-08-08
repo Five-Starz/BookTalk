@@ -390,8 +390,6 @@ export const useRevCommentForm = ({ reviewId, userId, refetch }: UseRevCommentFo
     }
 
     setIsSubmitting(true);
-    setSubmitError(null);
-    setSubmitSuccess(false);
 
     try {
       const accessToken = localStorage.getItem('accessToken');
@@ -496,13 +494,11 @@ function nestComments(comments: Comment[]): Comment[] {
 
 export const useComments = (reviewId: number): UseCommentsResult => {
   const [comments, setComments] = useState<Comment[]>([]);
-  const [isLoadingComments, setIsLoadingComments] = useState<boolean>(true);
+  const [isLoadingComments, setIsLoadingComments] = useState<boolean>(false);
   const [errorComments, setErrorComments] = useState<string | null>(null);
   const [commentCount,setCommentCount]=useState<number>(0)
   // ✅ 데이터를 불러오는 로직을 별도의 함수로 분리
   const fetchComments = async () => {
-    setIsLoadingComments(true);
-    setErrorComments(null);
 
     if (reviewId === undefined) {
       setComments([]);
@@ -511,6 +507,7 @@ export const useComments = (reviewId: number): UseCommentsResult => {
     }
 
     try {
+      setIsLoadingComments(true);
       const response = await axios.get(`https://booktalk-server.onrender.com/comment/review/${reviewId}`);
       const responseComment=await axios.get(`https://booktalk-server.onrender.com/comment/review/count/${reviewId}`);
       setCommentCount(responseComment.data);

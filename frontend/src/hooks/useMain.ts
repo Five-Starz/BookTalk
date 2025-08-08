@@ -42,11 +42,11 @@ export const useMainReviews = (listType: string): UseReviewsResult => {
           } else {
             setErrorReviews('리뷰를 불러오는 데 실패했습니다.');
           }
-          setIsLoadingReviews(false);
         } else {
           setErrorReviews('리뷰를 불러오는 중 알 수 없는 오류가 발생했습니다.');
-          setIsLoadingReviews(false);
         }
+      } finally {
+          setIsLoadingReviews(false);
       }
     };
 
@@ -64,6 +64,7 @@ export const use10List = (listType: string) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setIsLoading(true);
         const response = await axios.get<BookApiResponse>(`https://booktalk-server.onrender.com/main/books/${listType}`);
         const rawBooks = response.data.books;
 
@@ -76,7 +77,6 @@ export const use10List = (listType: string) => {
 
         // ✅ 디코딩된 데이터로 상태 업데이트
         setApiData({ books: decodedBooks });
-        setIsLoading(true);
       } catch (err) {
         switch(listType){
           case 'want': setError('북마크 조회 중 오류 발생');
@@ -85,7 +85,6 @@ export const use10List = (listType: string) => {
             break;
         }
         console.error(`${listType} API 에러:`, err);
-        setIsLoading(false);
       } finally {
         setIsLoading(false);
       }
