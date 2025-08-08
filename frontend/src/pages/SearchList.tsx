@@ -16,6 +16,23 @@ const SearchList = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
+  // pagination 추가
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 20;
+
+  // ✅ 페이지네이션 처리
+  const totalPages = Math.ceil(searchResults.length / itemsPerPage);
+  const pagedSearchResults = searchResults.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+   // 페이지 변경 핸들러
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: "smooth" }); // 페이지 바뀔 때 맨 위로 스크롤 (선택)
+  };
+
   useEffect(() => {
     if (!query) {
       setSearchResults([]);
@@ -85,7 +102,7 @@ const SearchList = () => {
     <div className="pt-[105px] pb-[10%] md:pb-[200px]">
       <h2 className="text-2xl font-bold mb-4">"{query}" 검색 결과</h2>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-8">
-        {searchResults.map((book) => {
+        {pagedSearchResults.map((book) => {
           const finalIsbn = getPrimaryIsbn(book.isbn);
 
           return (
@@ -98,6 +115,24 @@ const SearchList = () => {
             </Link>
           );
         })}
+      </div>
+       {/* ✅ 페이지네이션 */}
+      <div className="flex justify-center mt-8">
+        <ul className="flex gap-2">
+          {Array.from({ length: totalPages }).map((_, idx) => (
+            <li
+              key={idx}
+              onClick={() => handlePageChange(idx + 1)}
+              className={`cursor-pointer px-3 py-1 rounded ${
+                currentPage === idx + 1
+                  ? "text-orange-600 font-bold"
+                  : "hover:bg-gray-100"
+              }`}
+            >
+              {idx + 1}
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   )
