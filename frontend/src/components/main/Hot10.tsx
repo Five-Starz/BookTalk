@@ -66,11 +66,16 @@ const handleMainSlideChange = (swiper: SwiperClass) => {
           modules={[Navigation, Thumbs]}
           className="mySwiper2 w-full lg:w-[70%]"
         >
-          {apiData.books.map((book: BookDetail) => ( // Book 인터페이스를 사용하여 타입 안전성 확보
+          {apiData.books.map((book: BookDetail, index) => ( // Book 인터페이스를 사용하여 타입 안전성 확보
             <SwiperSlide> {/* key는 고유한 값으로 설정 (isbn이 적합) */}
               <Link key={book.isbn} to={`/book/${book.isbn}`}>
-                <div className="flex flex-col gap-4 items-center md:flex-row md:gap-0 md:justify-between">
-                  {/* 메인 슬라이더 이미지: book.thumbnail 사용 */}
+                <div className="flex flex-col gap-4 items-center md:flex-row md:gap-0 md:justify-between">       
+                  {/* 순위 추가 */}
+                  {index+1 === 1 ? (
+                    <h3 className='absolute top-0 left-0 bg-orange-800 rounded-full w-[2.5rem] h-[2.5rem] p-1 text-white'>{index+1}</h3>
+                  ) : (
+                    <h4 className='absolute top-0 left-0 bg-white rounded-full w-[2rem] h-[2rem] p-1'>{index+1}</h4>
+                  )}
                   <img className='h-[200px] md:min-h-[300px] rounded-xl' src={book.thumbnail} alt={book.title} />
                   <div className="bg-orange-200 w-full md:w-[calc(100%-230px)] rounded-xl rounded-bl-none p-6">
                     <h2 className="mb-4">{book.title}</h2>

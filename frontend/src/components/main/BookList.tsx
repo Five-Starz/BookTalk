@@ -58,13 +58,18 @@ export const Good10 = () => {
           modules={[Navigation]}
           className="mySwiper"
         >
-          {goodBooks.map((book: BookDetail) => { // Book 인터페이스를 사용하여 타입 안전성 확보
+          {goodBooks.map((book: BookDetail, index) => { // Book 인터페이스를 사용하여 타입 안전성 확보
             // const finalIsbn = getPrimaryIsbn(book.isbn);
             return (
-              <SwiperSlide>
+              <SwiperSlide key={index}>
                 <Link key={book.isbn} to={`/book/${book.isbn}`}>
-                  {/* 메인 슬라이더 이미지: book.thumbnail 사용 */}
-                  <img className='object-cover max-h-[200px] md:min-h-[280px] rounded-xl mb-4' src={book.thumbnail} alt={book.title} />
+                  {/* 순위 추가 */}
+                  {index+1 === 1 ? (
+                    <h3 className='absolute top-0 left-0 bg-orange-300 rounded-full w-[2.5rem] h-[2.5rem] p-1'>{index+1}</h3>
+                  ) : (
+                    <h4 className='absolute top-0 left-0 bg-white rounded-full w-[2rem] h-[2rem] p-1'>{index+1}</h4>
+                  )}
+                  <img className='relative object-cover max-h-[200px] md:min-h-[280px] rounded-xl mb-4' src={book.thumbnail} alt={book.title} />
                   <h4 className="mb-4">{book.title.length > 18 ? (book.title.slice(0,18)+'...'): book.title}</h4>
                   {/* authors가 string[]이므로 join으로 문자열로 변환 */}
                   <p className="text-sm mb-10">{Array.isArray(book.authors) ? book.authors.join(', ') : book.authors}</p>
@@ -133,11 +138,16 @@ export const Want10 = () => {
           modules={[Navigation]}
           className="mySwiper"
         >
-          {wantBooks.map((book: BookDetail) => { // Book 인터페이스를 사용하여 타입 안전성 확보
+          {wantBooks.map((book: BookDetail, index) => { // Book 인터페이스를 사용하여 타입 안전성 확보
             return (
               <SwiperSlide>
                 <Link key={book.isbn} to={`/book/${book.isbn}`}>
-                  {/* 메인 슬라이더 이미지: book.thumbnail 사용 */}
+                  {/* 순위 추가 */}
+                  {index+1 === 1 ? (
+                    <h3 className='absolute top-0 left-0 bg-orange-300 rounded-full w-[2.5rem] h-[2.5rem] p-1'>{index+1}</h3>
+                  ) : (
+                    <h4 className='absolute top-0 left-0 bg-white rounded-full w-[2rem] h-[2rem] p-1'>{index+1}</h4>
+                  )}
                   <img className='object-cover max-h-[200px] md:min-h-[280px] rounded-xl mb-4' src={book.thumbnail} alt={book.title} />
                   <h4 className="mb-4">{book.title.length > 18 ? (book.title.slice(0,18)+'...'): book.title}</h4>
                   {/* authors가 string[]이므로 join으로 문자열로 변환 */}
