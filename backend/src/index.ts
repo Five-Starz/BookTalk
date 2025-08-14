@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 dotenv.config();
 import express, { Request, Response, NextFunction } from 'express';
-import cors from 'cors'
+import cors from 'cors';
 //swagger
 import swaggerUi from 'swagger-ui-express';
 import swaggerJSDoc from 'swagger-jsdoc';
@@ -9,45 +9,56 @@ import { swaggerOptions } from './docs/swagger'; // 옵션만 따로 불러옴
 
 import mainRouter from './routes/main-router'; // 메인페이지 라우터
 import bookRouter from './routes/book-router';
-import reviewRouter from './routes/review-router'
+import reviewRouter from './routes/review-router';
 import authRouter from './routes/auth-router';
 import likesRouter from './routes/likes-router';
 import commentRouter from './routes/comment-router';
-import bookmakrsRouter from './routes/bookmark-router'
+import bookmakrsRouter from './routes/bookmark-router';
 import axios from 'axios';
 
 const app = express();
 
 // cors를 최상단에 위치시켜야 모든 요청에 적용됨 - 모든 출처를 허용하는 방법 (개발 단계에서만 권장)
-app.use(cors({
-  origin: (origin, callback) => {
-    const allowList = [
-      'https://5booktalk.netlify.app',
-      'https://localhost:3000',
-      'https://booktalk-server.onrender.com',
-      undefined,
-    ];
-    if (allowList.includes(origin) || !origin) {
-      callback(null, true);
-    } else {
-      callback(new Error('Now allowed by CORS'));
-    }
-  },
-  // [],   // ✅ React 앱 주소 정확히 명시
-  credentials: true                  // ✅ 쿠키 허용
-}));
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      const allowList = [
+        'https://5booktalk.netlify.app',
+        'https://localhost:3000',
+        'https://booktalk-server.onrender.com',
+        undefined,
+      ];
+      if (allowList.includes(origin) || !origin) {
+        callback(null, true);
+      } else {
+        callback(new Error('Now allowed by CORS'));
+      }
+    },
+    // [],   // ✅ React 앱 주소 정확히 명시
+    credentials: true, // ✅ 쿠키 허용
+  })
+);
 
 const swaggerSpec = swaggerJSDoc(swaggerOptions);
-const PORT = process.env.PORT || 3000;  // Render가 PORT를 자동으로 할당
+const HOST = process.env.HOST || '0.0.0.0';
+const PORT = Number(process.env.PORT) || 3000;
 
 // 미들웨어 및 라우터
-app.use(express.urlencoded({extended:true}))
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use('/', [authRouter, reviewRouter, mainRouter, bookRouter, likesRouter, commentRouter,bookmakrsRouter]);
+app.use('/', [
+  authRouter,
+  reviewRouter,
+  mainRouter,
+  bookRouter,
+  likesRouter,
+  commentRouter,
+  bookmakrsRouter,
+]);
 // --- 전역 오류 처리 미들웨어 ---
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-    console.error(err.stack);
-    res.status(500).send('서버 오류가 발생했습니다.');
+  console.error(err.stack);
+  res.status(500).send('서버 오류가 발생했습니다.');
 });
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
@@ -113,8 +124,8 @@ app.get('/', async (req: Request, res: Response) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running ${PORT} port`);
+app.listen(PORT, HOST, () => {
+  console.log(`Server running at http://${HOST}:${PORT} port`);
 });
 
 // // 더미데이터 넣고 review-router.ts에서 확인해보기
