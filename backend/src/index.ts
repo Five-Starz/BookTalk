@@ -18,25 +18,15 @@ import axios from 'axios';
 
 const app = express();
 
-// cors를 최상단에 위치시켜야 모든 요청에 적용됨 - 모든 출처를 허용하는 방법 (개발 단계에서만 권장)
+// cors를 최상단에 위치시켜야 모든 요청에 적용됨 - 프론트에서 접근할 수 있도록 Netlify 도메인만 허용(개발 단계에서만 권장)
 app.use(
-  cors({
-    origin: (origin, callback) => {
-      const allowList = [
-        'https://5booktalk.netlify.app',
-        'https://localhost:3000',
-        'https://booktalk-server.onrender.com',
-        undefined,
-      ];
-      if (allowList.includes(origin) || !origin) {
-        callback(null, true);
-      } else {
-        callback(new Error('Now allowed by CORS'));
-      }
-    },
+  cors(
+    {
+      origin: ['https://5booktalk.netlify.app'],
+      credentials: true, // ✅ 쿠키 허용
+    }
     // [],   // ✅ React 앱 주소 정확히 명시
-    credentials: true, // ✅ 쿠키 허용
-  })
+  )
 );
 
 const swaggerSpec = swaggerJSDoc(swaggerOptions);
