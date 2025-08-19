@@ -1,5 +1,7 @@
 import dotenv from 'dotenv';
 dotenv.config({ path: '/home/doyclub/Booktalk/backend/.env' });
+console.log('KAKAO_API_KEY:', process.env.KAKAO_API_KEY); // 환경 변수 확인용
+
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 //swagger
