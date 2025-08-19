@@ -158,7 +158,7 @@ export const useReviewForm = ({ initialIsbn, bookData, userId }: UseReviewFormPr
         Authorization: `Bearer ${accessToken}`
       } : {};
 
-      await axios.post('https://booktalk-server.onrender.com/reviews', formData, { // const response =
+      await axios.post('http://35.216.79.174:3000/reviews', formData, { // const response =
         headers: headers
       });
 
@@ -256,10 +256,10 @@ export const useEditReviewForm = ({ existingReview }: UseEditReviewFormProps): U
 
       // ✅ axios.put으로 리뷰 수정 API 호출
       // 백엔드 API 엔드포인트에 맞게 수정: reviews/{reviewId}
-      await axios.patch(`https://booktalk-server.onrender.com/reviews/${existingReview.reviewId}`, updateData, { // const response =
+      await axios.patch(`http://35.216.79.174:3000/reviews/${existingReview.reviewId}`, updateData, { // const response =
         headers: headers
       });
-      
+
       setSubmitSuccess(true);
 
       navigate(`/mypage/reviews`);
@@ -312,13 +312,13 @@ export const useReviewDetails = (reviewId: number | undefined): UseReviewDetails
       }
 
       try {
-        const response2 = await axios.get<ReviewDetail>(`https://booktalk-server.onrender.com/reviews/search3/${reviewId}`);
+        const response2 = await axios.get<ReviewDetail>(`http://35.216.79.174:3000/reviews/search3/${reviewId}`);
         setReviewData(response2.data);
         // ✅ 리뷰 상세 정보를 가져오는 API 엔드포인트에 맞게 수정
-        // const response = await axios.get<ReviewDetail>(`https://booktalk-server.onrender.com/reviews/${reviewId}`);
-        // const requestUrl=`https://booktalk-server.onrender.com/comment/review/count/${reviewId}`;
+        // const response = await axios.get<ReviewDetail>(`http://35.216.79.174:3000/reviews/${reviewId}`);
+        // const requestUrl=`http://35.216.79.174:3000/comment/review/count/${reviewId}`;
         // const responseComment=await axios.get(requestUrl);
-        // const responseLikeCount = await axios.post(`https://booktalk-server.onrender.com/likes/count`, {
+        // const responseLikeCount = await axios.post(`http://35.216.79.174:3000/likes/count`, {
         //    reviewId: `${reviewId}`
         //   });
         //   response.data.likeCount=responseLikeCount.data;
@@ -400,7 +400,7 @@ export const useRevCommentForm = ({ reviewId, userId, refetch }: UseRevCommentFo
       // ✅ 백엔드 creatComment 함수 시그니처에 맞춰 명시적으로 데이터 전송
       // creatComment(userId:number, reviewId:number, content:string, parentId?:number|null)
       await axios.post( // const response =
-        `https://booktalk-server.onrender.com/comment/add`, // ✅ 기존 URL 유지
+        `http://35.216.79.174:3000/comment/add`, // ✅ 기존 URL 유지
         {
           userId: formData.userId,
           reviewId: formData.reviewId,
@@ -409,7 +409,7 @@ export const useRevCommentForm = ({ reviewId, userId, refetch }: UseRevCommentFo
         },
         { headers: headers }
       );
-      
+
       setSubmitSuccess(true);
       setFormData(prev => ({ // 댓글 작성 성공 후 폼 초기화
         ...prev,
@@ -508,8 +508,8 @@ export const useComments = (reviewId: number): UseCommentsResult => {
 
     try {
       setIsLoadingComments(true);
-      const response = await axios.get(`https://booktalk-server.onrender.com/comment/review/${reviewId}`);
-      const responseComment=await axios.get(`https://booktalk-server.onrender.com/comment/review/count/${reviewId}`);
+      const response = await axios.get(`http://35.216.79.174:3000/comment/review/${reviewId}`);
+      const responseComment=await axios.get(`http://35.216.79.174:3000/comment/review/count/${reviewId}`);
       setCommentCount(responseComment.data);
       const nestedComments = nestComments(response.data);
       setComments(nestedComments);
