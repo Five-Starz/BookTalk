@@ -7,7 +7,6 @@ import ReviewController from '../controllers/review-controller';
 import { authenticateToken } from '../middlewares/auth-middleware';
 import { optionalAuthToken } from '../middlewares/optinal-auth-middleware';
 
-
 const reviewController = new ReviewController();
 const router: Router = express.Router();
 
@@ -289,7 +288,7 @@ router.get('/reviews/search/:isbn', reviewController.searchReviewsByBook);
  *                  type: string
  *                  example: "서버 오류로 리뷰 수정에 실패했습니다."
  */
-router.patch('/reviews/:reviewId',authenticateToken, reviewController.updateReview);
+router.patch('/reviews/:reviewId', authenticateToken, reviewController.updateReview);
 
 /** 리뷰 삭제
  * @swagger
@@ -377,7 +376,6 @@ router.patch('/reviews/:reviewId',authenticateToken, reviewController.updateRevi
  */
 router.delete('/reviews/:reviewId', authenticateToken, reviewController.deleteReview);
 
-
 /** 특정 유저의 전체 리뷰 조회
  * @swagger
  * /reviews/user/{userId}:
@@ -457,13 +455,13 @@ router.delete('/reviews/:reviewId', authenticateToken, reviewController.deleteRe
  *                  type: string
  *                  example: "서버 오류로 리뷰 조회에 실패했습니다."
  */
-router.get('/reviews/user/:userId',optionalAuthToken,reviewController.findReviewByUserId)
+router.get('/reviews/user/:userId', optionalAuthToken, reviewController.findReviewByUserId);
 
-/** 특정 유저의 리뷰 숫자 조회
+/** 특정 유저의 리뷰 개수 조회
  * @swagger
  * /reviews/count/{userId}:
  *  get:
- *    summary: 특정 유저의 리뷰 숫자 조회
+ *    summary: 특정 유저의 리뷰 개수 조회
  *    tags: [Review]
  *    parameters:
  *       - in: path
@@ -475,12 +473,12 @@ router.get('/reviews/user/:userId',optionalAuthToken,reviewController.findReview
  *         example: 1
  *    responses:
  *      200:
- *        description: 리뷰 숫자 조회 성공
+ *        description: 리뷰 개수 조회 성공
  *        content:
  *          application/json:
  *            schema:
  *              type: integer
- *              example: 42          
+ *              example: 42
  *      400:
  *        description: 잘못된 요청
  *        content:
@@ -500,11 +498,9 @@ router.get('/reviews/user/:userId',optionalAuthToken,reviewController.findReview
  *              properties:
  *                message:
  *                  type: string
- *                  example: "서버 오류로 리뷰 숫자 조회에 실패했습니다."
+ *                  example: "서버 오류로 리뷰 개수 조회에 실패했습니다."
  */
-router.get('/reviews/count/:userId',reviewController.UserReviewCount)
-
-
+router.get('/reviews/count/:userId', reviewController.UserReviewCount);
 
 /**
  * @swagger
@@ -521,14 +517,14 @@ router.get('/reviews/count/:userId',reviewController.UserReviewCount)
  *           type: integer
  *         required: true
  *         description: "검색할 리뷰의 고유 아이디"
- *         example: 1 
+ *         example: 1
  *     responses:
  *      200:
  *        description: 리뷰 조회 성공
  *        content:
  *          application/json:
  *            schema:
- *              type: array 
+ *              type: array
  *              items:
  *                type: object
  *                properties:
@@ -545,8 +541,7 @@ router.get('/reviews/count/:userId',reviewController.UserReviewCount)
  *                    type: string
  *                    format: date-time
  */
-router.get('/reviews/:reviewId',reviewController.findById);
-
+router.get('/reviews/:reviewId', reviewController.findById);
 
 /** ISBN으로 리뷰 정보와 연관된 좋아요 및 댓글 수 한번에 출력하기
  * @swagger
@@ -579,6 +574,5 @@ router.get('/reviews/search2/:isbn', reviewController.searchReviewsByISBN2);
  *        description: "검색할 유저의 고유 아이디"
  */
 router.get('/reviews/search3/:reviewId', reviewController.searchReviewsByReviewId);
-
 
 export default router;

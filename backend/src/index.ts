@@ -1,11 +1,7 @@
-// import './types/custom';  // nodemon 정상 사용 위해, 타입 병합만 유도함 (JS로 빌드 안됨)
-// import { prisma } from './utils/prisma'; // Prisma 클라이언트 임포트
-// import { PrismaClient } from '@prisma/client';
-
 import dotenv from 'dotenv';
 dotenv.config();
 import express, { Request, Response, NextFunction } from 'express';
-import cors from 'cors'
+import cors from 'cors';
 //swagger
 import swaggerUi from 'swagger-ui-express';
 import swaggerJSDoc from 'swagger-jsdoc';
@@ -13,30 +9,46 @@ import { swaggerOptions } from './docs/swagger'; // 옵션만 따로 불러옴
 
 import mainRouter from './routes/main-router'; // 메인페이지 라우터
 import bookRouter from './routes/book-router';
-import reviewRouter from './routes/review-router'
+import reviewRouter from './routes/review-router';
 import authRouter from './routes/auth-router';
 import likesRouter from './routes/likes-router';
 import commentRouter from './routes/comment-router';
-import bookmakrsRouter from './routes/bookmark-router'
+import bookmakrsRouter from './routes/bookmark-router';
 import axios from 'axios';
 
 const app = express();
-const swaggerSpec = swaggerJSDoc(swaggerOptions);
-const PORT = process.env.PORT || 8000;
 
-// 모든 출처를 허용하는 방법 (개발 단계에서만 권장)
-app.use(cors({
-  origin: 'https://5booktalk.netlify.app',   // ✅ React 앱 주소 정확히 명시
-  credentials: true                  // ✅ 쿠키 허용
-}));
+// cors를 최상단에 위치시켜야 모든 요청에 적용됨 - 프론트에서 접근할 수 있도록 Netlify 도메인만 허용(개발 단계에서만 권장)
+app.use(
+  cors(
+    {
+      origin: ['https://5booktalk.netlify.app', 'http://localhost:3000'],
+      credentials: true, // ✅ 쿠키 허용
+    }
+    // [],   // ✅ React 앱 주소 정확히 명시
+  )
+);
+
+const swaggerSpec = swaggerJSDoc(swaggerOptions);
+const HOST = process.env.HOST || '0.0.0.0';
+const PORT = Number(process.env.PORT) || 3000;
+
 // 미들웨어 및 라우터
-app.use(express.urlencoded({extended:true}))
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use('/', [authRouter, reviewRouter, mainRouter, bookRouter, likesRouter, commentRouter,bookmakrsRouter]);
+app.use('/', [
+  authRouter,
+  reviewRouter,
+  mainRouter,
+  bookRouter,
+  likesRouter,
+  commentRouter,
+  bookmakrsRouter,
+]);
 // --- 전역 오류 처리 미들웨어 ---
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-    console.error(err.stack);
-    res.status(500).send('서버 오류가 발생했습니다.');
+  console.error(err.stack);
+  res.status(500).send('서버 오류가 발생했습니다.');
 });
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
@@ -102,8 +114,8 @@ app.get('/', async (req: Request, res: Response) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running ${PORT} port`);
+app.listen(PORT, HOST, () => {
+  console.log(`Server running at http://${HOST}:${PORT} port`);
 });
 
 // // 더미데이터 넣고 review-router.ts에서 확인해보기
