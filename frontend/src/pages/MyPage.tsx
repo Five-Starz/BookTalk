@@ -31,7 +31,7 @@ const MyPage = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        // 1. 유저 인증 정보 가져오기
+        // 1. 유저 인증 정보 가져오기.
         const authRes = await axios.get('http://35.216.79.174:3000/auth/protected', {
           headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
         });
