@@ -72,6 +72,7 @@ app.get('/', async (req: Request, res: Response) => {
     // Axios를 사용하여 Kakao API에 GET 요청을 보냅니다.
     // 'params'는 쿼리 스트링(qs)을 대체합니다.
     // 'headers'는 동일하게 사용됩니다.
+    console.log('kakaoAPIKey: ', kakaoApiKey);
     const kakaoApiResponse = await axios.get(kakaoApiUrl, {
       headers: {
         Authorization: `KakaoAK ${kakaoApiKey}`, // 템플릿 리터럴을 사용하여 키 삽입

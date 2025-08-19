@@ -9,7 +9,9 @@ export const swaggerOptions: swaggerJSDoc.Options = {
       description: '우리 팀 프로젝트의 Swagger 명세서',
     },
     tags: [{ name: 'Review', description: '리뷰 관련 API' }],
-    servers: [{ url: 'https://booktalk-server.onrender.com', // 백엔드 주소
+    servers: [
+      {
+        url: 'http://35.216.79.174:3000/', // 백엔드 주소
       },
     ],
     components: {
@@ -19,13 +21,15 @@ export const swaggerOptions: swaggerJSDoc.Options = {
           type: 'http',
           scheme: 'bearer',
           bearerFormat: 'JWT', // JWT 토큰 사용 명시
-          description: 'Access Token (Bearer) : 특이사항 Bearer가 기본적으로 적혀 있어서 엑세스 토큰만 입력하면 됨',
+          description:
+            'Access Token (Bearer) : 특이사항 Bearer가 기본적으로 적혀 있어서 엑세스 토큰만 입력하면 됨',
         },
         refreshToken: {
           type: 'apiKey', // Refresh Token을 헤더로 보내는 방식 (API Key 타입)
           in: 'header',
           name: 'Authorization', // Refresh Token이 Authorization 헤더에 담겨 전송됨
-          description: 'Refresh Token (Bearer) : 특이사항 Bearer 기본적으로 안적혀 있어서 Bearer 리프레시 토큰을 같이 입력해야 함',
+          description:
+            'Refresh Token (Bearer) : 특이사항 Bearer 기본적으로 안적혀 있어서 Bearer 리프레시 토큰을 같이 입력해야 함',
         },
       },
     },
