@@ -57,7 +57,7 @@ const CommentList: React.FC<CommentListProps> = ({ reviewId }) => {
 
     try {
       await axios.put(
-        `https://booktalk-server.onrender.com/comment/update`,
+        `http://35.216.79.174:3000/comment/update`,
         { commentId: commentId, content: editedContent }, // ✅ body 객체 형식으로 전달
         { headers: { Authorization: `Bearer ${accessToken}` } }
       );
@@ -73,7 +73,7 @@ const CommentList: React.FC<CommentListProps> = ({ reviewId }) => {
   // 댓글 삭제 핸들러
   const handleDeleteComment = async (commentId: number) => {
     try {
-      await axios.delete(`https://booktalk-server.onrender.com/comment/${commentId}`,{
+      await axios.delete(`http://35.216.79.174:3000/comment/${commentId}`,{
         headers: { Authorization: `Bearer ${accessToken}` }
       });
       refetch();
@@ -103,7 +103,7 @@ const CommentList: React.FC<CommentListProps> = ({ reviewId }) => {
 
     try {
         await axios.post(
-            `https://booktalk-server.onrender.com/comment/add`,
+            `http://35.216.79.174:3000/comment/add`,
             {
                 userId: userId,
                 reviewId: reviewId,
