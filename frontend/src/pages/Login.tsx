@@ -56,7 +56,7 @@ const Login = () => {
 
   const onValid = async (data: LoginFormData) => {
     try {
-      const res = await axios.post('http://35.216.79.174:3000/auth/login', {
+      const res = await axios.post('http://35.216.41.239/auth/login', {
         email: data.email,
         password: data.password,
       },

@@ -14,7 +14,7 @@ export const useUserNickname = (userId: number | undefined) => {
     const fetchUserInfo = async () => {
       try {
         // 유저 정보
-        const res = await axios.get(`http://35.216.79.174:3000/auth/${userId}`);
+        const res = await axios.get(`http://35.216.41.239/auth/${userId}`);
         setNickname(res.data.nickname);
       } catch {
         setNickname('');

@@ -26,7 +26,7 @@ const BookInfo = ({ book }: { book: BookDetail }) => {
   // 2) 처음 렌더링시 북마크 여부 확인
   useEffect(() => {
     const fetchIsBookmarked = async () => {
-      const res = await fetch('http://35.216.79.174:3000/bookmarks/find', {
+      const res = await fetch('http://35.216.41.239/bookmarks/find', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -47,7 +47,7 @@ const BookInfo = ({ book }: { book: BookDetail }) => {
     }
     if (isBookmarked) {
       // 이미 북마크 되어 있으면 삭제
-      await fetch('http://35.216.79.174:3000/bookmarks/del', {
+      await fetch('http://35.216.41.239/bookmarks/del', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -60,7 +60,7 @@ const BookInfo = ({ book }: { book: BookDetail }) => {
       setBookmarkCount(prev => Math.max(0, prev - 1));
     } else {
       // 북마크 등록
-      await fetch('http://35.216.79.174:3000/bookmarks', {
+      await fetch('http://35.216.41.239/bookmarks', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
