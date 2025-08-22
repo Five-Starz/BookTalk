@@ -25,7 +25,7 @@ const ReviewCard = ({review}: ReviewCardProps ) => {
   useEffect(() => {
     const checkLiked = async () => {
       if (!userId) return;
-      const res = await fetch("http://35.216.79.174:3000/likes/find", {
+      const res = await fetch("http://35.216.41.239/likes/find", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: `userId=${userId}&reviewId=${review.reviewId}`,
@@ -44,7 +44,7 @@ const ReviewCard = ({review}: ReviewCardProps ) => {
     }
     if (isLiked) {
       // 해제
-      await fetch("http://35.216.79.174:3000/likes/del", {
+      await fetch("http://35.216.41.239/likes/del", {
         method: "POST",
         headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/x-www-form-urlencoded" },
         body: `reviewId=${review.reviewId}`,
@@ -53,7 +53,7 @@ const ReviewCard = ({review}: ReviewCardProps ) => {
       setLikeCount((prev) => Math.max(0, prev - 1));
     } else {
       // 등록
-      await fetch("http://35.216.79.174:3000/likes", {
+      await fetch("http://35.216.41.239/likes", {
         method: "POST",
         headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/x-www-form-urlencoded" },
         body: `reviewId=${review.reviewId}`,

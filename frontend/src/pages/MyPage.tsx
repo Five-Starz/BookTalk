@@ -32,13 +32,13 @@ const MyPage = () => {
     const fetchUserData = async () => {
       try {
         // 1. 유저 인증 정보 가져오기.
-        const authRes = await axios.get('http://35.216.79.174:3000/auth/protected', {
+        const authRes = await axios.get('http://35.216.41.239/auth/protected', {
           headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
         });
         const { userId } = authRes.data.user;
 
         // 2. 최신 프로필(닉네임 등)은 별도 fetch
-        const profileRes = await axios.get(`http://35.216.79.174:3000/auth/${userId}`);
+        const profileRes = await axios.get(`http://35.216.41.239/auth/${userId}`);
         // profileRes.data.comments[0] 구조라면...
         const profile = Array.isArray(profileRes.data.comments) ? profileRes.data.comments[0] : profileRes.data;
         const { nickname } = profile;
@@ -52,11 +52,11 @@ const MyPage = () => {
         setUser({ userId, nickname }); // zustand에 저장
 
         // 2. 리뷰 수 가져오기
-        const reviews = await axios.get(`http://35.216.79.174:3000/reviews/count/${userId}`);
+        const reviews = await axios.get(`http://35.216.41.239/reviews/count/${userId}`);
         setReviewCount(reviews.data);
 
         // 3. 보고싶어요 수 가져오기
-        const bookmarks = await axios.get(`http://35.216.79.174:3000/bookmarks/${userId}`);
+        const bookmarks = await axios.get(`http://35.216.41.239/bookmarks/${userId}`);
         setBookmarkCount(Array.isArray(bookmarks.data) ? bookmarks.data.length : 0);
       } catch {
         return;
@@ -186,7 +186,7 @@ export const ReviewCollection = () => {
       setIsLoading(true);
       try {
         // 1. 리뷰 목록 불러오기
-        const res = await axios.get(`http://35.216.79.174:3000/reviews/user/${userId}`);
+        const res = await axios.get(`http://35.216.41.239/reviews/user/${userId}`);
         const reviews = res.data;
 
         // 2. 각 리뷰에 필요한 추가 데이터
@@ -196,7 +196,7 @@ export const ReviewCollection = () => {
             let bookTitle = '';
             try {
               // 실제 API 경로/응답에 맞게 수정!
-              const bookRes = await axios.get(`http://35.216.79.174:3000/books/search?query=${review.isbn}`);
+              const bookRes = await axios.get(`http://35.216.41.239/books/search?query=${review.isbn}`);
               if (Array.isArray(bookRes.data) && bookRes.data.length > 0) {
                 bookTitle = bookRes.data[0].title || '제목없음';
               } else {
@@ -209,7 +209,7 @@ export const ReviewCollection = () => {
             // 좋아요 수
             let likeCount = 0;
             try {
-              const likeRes = await axios.post(`http://35.216.79.174:3000/likes/count`, { reviewId: review.reviewId });
+              const likeRes = await axios.post(`http://35.216.41.239/likes/count`, { reviewId: review.reviewId });
               likeCount = likeRes.data || 0;
             } catch {
               likeCount = 0;
@@ -218,7 +218,7 @@ export const ReviewCollection = () => {
             // 댓글 수
             let commentCount = 0;
             try {
-              const commentRes = await axios.get(`http://35.216.79.174:3000/comment/review/count/${review.reviewId}`);
+              const commentRes = await axios.get(`http://35.216.41.239/comment/review/count/${review.reviewId}`);
               commentCount = Number(commentRes.data) || 0;
             } catch {
               commentCount = 0;
@@ -262,7 +262,7 @@ export const ReviewCollection = () => {
   const handleConfirmDelete = async () => {
     if (!targetReviewId) return;
     try {
-      await axios.delete(`http://35.216.79.174:3000/reviews/${targetReviewId}`, {
+      await axios.delete(`http://35.216.41.239/reviews/${targetReviewId}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('accessToken')}`
         }
@@ -467,7 +467,7 @@ export const WantReadList = () => {
     const fetchBookmarkData = async () => {
       try {
         // 1. 북마크(보고싶어요) 리스트 호출
-        const res = await axios.get(`http://35.216.79.174:3000/bookmarks/${userId}`);
+        const res = await axios.get(`http://35.216.41.239/bookmarks/${userId}`);
         const bookmarkList = Array.isArray(res.data) ? res.data : [];
 
         // 2. 각 책의 상세정보(제목, 저자, 썸네일 등) 가져오기
@@ -475,7 +475,7 @@ export const WantReadList = () => {
           bookmarkList.map(async (item: BookItem) => {
             try {
               // Book API로 도서 정보 조회
-              const bookRes = await axios.get(`http://35.216.79.174:3000/books/search?query=${item.isbn}`);
+              const bookRes = await axios.get(`http://35.216.41.239/books/search?query=${item.isbn}`);
               const bookInfo = Array.isArray(bookRes.data) ? bookRes.data[0] : bookRes.data;
               return {
                 ...item,
@@ -658,7 +658,7 @@ export const Settings = () => {
       if (isPasswordChanged) sendData.password = data.newPassword;
 
       await axios.post(
-        "http://35.216.79.174:3000/auth/passupdate",
+        "http://35.216.41.239/auth/passupdate",
         sendData,
         { headers: { Authorization: `Bearer ${accessToken}` } }
       );
@@ -667,13 +667,13 @@ export const Settings = () => {
         // [1] 닉네임만 zustand에서 바꾸지 말고,
         // [2] 서버에서 최신 정보 받아오기!
         // 토큰에서 userId만 가져옴
-        const authRes = await axios.get('http://35.216.79.174:3000/auth/protected', {
+        const authRes = await axios.get('http://35.216.41.239/auth/protected', {
           headers: { Authorization: `Bearer ${accessToken}` }
         });
         const { userId } = authRes.data.user;
 
         // 최신 프로필 fetch
-        const profileRes = await axios.get(`http://35.216.79.174:3000/auth/${userId}`, {
+        const profileRes = await axios.get(`http://35.216.41.239/auth/${userId}`, {
           headers: { Authorization: `Bearer ${accessToken}` }
         });
         const profile = Array.isArray(profileRes.data.comments) ? profileRes.data.comments[0] : profileRes.data;
@@ -722,7 +722,7 @@ export const Settings = () => {
     }
 
     try {
-      await axios.delete(`http://35.216.79.174:3000/auth/del/${userId}`, {
+      await axios.delete(`http://35.216.41.239/auth/del/${userId}`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
       clearTokens();
