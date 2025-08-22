@@ -1,6 +1,5 @@
 import dotenv from 'dotenv';
 dotenv.config({ path: '/home/doyclub/Booktalk/backend/.env' });
-console.log('KAKAO_API_KEY:', process.env.KAKAO_API_KEY); // 환경 변수 확인용
 
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
@@ -34,6 +33,7 @@ app.use(
 const swaggerSpec = swaggerJSDoc(swaggerOptions);
 const HOST = process.env.HOST || '0.0.0.0';
 const PORT = Number(process.env.PORT) || 3000;
+console.log('KAKAO_API_KEY=', process.env.KAKAO_API_KEY);
 
 // 미들웨어 및 라우터
 app.use(express.urlencoded({ extended: true }));
@@ -59,8 +59,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.get('/', async (req: Request, res: Response) => {
   console.log('클라이언트 요청 수신');
 
-  // Kakao API 요청을 위한 옵션 설정
-  // Axios는 'headers'와 'params'를 별도로 관리하여 더 직관적입니다.
+  // Kakao API 요청을 위한 옵션 설정  // Axios는 'headers'와 'params'를 별도로 관리하여 더 직관적입니다.
   const kakaoApiUrl = 'https://dapi.kakao.com/v3/search/book';
   const kakaoApiKey = process.env.KAKAO_API_KEY;
 
@@ -73,6 +72,7 @@ app.get('/', async (req: Request, res: Response) => {
     // 'params'는 쿼리 스트링(qs)을 대체합니다.
     // 'headers'는 동일하게 사용됩니다.
     console.log('kakaoAPIKey: ', kakaoApiKey);
+
     const kakaoApiResponse = await axios.get(kakaoApiUrl, {
       headers: {
         Authorization: `KakaoAK ${kakaoApiKey}`, // 템플릿 리터럴을 사용하여 키 삽입
