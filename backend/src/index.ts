@@ -1,6 +1,8 @@
 import dotenv from 'dotenv';
 dotenv.config({ path: '/home/doyclub/Booktalk/backend/.env' });
 
+import https from 'https';
+import fs from 'fs';
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 //swagger

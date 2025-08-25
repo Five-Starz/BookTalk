@@ -11,7 +11,7 @@ export const swaggerOptions: swaggerJSDoc.Options = {
     tags: [{ name: 'Review', description: '리뷰 관련 API' }],
     servers: [
       {
-        url: 'http://35.216.41.239/', // 백엔드 주소
+        url: 'https://booktalk-server.shop/', // 백엔드 주소
       },
     ],
     components: {

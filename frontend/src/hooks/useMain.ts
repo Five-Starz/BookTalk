@@ -13,7 +13,7 @@ export const useMainReviews = (listType: string): UseReviewsResult => {
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const response = await axios.get(`http://35.216.41.239/main/reviews/${listType}`);
+        const response = await axios.get(`https://booktalk-server.shop/main/reviews/${listType}`);
         setIsLoadingReviews(true);
         const reviewData = response.data.reviews;
         const fetchedReviews = Array.isArray(reviewData) ? reviewData : [reviewData];
@@ -21,7 +21,7 @@ export const useMainReviews = (listType: string): UseReviewsResult => {
         if (fetchedReviews.length > 0) {
           const bookOfReview = await Promise.all(
             fetchedReviews.map(async (review) => {
-              const bookResponse = await axios.get<BookDetail>(`http://35.216.41.239/books/info/${review.isbn}`);
+              const bookResponse = await axios.get<BookDetail>(`https://booktalk-server.shop/books/info/${review.isbn}`);
               return {
                 ...review,
                 book: bookResponse.data
@@ -65,7 +65,7 @@ export const use10List = (listType: string) => {
     const fetchData = async () => {
       try {
         setIsLoading(true);
-        const response = await axios.get<BookApiResponse>(`http://35.216.41.239/main/books/${listType}`);
+        const response = await axios.get<BookApiResponse>(`https://booktalk-server.shop/main/books/${listType}`);
         const rawBooks = response.data.books;
 
         // ✅ 배열의 각 책 정보를 순회하며 필요한 필드를 디코딩

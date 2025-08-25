@@ -9,6 +9,7 @@ class MainController {
   async getMostLikedReviews(req:Request, res:Response): Promise<Response> {
     try {
       const reviews = await mainService.fetchMostLiked3Reviews();
+      console.log(reviews);
 
       if (!reviews) {
         return res.status(404).json({ message: "좋아요 수가 많은 리뷰가 없습니다." });
