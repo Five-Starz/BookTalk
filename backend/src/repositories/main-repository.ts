@@ -90,8 +90,8 @@ class MainRepository {
     });
 
     let rank = 1;   // 현재 책의 순위
-    let prevCount = books[0]?.bookmarkCount ?? 0; // 이전 책의 bookmarkCount
-    let sameRankCount = 0;  // 공동 순위 갯수 카운터
+    let prevCount = books[0]?.bookmarkCount ?? 0; // 직전에 처리한 책의 bookmarkCount 값 (직전 책과 현재 책의 수치를 비교하기 위해 필요)
+    let sameRankCount = 0;  // 직전 책들과 같은 순위를 공유한 책들의 수 (공동순위를 건너뛰고 다음 순위를 계산하기 위해 필요)
 
     return books.map((book) => {
     if (book.bookmarkCount < prevCount) {
