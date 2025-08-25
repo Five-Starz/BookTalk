@@ -180,6 +180,22 @@ router.get('/main/books/good', mainController.getHighestRated10Books);
  *              type: array
  *              items:
  *                type: object
+ *                properties:
+ *                  bookId:
+ *                    type: integer
+ *                    example: 1
+ *                  title:
+ *                    type: string
+ *                    example: "책 제목"
+ *                  author:
+ *                    type: string
+ *                    example: "저자명"
+ *                  bookmarkCount:
+ *                    type: integer
+ *                    example: 25
+ *                  rank:
+ *                    type: integer
+ *                    example: 1
  *      404:
  *        description: 보고싶어요 수가 많은 책이 없음
  *        content:
