@@ -26,7 +26,7 @@ class MainService {
   }
 
   // 5. 보고싶어요 수가 많은 책 (want 10)
-  async fetchMostWishedBooks(): Promise<Books[]> {
+  async fetchMostWishedBooks(): Promise<(Books & {rank:number})[]> {
     return await mainRepository.fetchMostWishedBooks();
   }
 }

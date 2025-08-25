@@ -78,8 +78,8 @@ class MainRepository {
   }
 
   // 5. 보고싶어요 수가 많은 책 (want 10)
-  async fetchMostWishedBooks(): Promise<Books[]> {
-    return await prisma.books.findMany({
+  async fetchMostWishedBooks(): Promise<(Books & {rank:number})[]> {
+    const books = await prisma.books.findMany({
       where: {
         bookmarkCount: {
           gt: 0, // 0보다 큰 것만
@@ -87,6 +87,22 @@ class MainRepository {
       },
       orderBy: { bookmarkCount: 'desc' },
       take: 10,
+    });
+
+    let rank = 1;   // 현재 책의 순위
+    let prevCount = books[0]?.bookmarkCount ?? 0; // 이전 책의 bookmarkCount
+    let sameRankCount = 0;  // 공동 순위 갯수 카운터
+
+    return books.map((book) => {
+    if (book.bookmarkCount < prevCount) {
+      rank = rank + sameRankCount + 1;
+      sameRankCount = 0;
+    } else {
+      sameRankCount++;
+    }
+    prevCount = book.bookmarkCount;
+
+    return { ...book, rank };
     });
   }
 }
