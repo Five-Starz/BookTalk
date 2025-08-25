@@ -212,6 +212,7 @@ export const Want10 = () => {
       return <div className="p-4 text-center">보고 싶어요 수가 많은 책 데이터를 찾을 수 없습니다.</div>;
     }
     const wantBooks = apiData.books;
+    console.log(apiData)
 
   return (
     <div className="slider-container w-full">
