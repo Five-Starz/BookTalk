@@ -79,7 +79,12 @@ class MainController {
         return res.status(404).json({ message: "보고싶어요 수가 많은 책이 없습니다." });
       }
 
-      return res.status(200).json({ books });
+      return res.status(200).json({
+        books: books.map(book => ({
+          ...book,  // 기존 필드
+          rank: book.rank,  // rank 명시적으로 포함
+        })),
+      });
     } catch(error) {
       console.error('[MainController] want 책 조회 중 오류', error);
       return res.status(500).json({ message: "want 책 조회 중 서버 오류 발생" });
