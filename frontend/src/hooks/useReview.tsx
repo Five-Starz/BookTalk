@@ -68,16 +68,12 @@ export const RatingStar: React.FC<RatingStarProps> = ({ ratingIndex, setRatingIn
     <div className="rating-container flex items-center"> {/* flex와 items-center 추가 */}
         {[0,1,2,3,4].map((element, index) => (
             <FaStar
-                // `isHover` 배열을 사용하여 마우스 오버 효과를 제어하거나,
-                // `displayScore`를 사용하여 현재 보여줄 별점 개수를 제어할 수 있습니다.
-                // 여기서는 `displayScore`를 기준으로 active/inactive를 결정하는 것이 더 직관적입니다.
-                className={element < displayScore ? "rating-star-over" : "rating-star-out"} // Tailwind CSS 클래스로 변경 예시
-                // Tailwind CSS 클래스를 사용하지 않는다면, `isHover[element] ? "rating-star-over" : "rating-star-out"` 유지
-                key={index}
-                size={35} // 크기를 35로 통일
-                onMouseOver={() => handleMouseOver(index)}
-                onMouseOut={handleMouseOut}
-                onClick={() => handleOnClick(index)}
+              className={element < displayScore ? "rating-star-over" : "rating-star-out"}
+              key={index}
+              size={35} // 크기를 35로 통일
+              onMouseOver={() => handleMouseOver(index)}
+              onMouseOut={handleMouseOut}
+              onClick={() => handleOnClick(index)}
             />
         ))}
     </div>

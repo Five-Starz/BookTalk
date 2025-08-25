@@ -85,8 +85,6 @@ const ReviewCard = ({review}: ReviewCardProps ) => {
               strokeLinecap="round"
               strokeLinejoin="round"
               className={`size-5 lucide lucide-thumbs-up-icon lucide-thumbs-up ${isLiked ? 'text-red-500' : ''}`}
-              // Tailwind에서 색상을 직접 쓰고 싶으면 className이 아니라 style 속성을 사용해야 합니다!
-              // className={`... ${isLiked ? 'text-blue-500' : 'text-gray-400'}`}를 쓰면서 style삭제 or 스타일을 강제 적용을 희망하면 지금처럼 사용
               style={!isLiked ? { color: '#888' } : undefined}
               >
                 <path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"/></svg>
