@@ -46,7 +46,7 @@ export const useMainReviews = (listType: string): UseReviewsResult => {
           setErrorReviews('리뷰를 불러오는 중 알 수 없는 오류가 발생했습니다.');
         }
       } finally {
-          setIsLoadingReviews(false);
+        setIsLoadingReviews(false);
       }
     };
 
