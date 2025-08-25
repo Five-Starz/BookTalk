@@ -9,6 +9,7 @@ export interface BookDetail {
   title: string;
   total_rating: number;
   bookmarkCount: number;
+  rank: number;
 }
 
 // API 응답 전체 인터페이스 (documents 배열을 포함)
