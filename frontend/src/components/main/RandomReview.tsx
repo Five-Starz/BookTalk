@@ -8,7 +8,6 @@ const RandomReview = () => {
 
   // ✅ reviews 배열이 비어있지 않으면 첫 번째 리뷰의 userId를, 아니면 undefined를 사용
   const userId = reviews && reviews.length > 0 ? reviews[0].userId : undefined;
-  console.log('random:', reviews)
 
   // ✅ userId가 있을 때만 훅을 호출하도록 수정 (hooks는 조건부로 호출하면 안 되므로,
   //    userId를 인자로 넘겨주고 훅 내부에서 유효성을 검사하는 것이 올바른 패턴입니다)

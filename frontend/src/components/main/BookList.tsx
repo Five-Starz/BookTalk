@@ -134,6 +134,7 @@ export const Good10 = () => {
     return <div className="p-4 text-center">평점이 높은 책 데이터를 찾을 수 없습니다.</div>;
   }
   const goodBooks = apiData.books;
+  console.log(goodBooks)
 
   return (
     <div className="slider-container w-full">
@@ -167,7 +168,6 @@ export const Good10 = () => {
           className="mySwiper"
         >
           {goodBooks.map((book: BookDetail, index) => { // Book 인터페이스를 사용하여 타입 안전성 확보
-            // const finalIsbn = getPrimaryIsbn(book.isbn);
             return (
               <SwiperSlide key={index}>
                 <Link key={book.isbn} to={`/book/${book.isbn}`}>
@@ -214,6 +214,7 @@ export const Want10 = () => {
       return <div className="p-4 text-center">보고 싶어요 수가 많은 책 데이터를 찾을 수 없습니다.</div>;
     }
     const wantBooks = apiData.books;
+    console.log(wantBooks)
 
   return (
     <div className="slider-container w-full">
@@ -248,7 +249,7 @@ export const Want10 = () => {
         >
           {wantBooks.map((book: BookDetail, index) => { // Book 인터페이스를 사용하여 타입 안전성 확보
             return (
-              <SwiperSlide>
+              <SwiperSlide key={index}>
                 <Link key={book.isbn} to={`/book/${book.isbn}`}>
                   {/* 순위 추가 */}
                   {index+1 === 1 ? (
@@ -256,7 +257,7 @@ export const Want10 = () => {
                   ) : (
                     <h4 className='absolute top-[-5px] left-[-5px] flex items-center justify-center bg-white rounded-full w-[2rem] h-[2rem] p-1 z-10'>{index+1}</h4>
                   )}
-                  <img className='object-cover max-h-[200px] md:min-h-[280px] rounded-xl mb-4' src={book.thumbnail} alt={book.title} />
+                  <img className='relative object-cover max-h-[200px] md:min-h-[280px] rounded-xl mb-4' src={book.thumbnail} alt={book.title} />
                   <h4 className="mb-4">{book.title.length > 18 ? (book.title.slice(0,18)+'...'): book.title}</h4>
                   {/* authors가 string[]이므로 join으로 문자열로 변환 */}
                   <p className="text-sm mb-10">{Array.isArray(book.authors) ? book.authors.join(', ') : book.authors}</p>
