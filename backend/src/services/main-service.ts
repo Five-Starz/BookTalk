@@ -1,7 +1,7 @@
 // 서비스 = 요청에 대한 처리 파일(중간 관리자 역할)
 // 조건 분기, 트랜잭션, 흐름 제어, 외부 API 호출하거나 여러 Repository를 조합할 수도 있음
 import { Books, Reviews } from '@prisma/client';
-import MainRepository from '../repositories/main-repository'
+import MainRepository from '../repositories/main-repository';
 const mainRepository = new MainRepository();
 
 class MainService {
@@ -16,18 +16,18 @@ class MainService {
   }
 
   // 3. 리뷰 수가 많은 책 (hot 10)
-  async fetchMostReviewedBooks(): Promise<Books[]> {
+  async fetchMostReviewedBooks(): Promise<(Books & { rank: number })[]> {
     return await mainRepository.fetchMostReviewedBooks();
   }
 
   // 4. 평점이 좋은 책 (good 10)
-  async fetchTopRatedBooks(): Promise<Books[]> {
+  async fetchTopRatedBooks(): Promise<(Books & { rank: number })[]> {
     return await mainRepository.fetchTopRatedBooks();
   }
 
   // 5. 보고싶어요 수가 많은 책 (want 10)
-  async fetchMostWishedBooks(): Promise<(Books & {rank:number})[]> {
+  async fetchMostWishedBooks(): Promise<(Books & { rank: number })[]> {
     return await mainRepository.fetchMostWishedBooks();
   }
 }
-export default MainService
+export default MainService;
