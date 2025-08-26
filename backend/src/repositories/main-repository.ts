@@ -6,20 +6,15 @@ class MainRepository {
     items: T[],
     valueKey: string
   ): (T & { rank: number })[] {
-    let rank = 1; // 현재 책의 순위
-    let prevValue = items[0]?.[valueKey] ?? 0; // 직전에 처리한 책의 bookmarkCount 값 (직전 책과 현재 책의 수치를 비교하기 위해 필요)
-    let sameRankCount = 0; // 직전 책들과 같은 순위를 공유한 책들의 수 (공동순위를 건너뛰고 다음 순위를 계산하기 위해 필요)
+    let rank = 1; // 현재 책에 부여할 순위
+    let prevValue = items[0]?.[valueKey] ?? 0; // 직전에 처리한 책의 비교할 수치 값 (직전 책과 현재 책의 수치를 비교하기 위해 필요)
 
-    return items.map((item) => {
-      if (item[valueKey] < prevValue) {
-        // withCountBook[reviewCount] < withCountBooks[0].reviewCount
-        rank = rank + sameRankCount + 1;
-        sameRankCount = 0; // 초기화
-      } else {
-        sameRankCount++;
+    return items.map((item, index) => {
+      if (prevValue !== null && item[valueKey] < prevValue) {
+        rank = index + 1;
       }
       prevValue = item[valueKey];
-      return { ...item, rank };
+      return { ...item, rank }; // map될 rank 필드 추가한 객체가 들어간 배열 반환
     });
   }
 
