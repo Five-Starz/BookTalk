@@ -48,7 +48,7 @@ return (
       {isEditing ? (
         // ✅ 수정 폼
         <div className="p-4 rounded-lg bg-gray-100 border border-gray-200">
-          <User nickname={comment.users.nickname} width='6' />
+          <User nickname={comment.users.nickname} width={6} />
           <textarea
             className="w-full mt-3 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             value={editedContent}
@@ -76,7 +76,7 @@ return (
         // ✅ 일반 댓글 카드 내용
         <>
           <div className="flex justify-between items-center mb-2">
-            <Link to={`/user/${comment.users.userId}`}><User nickname={comment.users.nickname} width='6' /></Link>
+            <Link to={`/user/${comment.users.userId}`}><User nickname={comment.users.nickname} width={6} /></Link>
             <span className="text-sm text-gray-500">{new Date(comment.createdAt).toLocaleString()}</span>
           </div>
           <p className="text-gray-800">{isDeleted ? <span className="text-gray-500 italic">삭제된 댓글입니다.</span> : comment.content}</p>

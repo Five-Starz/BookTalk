@@ -46,7 +46,7 @@ const BestReview = () => {
               />
               <div className='flex-grow rounded-lg border border-[#FFA100] p-4'>
                 <h3 className='mb-4'>{reviews[0].book.title}</h3> {/* ✅ 책 제목 사용 */}
-                <User nickname={nickname} width='6' />
+                <User nickname={nickname} width={6} />
                 <p className='text-overflow mt-4'>{reviews[0].content}</p> {/* ✅ 리뷰 내용 사용 */}
               </div>
             </div>
@@ -68,7 +68,7 @@ const BestReview = () => {
                   </figure>
                   <div className='flex flex-col p-2'>
                     <h4>{review.book.title}</h4> {/* ✅ 책 제목 사용 */}
-                    <User nickname={nickname} width='6' />
+                    <User nickname={nickname} width={4} />
                     <p>{review.content.substring(0, 60)}{review.content.length > 60 ? '...' : null}</p> {/* ✅ 리뷰 내용 사용 */}
                   </div>
                 </div>

@@ -36,7 +36,7 @@ const RandomReview = () => {
         <h2>오늘의 랜덤 리뷰</h2>
         <p className='text-center px-4'>{reviews[0].content}</p>
         <div className='flex gap-4 justify-center'>
-          <User nickname={nickname} width='6' />
+          <User nickname={nickname} width={4} />
         </div>
       </div>
     </Link>

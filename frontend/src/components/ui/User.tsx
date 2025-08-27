@@ -1,7 +1,7 @@
 import React from 'react'
 
 interface UserProps {
-  width: string;
+  width: number;
   nickname: string;
 }
 
@@ -13,7 +13,7 @@ const User: React.FC<UserProps> = ({width, nickname}) => {
             <img src="https://img.daisyui.com/images/profile/demo/yellingcat@192.webp" />
           </div>
         </div>
-        <p className='text-[#888]'>{nickname}</p>
+        <p className={`text-[#888] ${width < 4 ? 'text-xs' : ''}`}>{nickname}</p>
     </div>
   )
 }

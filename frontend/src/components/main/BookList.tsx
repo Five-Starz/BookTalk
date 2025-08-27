@@ -160,6 +160,7 @@ export const Good10 = () => {
               spaceBetween: 30
             }
           }}
+          loop={true}
           watchSlidesProgress={true}
           navigation={{ prevEl: prev1Ref.current, nextEl: next1Ref.current}}
           modules={[Navigation]}
@@ -199,19 +200,27 @@ export const Want10 = () => {
   const prev2Ref = useRef(null);
   const next2Ref = useRef(null);
 
-    // 로딩, 에러, 데이터 없음 상태 처리
-    if (isLoading) {
-      return <div className="p-4 text-center">보고 싶어요 수가 많은 책 데이터를 불러오는 중입니다...</div>;
-    }
+  // 로딩, 에러, 데이터 없음 상태 처리
+  if (isLoading) {
+    return <div className="p-4 text-center">보고 싶어요 수가 많은 책 데이터를 불러오는 중입니다...</div>;
+  }
 
-    if (error) {
-      return <div className="p-4 text-center text-red-500">{error}</div>;
-    }
+  if (error) {
+    return <div className="p-4 text-center text-red-500">{error}</div>;
+  }
 
-    if (!apiData || !apiData.books || apiData.books.length === 0) {
-      return <div className="p-4 text-center">보고 싶어요 수가 많은 책 데이터를 찾을 수 없습니다.</div>;
+  if (!apiData || !apiData.books || apiData.books.length === 0) {
+    return <div className="p-4 text-center">보고 싶어요 수가 많은 책 데이터를 찾을 수 없습니다.</div>;
+  }
+  const wantBooks = apiData.books;
+
+  // ✅ onBeforeInit 함수 추가
+  const onBeforeInit = (swiper: SwiperClass) => {
+    if (prev2Ref.current && next2Ref.current) {
+      swiper.navigation.prevEl = prev2Ref.current;
+      swiper.navigation.nextEl = next2Ref.current;
     }
-    const wantBooks = apiData.books;
+  };
 
   return (
     <div className="slider-container w-full">
@@ -238,9 +247,11 @@ export const Want10 = () => {
               spaceBetween: 30
             }
           }}
+          loop={true}
+          onBeforeInit={onBeforeInit}
           watchSlidesProgress={true}
-          navigation={{ prevEl: prev2Ref.current, nextEl: next2Ref.current}}
           modules={[Navigation]}
+          navigation={{}}
           className="mySwiper"
         >
           {wantBooks.map((book: BookDetail) => { // Book 인터페이스를 사용하여 타입 안전성 확보
