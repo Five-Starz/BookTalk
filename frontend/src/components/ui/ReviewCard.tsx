@@ -67,7 +67,7 @@ const ReviewCard = ({review}: ReviewCardProps ) => {
     <div className={`w-full bg-[#F6F6F6] roundedLg p-4`}>
       <div className='flex flex-col gap-3'>
         <Link to={`/user/${review.userId}`}>
-          <User nickname={nickname} width={6} />
+          <User nickname={nickname} width='6' />
         </Link>
         <span className='block w-full h-[1px] bg-[#ddd]' />
         <div className="min-h-30 md:min-h-50 text-overflow">

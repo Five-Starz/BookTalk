@@ -184,7 +184,7 @@ const CommentList: React.FC<CommentListProps> = ({ reviewId }) => {
                   className="p-4 rounded-lg bg-gray-50 my-4"
               >
                     <div className="mb-2">
-                      <User nickname={nickname} width={6} />
+                      <User nickname={nickname} width='6' />
                     </div>
                     <textarea
                       className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm"
