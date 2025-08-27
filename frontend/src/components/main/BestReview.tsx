@@ -68,7 +68,7 @@ const BestReview = () => {
                   </figure>
                   <div className='flex flex-col p-2'>
                     <h4>{review.book.title}</h4> {/* ✅ 책 제목 사용 */}
-                    <User nickname={nickname} width='4' />
+                    <User nickname={nickname} width='5' />
                     <p>{review.content.substring(0, 60)}{review.content.length > 60 ? '...' : null}</p> {/* ✅ 리뷰 내용 사용 */}
                   </div>
                 </div>
