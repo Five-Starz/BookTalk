@@ -82,7 +82,7 @@ const handleMainSlideChange = (swiper: SwiperClass) => {
                     {/* authors가 string[]이므로 join으로 문자열로 변환 */}
                     <p className="author text-sm mb-10">{Array.isArray(book.authors) ? book.authors.join(', ') : book.authors}</p>
                     {/* TODO: 여기에 실제 리뷰 내용이나 요약 등을 추가할 수 있습니다. */}
-                    <p>{book.description.substring(0, 100)}...</p> {/* 예시: contents 일부 표시 */}
+                    <p>{book.description.substring(0, 100)}{book.description.length > 100 ? '...' : null}</p> {/* 예시: contents 일부 표시 */}
                   </div>
                 </div>
               </Link>
