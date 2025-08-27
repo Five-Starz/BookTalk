@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@plugin "daisyui";
+
 *{
   font-family: "Noto sans KR";
   letter-spacing: -1px;
