@@ -1,6 +1,23 @@
 import { Books, Reviews } from '@prisma/client';
 import { prisma } from '../utils/prisma';
 class MainRepository {
+  // 공통 랭킹 처리 함수 (valueKey는 비교할 기준 필드명: reviewCount, totalRating, bookmarkCount 등)
+  private addRanks<T extends { [key: string]: any }>(
+    items: T[],
+    valueKey: string
+  ): (T & { rank: number })[] {
+    let rank = 1; // 현재 책에 부여할 순위
+    let prevValue = items[0]?.[valueKey] ?? 0; // 직전에 처리한 책의 비교할 수치 값 (직전 책과 현재 책의 수치를 비교하기 위해 필요)
+
+    return items.map((item, index) => {
+      if (prevValue !== null && item[valueKey] < prevValue) {
+        rank = index + 1;
+      }
+      prevValue = item[valueKey];
+      return { ...item, rank }; // map될 rank 필드 추가한 객체가 들어간 배열 반환
+    });
+  }
+
   // 1. 좋아요 수가 많은 리뷰
   async fetchMostLiked3Reviews(): Promise<Reviews[]> {
     // 1-1. 좋아요테이블에서 리뷰별 좋아요개수를 그룹화, 내림차순 정렬, 상위 3개 가져옴
@@ -18,10 +35,10 @@ class MainRepository {
     });
 
     // 1-2. 결과가 없으면 빈 배열 반환 (좋아요가 하나도 없는 경우)
-    if (top3LikesGroupByReviewId.length ===0) return [];
+    if (top3LikesGroupByReviewId.length === 0) return [];
 
     // 1-3. 가장 좋아요 많은 top3 리뷰ID를 이용해 실제 리뷰 정보 조회 후 반환
-    const reviewIds: number[] = top3LikesGroupByReviewId.map((item)=> item.reviewId);
+    const reviewIds: number[] = top3LikesGroupByReviewId.map((item) => item.reviewId);
 
     return await prisma.reviews.findMany({
       where: {
@@ -42,9 +59,10 @@ class MainRepository {
     return reviews[randomIndex];
   }
 
-  // 3. 리뷰 수가 많은 책 (hot 10)
-  async fetchMostReviewedBooks(): Promise<Books[]> {
-    return await prisma.books.findMany({
+  // 3. 리뷰 수가 많은 책 (hot 10) + 동일 순위 처리
+  async fetchMostReviewedBooks(): Promise<(Books & { rank: number; reviewCount: number })[]> {
+    const books = await prisma.books.findMany({
+      include: { _count: { select: { reviews: true } } },
       orderBy: {
         reviews: {
           _count: 'desc', // _count : 관계 필드의 개수(연결된 레코드 수)를 구할 때 쓰는 전용 예약키워드
@@ -52,10 +70,17 @@ class MainRepository {
       },
       take: 10,
     });
+
+    const withCount = books.map((book) => ({
+      ...book,
+      reviewCount: book._count.reviews,
+    }));
+
+    return this.addRanks(withCount, 'reviewCount');
   }
 
-  // 4. 평점이 좋은 책 (good 10)
-  async fetchTopRatedBooks(): Promise<Books[]> {
+  // 4. 평점이 좋은 책 (good 10) + 동일 순위 처리
+  async fetchTopRatedBooks(): Promise<(Books & { rank: number; reviewCount: number })[]> {
     const booksByRatingDesc = await prisma.books.findMany({
       where: {
         totalRating: { gt: 0 }, // 평균평점 > 0
@@ -72,13 +97,17 @@ class MainRepository {
 
     const top10BooksWithAtLeast2Reviews = booksByRatingDesc // 리뷰 수가 2개 이상인 책만 필터링
       .filter((book) => book._count.reviews >= 2)
-      .slice(0, 10); // 상위 10개만 자름
+      .slice(0, 10) // 상위 10개만 자름
+      .map((book) => ({
+        ...book,
+        reviewCount: book._count.reviews,
+      }));
 
-    return top10BooksWithAtLeast2Reviews;
+    return this.addRanks(top10BooksWithAtLeast2Reviews, 'totalRating');
   }
 
-  // 5. 보고싶어요 수가 많은 책 (want 10)
-  async fetchMostWishedBooks(): Promise<(Books & {rank:number})[]> {
+  // 5. 보고싶어요 수가 많은 책 (want 10) + 동일 순위 처리
+  async fetchMostWishedBooks(): Promise<(Books & { rank: number })[]> {
     const books = await prisma.books.findMany({
       where: {
         bookmarkCount: {
@@ -89,21 +118,7 @@ class MainRepository {
       take: 10,
     });
 
-    let rank = 1;   // 현재 책의 순위
-    let prevCount = books[0]?.bookmarkCount ?? 0; // 직전에 처리한 책의 bookmarkCount 값 (직전 책과 현재 책의 수치를 비교하기 위해 필요)
-    let sameRankCount = 0;  // 직전 책들과 같은 순위를 공유한 책들의 수 (공동순위를 건너뛰고 다음 순위를 계산하기 위해 필요)
-
-    return books.map((book) => {
-    if (book.bookmarkCount < prevCount) {
-      rank = rank + sameRankCount + 1;
-      sameRankCount = 0;
-    } else {
-      sameRankCount++;
-    }
-    prevCount = book.bookmarkCount;
-
-    return { ...book, rank };
-    });
+    return this.addRanks(books, 'bookmarkCount');
   }
 }
 export default MainRepository;
