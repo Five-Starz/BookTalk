@@ -117,7 +117,7 @@ export const Hot10 = () => {
 
 export const Good10 = () => {
   const { apiData, isLoading, error } = use10List('good');
-  const mainSwiperRef = useRef<SwiperClass | null>(null);
+  const swiperRef = useRef<SwiperClass | null>(null);
   const prevRef = useRef(null);
   const nextRef = useRef(null);
 
@@ -144,7 +144,14 @@ export const Good10 = () => {
             '--swiper-navigation-color': '#000',
           } as React.CSSProperties}
           onSwiper={(swiper) => {
-            mainSwiperRef.current = swiper;
+            swiperRef.current = swiper;
+            // ✅ onSwiper 콜백 내에서 ref를 직접 연결하여 타이밍 문제를 해결합니다.
+            if (prevRef.current && nextRef.current) {
+              swiper.navigation.prevEl = prevRef.current;
+              swiper.navigation.nextEl = nextRef.current;
+              swiper.navigation.init();
+              swiper.navigation.update();
+            }
           }}
           breakpoints={{
             375: {
@@ -195,7 +202,7 @@ export const Good10 = () => {
 
 export const Want10 = () => {
   const { apiData, isLoading, error } = use10List('want');
-  const mainSwiperRef = useRef<SwiperClass | null>(null);
+  const swiperRef = useRef<SwiperClass | null>(null);
   const prevRef = useRef(null);
   const nextRef = useRef(null);
 
@@ -222,7 +229,14 @@ export const Want10 = () => {
             '--swiper-navigation-color': '#000',
           } as React.CSSProperties}
           onSwiper={(swiper) => {
-            mainSwiperRef.current = swiper;
+            swiperRef.current = swiper;
+            // ✅ onSwiper 콜백 내에서 ref를 직접 연결하여 타이밍 문제를 해결합니다.
+            if (prevRef.current && nextRef.current) {
+              swiper.navigation.prevEl = prevRef.current;
+              swiper.navigation.nextEl = nextRef.current;
+              swiper.navigation.init();
+              swiper.navigation.update();
+            }
           }}
           breakpoints={{
             375: {
