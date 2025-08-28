@@ -118,8 +118,8 @@ export const Hot10 = () => {
 export const Good10 = () => {
   const { apiData, isLoading, error } = use10List('good');
   const swiperRef = useRef<SwiperClass | null>(null);
-  const prevRef = useRef(null);
-  const nextRef = useRef(null);
+  const prev1Ref = useRef(null);
+  const next1Ref = useRef(null);
 
   // 로딩, 에러, 데이터 없음 상태 처리
   if (isLoading) {
@@ -146,9 +146,9 @@ export const Good10 = () => {
           onSwiper={(swiper) => {
             swiperRef.current = swiper;
             // ✅ onSwiper 콜백 내에서 ref를 직접 연결하여 타이밍 문제를 해결합니다.
-            if (prevRef.current && nextRef.current) {
-              swiper.navigation.prevEl = prevRef.current;
-              swiper.navigation.nextEl = nextRef.current;
+            if (prev1Ref.current && next1Ref.current) {
+              swiper.navigation.prevEl = prev1Ref.current;
+              swiper.navigation.nextEl = next1Ref.current;
               swiper.navigation.init();
               swiper.navigation.update();
             }
@@ -168,7 +168,7 @@ export const Good10 = () => {
             }
           }}
           watchSlidesProgress={true}
-          navigation={{ prevEl: prevRef.current, nextEl: nextRef.current}}
+          navigation={{ prevEl: prev1Ref.current, nextEl: next1Ref.current}}
           modules={[Navigation]}
           className="mySwiper"
         >
@@ -192,8 +192,8 @@ export const Good10 = () => {
           })}
         </Swiper>
         <div className="swiper-navigation">
-          <button className='swiper_prev swiper-button-prev goodPrev' ref={prevRef}></button>
-          <button className='swiper_next swiper-button-next goodNext' ref={nextRef}></button>
+          <button className='swiper_prev swiper-button-prev goodPrev' ref={prev1Ref}></button>
+          <button className='swiper_next swiper-button-next goodNext' ref={next1Ref}></button>
         </div>
       </div>
     </div>
@@ -203,8 +203,8 @@ export const Good10 = () => {
 export const Want10 = () => {
   const { apiData, isLoading, error } = use10List('want');
   const swiperRef = useRef<SwiperClass | null>(null);
-  const prevRef = useRef(null);
-  const nextRef = useRef(null);
+  const prev2Ref = useRef(null);
+  const next2Ref = useRef(null);
 
   // 로딩, 에러, 데이터 없음 상태 처리
   if (isLoading) {
@@ -231,9 +231,9 @@ export const Want10 = () => {
           onSwiper={(swiper) => {
             swiperRef.current = swiper;
             // ✅ onSwiper 콜백 내에서 ref를 직접 연결하여 타이밍 문제를 해결합니다.
-            if (prevRef.current && nextRef.current) {
-              swiper.navigation.prevEl = prevRef.current;
-              swiper.navigation.nextEl = nextRef.current;
+            if (prev2Ref.current && next2Ref.current) {
+              swiper.navigation.prevEl = prev2Ref.current;
+              swiper.navigation.nextEl = next2Ref.current;
               swiper.navigation.init();
               swiper.navigation.update();
             }
@@ -253,7 +253,7 @@ export const Want10 = () => {
             }
           }}
           watchSlidesProgress={true}
-          navigation={{ prevEl: prevRef.current, nextEl: nextRef.current}}
+          navigation={{ prevEl: prev2Ref.current, nextEl: next2Ref.current}}
           modules={[Navigation]}
           className="mySwiper"
         >
@@ -277,8 +277,8 @@ export const Want10 = () => {
           })}
         </Swiper>
         <div className="swiper-navigation">
-          <button className='swiper_prev swiper-button-prev wantPrev' ref={prevRef}></button>
-          <button className='swiper_next swiper-button-next wantNext' ref={nextRef}></button>
+          <button className='swiper_prev swiper-button-prev wantPrev' ref={prev2Ref}></button>
+          <button className='swiper_next swiper-button-next wantNext' ref={next2Ref}></button>
         </div>
       </div>
     </div>
