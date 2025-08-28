@@ -196,9 +196,14 @@ export const Good10 = () => {
 
 export const Want10 = () => {
   const { apiData, isLoading, error } = use10List('want');
-  const swiperWRef = useRef<SwiperClass | null>(null);
-  const prev2Ref = useRef<HTMLButtonElement | null>(null);
-  const next2Ref = useRef<HTMLButtonElement | null>(null);
+  const [swiper, setSwiper] = useState<SwiperClass>();
+
+  const handlePrev = () => {
+    swiper?.slidePrev()
+  }
+  const handleNext = () => {
+    swiper?.slideNext()
+  }
 
   // 로딩, 에러, 데이터 없음 상태 처리
   if (isLoading) {
@@ -222,16 +227,7 @@ export const Want10 = () => {
           style={{
             '--swiper-navigation-color': '#000',
           } as React.CSSProperties}
-          onSwiper={(swiper) => {
-            swiperWRef.current = swiper;
-            // ✅ onSwiper 콜백 내에서 ref를 직접 연결하여 타이밍 문제를 해결합니다.
-            if (prev2Ref.current && next2Ref.current) {
-              swiper.navigation.prevEl = prev2Ref.current;
-              swiper.navigation.nextEl = next2Ref.current;
-              swiper.navigation.init();
-              swiper.navigation.update();
-            }
-          }}
+          onSwiper={(e) => {setSwiper(e)}}
           breakpoints={{
             375: {
               slidesPerView: 2,
@@ -249,7 +245,6 @@ export const Want10 = () => {
           loop={true}
           watchSlidesProgress={true}
           modules={[Navigation]}
-          navigation={{}}
           className="mySwiper"
         >
           {wantBooks.map((book: BookDetail) => { // Book 인터페이스를 사용하여 타입 안전성 확보
@@ -272,8 +267,8 @@ export const Want10 = () => {
           })}
         </Swiper>
         <div className="swiper-navigation">
-          <button className='swiper_prev swiper-button-prev wantPrev' ref={prev2Ref}></button>
-          <button className='swiper_next swiper-button-next wantNext' ref={next2Ref}></button>
+          <button className='swiper_prev swiper-button-prev wantPrev' onClick={handlePrev}></button>
+          <button className='swiper_next swiper-button-next wantNext' onClick={handleNext}></button>
         </div>
       </div>
     </div>
