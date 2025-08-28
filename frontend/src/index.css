@@ -26,6 +26,19 @@ h3{
   color: #555;
 }
 
+.text-overflow {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  word-break: break-word;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 12;
+  -webkit-box-orient: vertical;
+}
+.ofsm{
+  -webkit-line-clamp: 2;
+}
+
 .rating-stars path{
     fill: rgb(216, 216, 216);
 }
@@ -79,15 +92,6 @@ h3{
   }
 }
 @media (max-width: 1024px) {
-  .text-overflow {
-    text-overflow: ellipsis;
-    overflow: hidden;
-    word-break: break-word;
-
-    display: -webkit-box;
-    -webkit-line-clamp: 12;
-    -webkit-box-orient: vertical;
-  }
   .mySwiper2-wrap .swiper-button-next {
     right: var(--swiper-navigation-sides-offset, -8%);
   }

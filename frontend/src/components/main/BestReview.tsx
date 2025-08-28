@@ -56,8 +56,8 @@ const BestReview = () => {
           <div className='flex flex-col gap-4 md:flex-row md:justify-between'>
             {reviews.slice(1, 3).map((review, index) => (
               <Link key={review.reviewId}
-                to={`/review/${reviews[index].reviewId}`}
-                state={{ reviewData: reviews[index] }}
+                to={`/review/${reviews[index+1].reviewId}`}
+                state={{ reviewData: reviews[index+1] }}
                 className='md:w-[calc(50%-6px)]'
               >
                 <div className="card card-side w-full bg-gray-200 h-30">
@@ -66,10 +66,10 @@ const BestReview = () => {
                       src={review.book.thumbnail} // ✅ 책 이미지 사용
                       alt={review.book.title} /> {/* ✅ 책 제목 사용 */}
                   </figure>
-                  <div className='flex flex-col p-2'>
+                  <div className='flex flex-col gap-1 p-2'>
                     <h4>{review.book.title}</h4> {/* ✅ 책 제목 사용 */}
                     <User nickname={nickname} width='5' />
-                    <p>{review.content.substring(0, 60)}{review.content.length > 60 ? '...' : null}</p> {/* ✅ 리뷰 내용 사용 */}
+                    <p className='text-overflow ofsm'>{review.content}</p> {/* ✅ 리뷰 내용 사용 */}
                   </div>
                 </div>
               </Link>
