@@ -66,9 +66,8 @@ const BestReview = () => {
                       src={review.book.thumbnail} // ✅ 책 이미지 사용
                       alt={review.book.title} /> {/* ✅ 책 제목 사용 */}
                   </figure>
-                  <div className='flex flex-col gap-1 p-2'>
-                    <h4>{review.book.title}</h4> {/* ✅ 책 제목 사용 */}
-                    <User nickname={nickname} width='5' />
+                  <div className='p-2'>
+                    <h4 className='mb-2'>{review.book.title}</h4> {/* ✅ 책 제목 사용 */}
                     <p className='text-overflow ofsm'>{review.content}</p> {/* ✅ 리뷰 내용 사용 */}
                   </div>
                 </div>
