@@ -14,7 +14,7 @@ const Home = () => {
         <BestReview />
         <RandomReview />
       </div>
-      <Hot10 />
+      {/* <Hot10 /> */}
       <Good10 />
       <Want10 />
 
