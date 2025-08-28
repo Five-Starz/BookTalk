@@ -57,20 +57,9 @@ export const Hot10 = () => {
         <Swiper
           onSwiper={(swiper) => {
             mainSwiperRef.current = swiper;
-            if (prevRef.current && nextRef.current) {
-                swiper.navigation.nextEl = nextRef.current;
-                swiper.navigation.prevEl = prevRef.current;
-                swiper.navigation.init(); // 네비게이션을 수동으로 초기화
-                swiper.navigation.update(); // 업데이트
-            }
           }}
           // onSlideChange 이벤트 핸들러 추가
           onSlideChange={handleMainSlideChange}
-          navigation={{
-            prevEl: prevRef.current,
-            nextEl: nextRef.current,
-          }}
-          onBeforeInit={(swiper) => setThumbsSwiper(swiper)}
           loop={true}
           spaceBetween={10}
           thumbs={{ swiper: thumbsSwiper }}
@@ -78,7 +67,7 @@ export const Hot10 = () => {
           className="mySwiper2 w-full lg:w-[70%]"
         >
           {apiData.books.map((book: BookDetail, index) => ( // Book 인터페이스를 사용하여 타입 안전성 확보
-            <SwiperSlide key={index}> {/* key는 고유한 값으로 설정 (isbn이 적합) */}
+            <SwiperSlide> {/* key는 고유한 값으로 설정 (isbn이 적합) */}
               <Link key={book.isbn} to={`/book/${book.isbn}`}>
                 <div className="relative flex flex-col gap-4 items-center md:flex-row md:gap-0 md:justify-between">
                   {/* 순위 추가 */}
@@ -128,7 +117,7 @@ export const Hot10 = () => {
 
 export const Good10 = () => {
   const { apiData, isLoading, error } = use10List('good');
-  const swiperRef = useRef<SwiperClass | null>(null);
+  const mainSwiperRef = useRef<SwiperClass | null>(null);
   const prevRef = useRef(null);
   const nextRef = useRef(null);
 
@@ -155,13 +144,7 @@ export const Good10 = () => {
             '--swiper-navigation-color': '#000',
           } as React.CSSProperties}
           onSwiper={(swiper) => {
-            swiperRef.current = swiper;
-            if (prevRef.current && nextRef.current) {
-                swiper.navigation.nextEl = nextRef.current;
-                swiper.navigation.prevEl = prevRef.current;
-                swiper.navigation.init(); // 네비게이션을 수동으로 초기화
-                swiper.navigation.update(); // 업데이트
-            }
+            mainSwiperRef.current = swiper;
           }}
           breakpoints={{
             375: {
@@ -212,7 +195,7 @@ export const Good10 = () => {
 
 export const Want10 = () => {
   const { apiData, isLoading, error } = use10List('want');
-  const [swiper, setSwiper] = useState<SwiperClass | null>(null);
+  const mainSwiperRef = useRef<SwiperClass | null>(null);
   const prevRef = useRef(null);
   const nextRef = useRef(null);
 
@@ -232,13 +215,15 @@ export const Want10 = () => {
 
   return (
     <div className="slider-container w-full">
-      <h2 className='mb-4'>보고 싶어 하는 사람이 많아요</h2>
+      <h2 className='mb-4'>보고 싶어하는 사람이 많아요</h2>
       <div className='mySwiper-wrap relative'>
         <Swiper
           style={{
             '--swiper-navigation-color': '#000',
           } as React.CSSProperties}
-          onBeforeInit={(swiper) => setSwiper(swiper)}
+          onSwiper={(swiper) => {
+            mainSwiperRef.current = swiper;
+          }}
           breakpoints={{
             375: {
               slidesPerView: 2,
