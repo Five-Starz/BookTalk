@@ -1,4 +1,4 @@
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import { Link } from 'react-router-dom';
 import { Swiper as SwiperClass } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -196,23 +196,32 @@ export const Good10 = () => {
 
 export const Want10 = () => {
   const { apiData, isLoading, error } = use10List('want');
-  const swiperRef = useRef<SwiperClass | null>(null);
+  const swiperWRef = useRef<SwiperClass | null>(null);
   const prev2Ref = useRef<HTMLButtonElement | null>(null);
   const next2Ref = useRef<HTMLButtonElement | null>(null);
 
-    // 로딩, 에러, 데이터 없음 상태 처리
-    if (isLoading) {
-      return <div className="p-4 text-center">보고 싶어요 수가 많은 책 데이터를 불러오는 중입니다...</div>;
-    }
+  // 로딩, 에러, 데이터 없음 상태 처리
+  if (isLoading) {
+    return <div className="p-4 text-center">보고 싶어요 수가 많은 책 데이터를 불러오는 중입니다...</div>;
+  }
 
-    if (error) {
-      return <div className="p-4 text-center text-red-500">{error}</div>;
-    }
+  if (error) {
+    return <div className="p-4 text-center text-red-500">{error}</div>;
+  }
 
-    if (!apiData || !apiData.books || apiData.books.length === 0) {
-      return <div className="p-4 text-center">보고 싶어요 수가 많은 책 데이터를 찾을 수 없습니다.</div>;
-    }
-    const wantBooks = apiData.books;
+  if (!apiData || !apiData.books || apiData.books.length === 0) {
+    return <div className="p-4 text-center">보고 싶어요 수가 많은 책 데이터를 찾을 수 없습니다.</div>;
+  }
+  const wantBooks = apiData.books;
+
+  useEffect(() => {
+  if (swiperWRef.current && prev2Ref.current && next2Ref.current) {
+    swiperWRef.current.navigation.prevEl = prev2Ref.current;
+    swiperWRef.current.navigation.nextEl = next2Ref.current;
+    swiperWRef.current.navigation.init();
+    swiperWRef.current.navigation.update();
+  }
+}, [apiData]);
 
   return (
     <div className="slider-container w-full">
@@ -223,7 +232,7 @@ export const Want10 = () => {
             '--swiper-navigation-color': '#000',
           } as React.CSSProperties}
           onSwiper={(swiper) => {
-            swiperRef.current = swiper;
+            swiperWRef.current = swiper;
           }}
           breakpoints={{
             375: {
@@ -241,7 +250,6 @@ export const Want10 = () => {
           }}
           loop={true}
           watchSlidesProgress={true}
-          navigation={{ prevEl: prev2Ref.current, nextEl: next2Ref.current}}
           modules={[Navigation]}
           className="mySwiper"
         >
