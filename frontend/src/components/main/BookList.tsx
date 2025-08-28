@@ -12,8 +12,8 @@ export const Hot10 = () => {
 
   const [thumbsSwiper, setThumbsSwiper] = useState<SwiperClass | null>(null);
   const mainSwiperRef = useRef<SwiperClass | null>(null);
-  const prevRef = useRef(null);
-  const nextRef = useRef(null);
+  const prevRef = useRef<HTMLButtonElement | null>(null);
+  const nextRef = useRef<HTMLButtonElement | null>(null);
 
     // 로딩, 에러, 데이터 없음 상태 처리
     if (isLoading) {
@@ -28,7 +28,7 @@ export const Hot10 = () => {
       return <div className="p-4">리뷰가 많은 책 데이터를 찾을 수 없습니다.</div>;
     }
 
-  const handleMainSlideChange = (swiper: SwiperClass) => {
+const handleMainSlideChange = (swiper: SwiperClass) => {
     if (thumbsSwiper && thumbsSwiper.params) {
       const currentMainRealIndex = swiper.realIndex; // 메인 슬라이더의 실제 인덱스 (0-8)
       const totalSlides = swiper.slides.length; // 실제 총 슬라이드 개수 (9)
@@ -49,7 +49,6 @@ export const Hot10 = () => {
       }, 0);
     }
   };
-
   return (
     <div>
       <h2 className='mb-4'>Hot10</h2>
@@ -63,6 +62,7 @@ export const Hot10 = () => {
           loop={true}
           spaceBetween={10}
           thumbs={{ swiper: thumbsSwiper }}
+          navigation={{ prevEl: prevRef.current, nextEl: nextRef.current}}
           modules={[Navigation, Thumbs]}
           className="mySwiper2 w-full lg:w-[70%]"
         >
@@ -118,8 +118,8 @@ export const Hot10 = () => {
 export const Good10 = () => {
   const { apiData, isLoading, error } = use10List('good');
   const swiperRef = useRef<SwiperClass | null>(null);
-  const prev1Ref = useRef(null);
-  const next1Ref = useRef(null);
+  const prev1Ref = useRef<HTMLButtonElement | null>(null);
+  const next1Ref = useRef<HTMLButtonElement | null>(null);
 
   // 로딩, 에러, 데이터 없음 상태 처리
   if (isLoading) {
@@ -145,13 +145,6 @@ export const Good10 = () => {
           } as React.CSSProperties}
           onSwiper={(swiper) => {
             swiperRef.current = swiper;
-            // ✅ onSwiper 콜백 내에서 ref를 직접 연결하여 타이밍 문제를 해결합니다.
-            if (prev1Ref.current && next1Ref.current) {
-              swiper.navigation.prevEl = prev1Ref.current;
-              swiper.navigation.nextEl = next1Ref.current;
-              swiper.navigation.init();
-              swiper.navigation.update();
-            }
           }}
           breakpoints={{
             375: {
@@ -167,8 +160,9 @@ export const Good10 = () => {
               spaceBetween: 30
             }
           }}
+          loop={true}
           watchSlidesProgress={true}
-          navigation={{}}
+          navigation={{ prevEl: prev1Ref.current, nextEl: next1Ref.current}}
           modules={[Navigation]}
           className="mySwiper"
         >
@@ -203,26 +197,26 @@ export const Good10 = () => {
 export const Want10 = () => {
   const { apiData, isLoading, error } = use10List('want');
   const swiperRef = useRef<SwiperClass | null>(null);
-  const prev2Ref = useRef(null);
-  const next2Ref = useRef(null);
+  const prev2Ref = useRef<HTMLButtonElement | null>(null);
+  const next2Ref = useRef<HTMLButtonElement | null>(null);
 
-  // 로딩, 에러, 데이터 없음 상태 처리
-  if (isLoading) {
-    return <div className="p-4 text-center">보고 싶어요 수가 많은 책 데이터를 불러오는 중입니다...</div>;
-  }
+    // 로딩, 에러, 데이터 없음 상태 처리
+    if (isLoading) {
+      return <div className="p-4 text-center">보고 싶어요 수가 많은 책 데이터를 불러오는 중입니다...</div>;
+    }
 
-  if (error) {
-    return <div className="p-4 text-center text-red-500">{error}</div>;
-  }
+    if (error) {
+      return <div className="p-4 text-center text-red-500">{error}</div>;
+    }
 
-  if (!apiData || !apiData.books || apiData.books.length === 0) {
-    return <div className="p-4 text-center">보고 싶어요 수가 많은 책 데이터를 찾을 수 없습니다.</div>;
-  }
-  const wantBooks = apiData.books;
+    if (!apiData || !apiData.books || apiData.books.length === 0) {
+      return <div className="p-4 text-center">보고 싶어요 수가 많은 책 데이터를 찾을 수 없습니다.</div>;
+    }
+    const wantBooks = apiData.books;
 
   return (
     <div className="slider-container w-full">
-      <h2 className='mb-4'>보고 싶어하는 사람이 많아요</h2>
+      <h2 className='mb-4'>보고 싶어 하는 사람이 많아요</h2>
       <div className='mySwiper-wrap relative'>
         <Swiper
           style={{
@@ -230,13 +224,6 @@ export const Want10 = () => {
           } as React.CSSProperties}
           onSwiper={(swiper) => {
             swiperRef.current = swiper;
-            // ✅ onSwiper 콜백 내에서 ref를 직접 연결하여 타이밍 문제를 해결합니다.
-            if (prev2Ref.current && next2Ref.current) {
-              swiper.navigation.prevEl = prev2Ref.current;
-              swiper.navigation.nextEl = next2Ref.current;
-              swiper.navigation.init();
-              swiper.navigation.update();
-            }
           }}
           breakpoints={{
             375: {
@@ -252,8 +239,9 @@ export const Want10 = () => {
               spaceBetween: 30
             }
           }}
+          loop={true}
           watchSlidesProgress={true}
-          navigation={{}}
+          navigation={{ prevEl: prev2Ref.current, nextEl: next2Ref.current}}
           modules={[Navigation]}
           className="mySwiper"
         >
