@@ -28,7 +28,7 @@ export const Hot10 = () => {
       return <div className="p-4">리뷰가 많은 책 데이터를 찾을 수 없습니다.</div>;
     }
 
-const handleMainSlideChange = (swiper: SwiperClass) => {
+  const handleMainSlideChange = (swiper: SwiperClass) => {
     if (thumbsSwiper && thumbsSwiper.params) {
       const currentMainRealIndex = swiper.realIndex; // 메인 슬라이더의 실제 인덱스 (0-8)
       const totalSlides = swiper.slides.length; // 실제 총 슬라이드 개수 (9)
@@ -49,6 +49,7 @@ const handleMainSlideChange = (swiper: SwiperClass) => {
       }, 0);
     }
   };
+
   return (
     <div>
       <h2 className='mb-4'>Hot10</h2>
@@ -59,10 +60,14 @@ const handleMainSlideChange = (swiper: SwiperClass) => {
           }}
           // onSlideChange 이벤트 핸들러 추가
           onSlideChange={handleMainSlideChange}
+          navigation={{
+            prevEl: prevRef.current,
+            nextEl: nextRef.current,
+          }}
+          onBeforeInit={(swiper) => setThumbsSwiper(swiper)}
           loop={true}
           spaceBetween={10}
           thumbs={{ swiper: thumbsSwiper }}
-          navigation={{ prevEl: prevRef.current, nextEl: nextRef.current}}
           modules={[Navigation, Thumbs]}
           className="mySwiper2 w-full lg:w-[70%]"
         >
@@ -117,7 +122,7 @@ const handleMainSlideChange = (swiper: SwiperClass) => {
 
 export const Good10 = () => {
   const { apiData, isLoading, error } = use10List('good');
-  const mainSwiperRef = useRef<SwiperClass | null>(null);
+  const [swiper, setSwiper] = useState<SwiperClass | null>(null);
   const prevRef = useRef(null);
   const nextRef = useRef(null);
 
@@ -137,15 +142,13 @@ export const Good10 = () => {
 
   return (
     <div className="slider-container w-full">
-      <h2 className='mb-4'>Good10</h2>
+      <h2 className='mb-4'>평점이 좋은 책</h2>
       <div className='mySwiper-wrap relative'>
         <Swiper
           style={{
             '--swiper-navigation-color': '#000',
           } as React.CSSProperties}
-          onSwiper={(swiper) => {
-            mainSwiperRef.current = swiper;
-          }}
+          onBeforeInit={(swiper) => setSwiper(swiper)}
           breakpoints={{
             375: {
               slidesPerView: 2,
@@ -160,7 +163,6 @@ export const Good10 = () => {
               spaceBetween: 30
             }
           }}
-          loop={true}
           watchSlidesProgress={true}
           navigation={{ prevEl: prevRef.current, nextEl: nextRef.current}}
           modules={[Navigation]}
@@ -196,7 +198,7 @@ export const Good10 = () => {
 
 export const Want10 = () => {
   const { apiData, isLoading, error } = use10List('want');
-  const mainSwiperRef = useRef<SwiperClass | null>(null);
+  const [swiper, setSwiper] = useState<SwiperClass | null>(null);
   const prevRef = useRef(null);
   const nextRef = useRef(null);
 
@@ -216,15 +218,13 @@ export const Want10 = () => {
 
   return (
     <div className="slider-container w-full">
-      <h2 className='mb-4'>Want10</h2>
+      <h2 className='mb-4'>보고 싶어 하는 사람이 많아요</h2>
       <div className='mySwiper-wrap relative'>
         <Swiper
           style={{
             '--swiper-navigation-color': '#000',
           } as React.CSSProperties}
-          onSwiper={(swiper) => {
-            mainSwiperRef.current = swiper;
-          }}
+          onBeforeInit={(swiper) => setSwiper(swiper)}
           breakpoints={{
             375: {
               slidesPerView: 2,
@@ -239,7 +239,6 @@ export const Want10 = () => {
               spaceBetween: 30
             }
           }}
-          loop={true}
           watchSlidesProgress={true}
           navigation={{ prevEl: prevRef.current, nextEl: nextRef.current}}
           modules={[Navigation]}
