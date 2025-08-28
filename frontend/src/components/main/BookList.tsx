@@ -221,7 +221,7 @@ export const Want10 = () => {
     swiperWRef.current.navigation.init();
     swiperWRef.current.navigation.update();
   }
-}, [apiData]);
+}, []);
 
   return (
     <div className="slider-container w-full">
