@@ -214,15 +214,6 @@ export const Want10 = () => {
   }
   const wantBooks = apiData.books;
 
-  useEffect(() => {
-  if (swiperWRef.current && prev2Ref.current && next2Ref.current) {
-    swiperWRef.current.navigation.prevEl = prev2Ref.current;
-    swiperWRef.current.navigation.nextEl = next2Ref.current;
-    swiperWRef.current.navigation.init();
-    swiperWRef.current.navigation.update();
-  }
-}, []);
-
   return (
     <div className="slider-container w-full">
       <h2 className='mb-4'>보고 싶어 하는 사람이 많아요</h2>
@@ -233,6 +224,13 @@ export const Want10 = () => {
           } as React.CSSProperties}
           onSwiper={(swiper) => {
             swiperWRef.current = swiper;
+            // ✅ onSwiper 콜백 내에서 ref를 직접 연결하여 타이밍 문제를 해결합니다.
+            if (prev2Ref.current && next2Ref.current) {
+              swiper.navigation.prevEl = prev2Ref.current;
+              swiper.navigation.nextEl = next2Ref.current;
+              swiper.navigation.init();
+              swiper.navigation.update();
+            }
           }}
           breakpoints={{
             375: {
@@ -251,6 +249,7 @@ export const Want10 = () => {
           loop={true}
           watchSlidesProgress={true}
           modules={[Navigation]}
+          navigation={{}}
           className="mySwiper"
         >
           {wantBooks.map((book: BookDetail) => { // Book 인터페이스를 사용하여 타입 안전성 확보
