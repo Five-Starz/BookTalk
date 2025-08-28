@@ -168,7 +168,7 @@ export const Good10 = () => {
             }
           }}
           watchSlidesProgress={true}
-          navigation={{ prevEl: prev1Ref.current, nextEl: next1Ref.current}}
+          navigation={{}}
           modules={[Navigation]}
           className="mySwiper"
         >
@@ -253,7 +253,7 @@ export const Want10 = () => {
             }
           }}
           watchSlidesProgress={true}
-          navigation={{ prevEl: prev2Ref.current, nextEl: next2Ref.current}}
+          navigation={{}}
           modules={[Navigation]}
           className="mySwiper"
         >
