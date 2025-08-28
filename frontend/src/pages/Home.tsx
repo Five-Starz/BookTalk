@@ -1,7 +1,7 @@
  // src/pages/Home.tsx
 import BestReview from '../components/main/BestReview';
 import RandomReview from '../components/main/RandomReview';
-import { Hot10, Good10, Want10 } from '../components/main/BookList';
+import { Good10, Want10 } from '../components/main/BookList';
 
 const Home = () => {
   return (
@@ -14,7 +14,6 @@ const Home = () => {
         <BestReview />
         <RandomReview />
       </div>
-      {/* <Hot10 /> */}
       <Good10 />
       <Want10 />
 
