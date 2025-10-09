@@ -1,17 +1,28 @@
 /* eslint-disable react-refresh/only-export-components */
-import React, { useState, useEffect, type FormEvent } from "react";
+import React, { useState, useEffect, type FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 import type { ReviewDetail } from '../types/ReviewType';
-import type { ReviewSubmitData, UseReviewFormProps, UseReviewFormResult, UseEditReviewFormProps, UseEditReviewFormResult, ReviewEditedData } from '../types/ReviewType'; // 제출용 리뷰 데이터 타입 임포트
-import type { RevCommentSubmitData, UseRevCommentFormProps, UseRevCommentFormResult } from '../types/CommentTypes'
+import type {
+  ReviewSubmitData,
+  UseReviewFormProps,
+  UseReviewFormResult,
+  UseEditReviewFormProps,
+  UseEditReviewFormResult,
+  ReviewEditedData,
+} from '../types/ReviewType'; // 제출용 리뷰 데이터 타입 임포트
+import type {
+  RevCommentSubmitData,
+  UseRevCommentFormProps,
+  UseRevCommentFormResult,
+} from '../types/CommentTypes';
 import type { Comment } from '../types/CommentTypes';
-import { FaStar } from 'react-icons/fa'
-import { getPrimaryIsbn } from "../utils/getPrimaryIsbn";
+import { FaStar } from 'react-icons/fa';
+import { getPrimaryIsbn } from '../utils/getPrimaryIsbn';
 // import { decodeHtml } from '../utils/decodeHtml';
 
-import '../index.css'
+import '../index.css';
 
 interface RatingStarProps {
   // `ratingIndex`는 현재 선택된(저장된) 평점 점수를 나타냅니다.
@@ -51,7 +62,8 @@ export const RatingStar: React.FC<RatingStarProps> = ({ ratingIndex, setRatingIn
   // 마우스 아웃 시 (hover 효과 제거, 실제 저장된 점수로 돌아감)
   const handleMouseOut = () => {
     const newHoverState = Array(5).fill(false);
-    for (let i = 0; i < ratingIndex; i++) { // 실제 `ratingIndex`에 따라 채움
+    for (let i = 0; i < ratingIndex; i++) {
+      // 실제 `ratingIndex`에 따라 채움
       newHoverState[i] = true;
     }
     setIsHover(newHoverState);
@@ -64,25 +76,29 @@ export const RatingStar: React.FC<RatingStarProps> = ({ ratingIndex, setRatingIn
     setRatingIndex(index + 1); // 클릭한 별점의 인덱스에 1을 더하여 실제 점수로 저장
   };
 
-  return(
-    <div className="rating-container flex items-center"> {/* flex와 items-center 추가 */}
-        {[0,1,2,3,4].map((element, index) => (
-            <FaStar
-              className={element < displayScore ? "rating-star-over" : "rating-star-out"}
-              key={index}
-              size={35} // 크기를 35로 통일
-              onMouseOver={() => handleMouseOver(index)}
-              onMouseOut={handleMouseOut}
-              onClick={() => handleOnClick(index)}
-            />
-        ))}
+  return (
+    <div className="rating-container flex items-center">
+      {' '}
+      {/* flex와 items-center 추가 */}
+      {[0, 1, 2, 3, 4].map((element, index) => (
+        <FaStar
+          className={element < displayScore ? 'rating-star-over' : 'rating-star-out'}
+          key={index}
+          size={35} // 크기를 35로 통일
+          onMouseOver={() => handleMouseOver(index)}
+          onMouseOut={handleMouseOut}
+          onClick={() => handleOnClick(index)}
+        />
+      ))}
     </div>
   );
 };
 
-
-
-export const useReviewForm = ({ initialIsbn, bookData, userId }: UseReviewFormProps): UseReviewFormResult => {
+export const useReviewForm = ({
+  initialIsbn,
+  bookData,
+  userId,
+}: UseReviewFormProps): UseReviewFormResult => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState<ReviewSubmitData>({
@@ -95,7 +111,7 @@ export const useReviewForm = ({ initialIsbn, bookData, userId }: UseReviewFormPr
     description: '',
     rating: 0,
     content: '',
-    userId: userId
+    userId: userId,
   });
 
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -105,7 +121,7 @@ export const useReviewForm = ({ initialIsbn, bookData, userId }: UseReviewFormPr
   // 책 정보가 로드되면 폼 데이터를 초기화
   useEffect(() => {
     if (bookData) {
-      setFormData(prevData => ({
+      setFormData((prevData) => ({
         ...prevData,
         isbn: bookData.isbn,
         title: bookData.title,
@@ -121,17 +137,17 @@ export const useReviewForm = ({ initialIsbn, bookData, userId }: UseReviewFormPr
   // 입력 필드 변경 핸들러
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData(prevData => ({
+    setFormData((prevData) => ({
       ...prevData,
-      [name]: name === 'rating' || name === 'publishedYear' ? Number(value) : value
+      [name]: name === 'rating' || name === 'publishedYear' ? Number(value) : value,
     }));
   };
 
   // 평점 변경 핸들러 (RatingSection과 연결)
   const handleRatingChange = (newRating: number) => {
-    setFormData(prevData => ({
+    setFormData((prevData) => ({
       ...prevData,
-      rating: newRating
+      rating: newRating,
     }));
   };
 
@@ -140,7 +156,7 @@ export const useReviewForm = ({ initialIsbn, bookData, userId }: UseReviewFormPr
     e.preventDefault();
 
     if (!formData.isbn || !formData.content || formData.rating < 1 || formData.rating > 5) {
-      setSubmitError("모든 필수 정보를 입력해 주세요.");
+      setSubmitError('모든 필수 정보를 입력해 주세요.');
       return;
     }
 
@@ -150,24 +166,26 @@ export const useReviewForm = ({ initialIsbn, bookData, userId }: UseReviewFormPr
 
     try {
       const accessToken = localStorage.getItem('accessToken');
-      const headers = accessToken ? {
-        Authorization: `Bearer ${accessToken}`
-      } : {};
+      const headers = accessToken
+        ? {
+            Authorization: `Bearer ${accessToken}`,
+          }
+        : {};
 
-      await axios.post('https://booktalk-server.shop/reviews', formData, { // const response =
-        headers: headers
+      await axios.post('https://booktalk-server.onrender.com/reviews', formData, {
+        // const response =
+        headers: headers,
       });
 
       setSubmitSuccess(true);
       const finalIsbn = getPrimaryIsbn(formData.isbn); // isbn 13자리 처리
       navigate(`/book/${finalIsbn}`); // 해당 책 상세 페이지로 이동
-
     } catch (error) {
       console.error('리뷰 작성 실패:', error);
       if (axios.isAxiosError(error)) {
-        setSubmitError(error.response?.data?.message || "리뷰 작성 중 오류가 발생했습니다.");
+        setSubmitError(error.response?.data?.message || '리뷰 작성 중 오류가 발생했습니다.');
       } else {
-        setSubmitError("알 수 없는 오류가 발생했습니다.");
+        setSubmitError('알 수 없는 오류가 발생했습니다.');
       }
       setIsSubmitting(false);
     } finally {
@@ -182,18 +200,19 @@ export const useReviewForm = ({ initialIsbn, bookData, userId }: UseReviewFormPr
     handleSubmit,
     isSubmitting,
     submitError,
-    submitSuccess
+    submitSuccess,
   };
 };
 
-
-export const useEditReviewForm = ({ existingReview }: UseEditReviewFormProps): UseEditReviewFormResult => {
+export const useEditReviewForm = ({
+  existingReview,
+}: UseEditReviewFormProps): UseEditReviewFormResult => {
   const navigate = useNavigate();
 
   // 폼 초기 상태: 기존 리뷰 데이터로 채워 넣기
   const [formData, setFormData] = useState<{ rating: number; content: string }>({
     rating: Number(existingReview?.rating) || 0,
-    content: existingReview?.content || '' // ✅ 기존 리뷰 내용으로 초기화
+    content: existingReview?.content || '', // ✅ 기존 리뷰 내용으로 초기화
   });
 
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -205,7 +224,7 @@ export const useEditReviewForm = ({ existingReview }: UseEditReviewFormProps): U
     if (existingReview) {
       setFormData({
         rating: Number(existingReview.rating),
-        content: existingReview.content // ✅ 기존 리뷰 내용으로 업데이트
+        content: existingReview.content, // ✅ 기존 리뷰 내용으로 업데이트
       });
     }
   }, [existingReview]);
@@ -213,17 +232,17 @@ export const useEditReviewForm = ({ existingReview }: UseEditReviewFormProps): U
   // 입력 필드 변경 핸들러
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData(prevData => ({
+    setFormData((prevData) => ({
       ...prevData,
-      [name]: name === 'rating' ? Number(value) : value
+      [name]: name === 'rating' ? Number(value) : value,
     }));
   };
 
   // 평점 변경 핸들러
   const handleRatingChange = (newRating: number) => {
-    setFormData(prevData => ({
+    setFormData((prevData) => ({
       ...prevData,
-      rating: newRating
+      rating: newRating,
     }));
   };
 
@@ -232,7 +251,7 @@ export const useEditReviewForm = ({ existingReview }: UseEditReviewFormProps): U
     e.preventDefault();
 
     if (!existingReview || !formData.content || formData.rating < 1 || formData.rating > 5) {
-      setSubmitError("모든 필수 정보를 입력해 주세요.");
+      setSubmitError('모든 필수 정보를 입력해 주세요.');
       return;
     }
 
@@ -247,25 +266,29 @@ export const useEditReviewForm = ({ existingReview }: UseEditReviewFormProps): U
       const updateData: ReviewEditedData = {
         rating: formData.rating,
         content: formData.content,
-        userId: existingReview.userId // 기존 리뷰의 userId를 사용
+        userId: existingReview.userId, // 기존 리뷰의 userId를 사용
       };
 
       // ✅ axios.put으로 리뷰 수정 API 호출
       // 백엔드 API 엔드포인트에 맞게 수정: reviews/{reviewId}
-      await axios.patch(`https://booktalk-server.shop/reviews/${existingReview.reviewId}`, updateData, { // const response =
-        headers: headers
-      });
+      await axios.patch(
+        `https://booktalk-server.onrender.com/reviews/${existingReview.reviewId}`,
+        updateData,
+        {
+          // const response =
+          headers: headers,
+        }
+      );
 
       setSubmitSuccess(true);
 
       navigate(`/mypage/reviews`);
-
     } catch (error) {
       console.error('리뷰 수정 실패:', error);
       if (axios.isAxiosError(error)) {
-        setSubmitError(error.response?.data?.message || "리뷰 수정 중 오류가 발생했습니다.");
+        setSubmitError(error.response?.data?.message || '리뷰 수정 중 오류가 발생했습니다.');
       } else {
-        setSubmitError("알 수 없는 오류가 발생했습니다.");
+        setSubmitError('알 수 없는 오류가 발생했습니다.');
       }
     } finally {
       setIsSubmitting(false);
@@ -279,11 +302,9 @@ export const useEditReviewForm = ({ existingReview }: UseEditReviewFormProps): U
     handleSubmit,
     isSubmitting,
     submitError,
-    submitSuccess
+    submitSuccess,
   };
 };
-
-
 
 interface UseReviewDetailsResult {
   reviewData: ReviewDetail | null;
@@ -308,13 +329,15 @@ export const useReviewDetails = (reviewId: number | undefined): UseReviewDetails
       }
 
       try {
-        const response2 = await axios.get<ReviewDetail>(`https://booktalk-server.shop/reviews/search3/${reviewId}`);
+        const response2 = await axios.get<ReviewDetail>(
+          `https://booktalk-server.onrender.com/reviews/search3/${reviewId}`
+        );
         setReviewData(response2.data);
         // ✅ 리뷰 상세 정보를 가져오는 API 엔드포인트에 맞게 수정
-        // const response = await axios.get<ReviewDetail>(`https://booktalk-server.shop/reviews/${reviewId}`);
-        // const requestUrl=`https://booktalk-server.shop/comment/review/count/${reviewId}`;
+        // const response = await axios.get<ReviewDetail>(`https://booktalk-server.onrender.com/reviews/${reviewId}`);
+        // const requestUrl=`https://booktalk-server.onrender.com/comment/review/count/${reviewId}`;
         // const responseComment=await axios.get(requestUrl);
-        // const responseLikeCount = await axios.post(`https://booktalk-server.shop/likes/count`, {
+        // const responseLikeCount = await axios.post(`https://booktalk-server.onrender.com/likes/count`, {
         //    reviewId: `${reviewId}`
         //   });
         //   response.data.likeCount=responseLikeCount.data;
@@ -339,14 +362,15 @@ export const useReviewDetails = (reviewId: number | undefined): UseReviewDetails
   return { reviewData, isLoadingReview, errorReview };
 };
 
-
-
-export const useRevCommentForm = ({ reviewId, userId, refetch }: UseRevCommentFormProps): UseRevCommentFormResult => {
-
+export const useRevCommentForm = ({
+  reviewId,
+  userId,
+  refetch,
+}: UseRevCommentFormProps): UseRevCommentFormResult => {
   const [formData, setFormData] = useState<RevCommentSubmitData>({
     reviewId: reviewId, // ✅ reviewId는 prop으로 받은 그대로 사용 (number 타입 유지)
-    parentId: null,    // ✅ parentId는 초기값을 null로 설정 (number | null 타입 유지)
-    userId: userId,    // ✅ userId는 prop으로 받은 그대로 사용
+    parentId: null, // ✅ parentId는 초기값을 null로 설정 (number | null 타입 유지)
+    userId: userId, // ✅ userId는 prop으로 받은 그대로 사용
     content: '',
   });
 
@@ -356,14 +380,14 @@ export const useRevCommentForm = ({ reviewId, userId, refetch }: UseRevCommentFo
 
   // 입력 필드 변경 핸들러
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setFormData(prev => ({ ...prev, content: e.target.value }));
+    setFormData((prev) => ({ ...prev, content: e.target.value }));
     setSubmitError(null); // 입력 시 에러 메시지 초기화
     setSubmitSuccess(false); // 입력 시 성공 메시지 초기화
   };
 
   // 대댓글 대상 설정 핸들러
   const setReplyToComment = (parentId: number | null) => {
-    setFormData(prev => ({ ...prev, parentId: parentId, content: '' })); // 대댓글 모드 진입 시 내용 초기화
+    setFormData((prev) => ({ ...prev, parentId: parentId, content: '' })); // 대댓글 모드 진입 시 내용 초기화
     setSubmitError(null);
     setSubmitSuccess(false);
   };
@@ -374,43 +398,48 @@ export const useRevCommentForm = ({ reviewId, userId, refetch }: UseRevCommentFo
 
     // ✅ 댓글 내용 유효성 검사 (공백만 있는 경우도 포함)
     if (!formData.content.trim()) {
-      setSubmitError("댓글 내용을 입력해 주세요.");
+      setSubmitError('댓글 내용을 입력해 주세요.');
       return;
     }
 
     // ✅ userId 유효성 검사 (로그인 상태 확인)
     // userId가 0이거나 null/undefined일 경우 로그인 필요 메시지
-    if (!userId) { // userId가 0이거나 null/undefined인 경우
-        setSubmitError("로그인이 필요합니다.");
-        return;
+    if (!userId) {
+      // userId가 0이거나 null/undefined인 경우
+      setSubmitError('로그인이 필요합니다.');
+      return;
     }
 
     setIsSubmitting(true);
 
     try {
       const accessToken = localStorage.getItem('accessToken');
-      const headers = accessToken ? {
-        Authorization: `Bearer ${accessToken}`
-      } : {};
+      const headers = accessToken
+        ? {
+            Authorization: `Bearer ${accessToken}`,
+          }
+        : {};
 
       // ✅ 백엔드 creatComment 함수 시그니처에 맞춰 명시적으로 데이터 전송
       // creatComment(userId:number, reviewId:number, content:string, parentId?:number|null)
-      await axios.post( // const response =
-        `https://booktalk-server.shop/comment/add`, // ✅ 기존 URL 유지
+      await axios.post(
+        // const response =
+        `https://booktalk-server.onrender.com/comment/add`, // ✅ 기존 URL 유지
         {
           userId: formData.userId,
           reviewId: formData.reviewId,
           content: formData.content.trim(), // 공백 제거 후 전송
-          parentId: formData.parentId // null 또는 number
+          parentId: formData.parentId, // null 또는 number
         },
         { headers: headers }
       );
 
       setSubmitSuccess(true);
-      setFormData(prev => ({ // 댓글 작성 성공 후 폼 초기화
+      setFormData((prev) => ({
+        // 댓글 작성 성공 후 폼 초기화
         ...prev,
         content: '',
-        parentId: null // 대댓글 모드 해제
+        parentId: null, // 대댓글 모드 해제
       }));
 
       refetch();
@@ -418,14 +447,14 @@ export const useRevCommentForm = ({ reviewId, userId, refetch }: UseRevCommentFo
       console.error('댓글 작성 실패:', error);
       if (axios.isAxiosError(error)) {
         // 서버에서 반환하는 에러 메시지가 있다면 사용
-        setSubmitError(error.response?.data?.message || "댓글 작성 중 오류가 발생했습니다.");
+        setSubmitError(error.response?.data?.message || '댓글 작성 중 오류가 발생했습니다.');
         // HTTP 상태 코드에 따른 추가 처리 (예: 401 Unauthorized)
         if (error.response?.status === 401) {
-            setSubmitError("로그인이 만료되었거나 권한이 없습니다. 다시 로그인해주세요.");
-            // 필요하다면 로그아웃 처리 또는 로그인 페이지로 리다이렉트 로직 추가
+          setSubmitError('로그인이 만료되었거나 권한이 없습니다. 다시 로그인해주세요.');
+          // 필요하다면 로그아웃 처리 또는 로그인 페이지로 리다이렉트 로직 추가
         }
       } else {
-        setSubmitError("알 수 없는 오류가 발생했습니다.");
+        setSubmitError('알 수 없는 오류가 발생했습니다.');
       }
     } finally {
       setIsSubmitting(false);
@@ -439,16 +468,15 @@ export const useRevCommentForm = ({ reviewId, userId, refetch }: UseRevCommentFo
     handleSubmit,
     isSubmitting,
     submitError,
-    submitSuccess
+    submitSuccess,
   };
 };
-
 
 interface UseCommentsResult {
   comments: Comment[];
   isLoadingComments: boolean;
   errorComments: string | null;
-  commentCount:number;
+  commentCount: number;
   refetch: () => void;
 }
 
@@ -457,12 +485,12 @@ function nestComments(comments: Comment[]): Comment[] {
   const rootComments: Comment[] = [];
 
   // 1단계: 모든 댓글을 Map에 저장하고 replies 배열 초기화
-  comments.forEach(comment => {
+  comments.forEach((comment) => {
     commentMap.set(comment.commentId, { ...comment, replies: [] });
   });
 
   // 2단계: parentId에 따라 댓글을 부모의 replies에 추가하거나 rootComments에 추가
-  comments.forEach(comment => {
+  comments.forEach((comment) => {
     const currentComment = commentMap.get(comment.commentId)!;
     if (currentComment.parentId !== null) {
       const parentComment = commentMap.get(currentComment.parentId);
@@ -478,7 +506,7 @@ function nestComments(comments: Comment[]): Comment[] {
   });
 
   // 3단계: 댓글들을 정렬 (예: commentId 오름차순 또는 createdAt 오름차순)
-  rootComments.forEach(comment => {
+  rootComments.forEach((comment) => {
     if (comment.replies) {
       comment.replies.sort((a, b) => a.commentId - b.commentId); // 또는 createdAt으로 정렬
     }
@@ -492,10 +520,9 @@ export const useComments = (reviewId: number): UseCommentsResult => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [isLoadingComments, setIsLoadingComments] = useState<boolean>(false);
   const [errorComments, setErrorComments] = useState<string | null>(null);
-  const [commentCount,setCommentCount]=useState<number>(0)
+  const [commentCount, setCommentCount] = useState<number>(0);
   // ✅ 데이터를 불러오는 로직을 별도의 함수로 분리
   const fetchComments = async () => {
-
     if (reviewId === undefined) {
       setComments([]);
       setIsLoadingComments(false);
@@ -504,8 +531,12 @@ export const useComments = (reviewId: number): UseCommentsResult => {
 
     try {
       setIsLoadingComments(true);
-      const response = await axios.get(`https://booktalk-server.shop/comment/review/${reviewId}`);
-      const responseComment=await axios.get(`https://booktalk-server.shop/comment/review/count/${reviewId}`);
+      const response = await axios.get(
+        `https://booktalk-server.onrender.com/comment/review/${reviewId}`
+      );
+      const responseComment = await axios.get(
+        `https://booktalk-server.onrender.com/comment/review/count/${reviewId}`
+      );
       setCommentCount(responseComment.data);
       const nestedComments = nestComments(response.data);
       setComments(nestedComments);
@@ -523,5 +554,5 @@ export const useComments = (reviewId: number): UseCommentsResult => {
   }, [reviewId]);
 
   // ✅ refetch 함수를 반환 객체에 추가
-  return { comments, isLoadingComments, errorComments,commentCount, refetch: fetchComments };
+  return { comments, isLoadingComments, errorComments, commentCount, refetch: fetchComments };
 };

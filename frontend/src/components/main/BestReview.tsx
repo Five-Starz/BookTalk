@@ -60,7 +60,7 @@ const BestReview = () => {
                 state={{ reviewData: reviews[index+1] }}
                 className='md:w-[calc(50%-6px)]'
               >
-                <div className="flex w-full bg-gray-200 h-30">
+                <div className="flex w-full bg-gray-200 h-30 rounded-xl">
                   <img
                     src={review.book.thumbnail} // ✅ 책 이미지 사용
                     alt={review.book.title} className='h-[120px]' /> {/* ✅ 책 제목 사용 */}
