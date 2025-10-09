@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 
 export const useUserNickname = (userId: number | undefined) => {
-  const [ nickname, setNickname ] = useState('');
+  const [nickname, setNickname] = useState('');
 
   useEffect(() => {
     // ✅ userId가 유효할 때만 API 요청

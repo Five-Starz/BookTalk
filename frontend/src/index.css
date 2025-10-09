@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@plugin "daisyui";
+
 *{
   font-family: "Noto sans KR";
   letter-spacing: -1px;
@@ -22,6 +24,16 @@ h3{
 
 .author, .year {
   color: #555;
+}
+
+.text-overflow {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  word-break: break-word;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
 }
 
 .rating-stars path{
@@ -77,15 +89,6 @@ h3{
   }
 }
 @media (max-width: 1024px) {
-  .text-overflow {
-    text-overflow: ellipsis;
-    overflow: hidden;
-    word-break: break-word;
-
-    display: -webkit-box;
-    -webkit-line-clamp: 12;
-    -webkit-box-orient: vertical;
-  }
   .mySwiper2-wrap .swiper-button-next {
     right: var(--swiper-navigation-sides-offset, -8%);
   }

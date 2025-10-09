@@ -1,4 +1,4 @@
-import { useState, useEffect }  from 'react'
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { useSearchParams } from 'react-router-dom';
@@ -27,17 +27,17 @@ const SearchList = () => {
     currentPage * itemsPerPage
   );
 
-   // 페이지 변경 핸들러
+  // 페이지 변경 핸들러
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: "smooth" }); // 페이지 바뀔 때 맨 위로 스크롤 (선택)
+    window.scrollTo({ top: 0, behavior: 'smooth' }); // 페이지 바뀔 때 맨 위로 스크롤 (선택)
   };
 
   useEffect(() => {
     if (!query) {
       setSearchResults([]);
       setIsLoading(false);
-      setError("검색어를 입력해주세요.");
+      setError('검색어를 입력해주세요.');
       return;
     }
 
@@ -48,18 +48,23 @@ const SearchList = () => {
 
         // axios.get의 제네릭 타입을 명시하여 응답 데이터의 타입을 명확히 합니다.
         // 백엔드가 BookDetail[]을 직접 반환한다고 가정합니다.
-        const response = await axios.get<BookDetail[]>(`http://35.216.79.174:3000/books/search?query=${query}`);
+        const response = await axios.get<BookDetail[]>(
+          `https://booktalk-server.onrender.com/books/search?query=${query}`
+        );
 
         // 응답 데이터가 바로 BookDetail[] 배열이라고 가정하고 설정
         setSearchResults(response.data);
-
       } catch (err) {
         // Axios 에러 처리 강화: Hot10에서 했던 것처럼 상세 에러 메시지 로깅
         if (axios.isAxiosError(err)) {
           // 서버에서 보낸 에러 응답 데이터를 콘솔에 출력
           console.error('검색 결과 불러오기 실패 (Axios 에러):', err.response?.data || err.message);
           // 사용자에게 더 친절한 에러 메시지
-          setError(`검색 결과를 불러오는 데 실패했습니다: ${err.response?.status} ${err.response?.statusText || ''} - ${err.response?.data?.message || '알 수 없는 서버 오류'}`);
+          setError(
+            `검색 결과를 불러오는 데 실패했습니다: ${err.response?.status} ${
+              err.response?.statusText || ''
+            } - ${err.response?.data?.message || '알 수 없는 서버 오류'}`
+          );
         } else {
           console.error('검색 결과 불러오기 실패 (알 수 없는 에러):', err);
           setError('검색 결과를 불러오는 중 알 수 없는 오류가 발생했습니다.');
@@ -73,28 +78,16 @@ const SearchList = () => {
   }, [query]);
 
   if (isLoading) {
-    return (
-      <div className="p-4 text-center">
-        "{query}"에 대한 책을 검색 중입니다...
-      </div>
-    );
+    return <div className="p-4 text-center">"{query}"에 대한 책을 검색 중입니다...</div>;
   }
 
   if (error) {
-    return (
-      <div className="p-4 text-center text-red-500">
-        오류: {error}
-      </div>
-    );
+    return <div className="p-4 text-center text-red-500">오류: {error}</div>;
   }
 
   // searchResults는 항상 배열이므로, 단순히 length로 확인
   if (searchResults.length === 0) {
-    return (
-      <div className="p-4 text-center">
-        "{query}"에 대한 검색 결과가 없습니다.
-      </div>
-    );
+    return <div className="p-4 text-center">"{query}"에 대한 검색 결과가 없습니다.</div>;
   }
 
   return (
@@ -115,7 +108,7 @@ const SearchList = () => {
           );
         })}
       </div>
-       {/* ✅ 페이지네이션 */}
+      {/* ✅ 페이지네이션 */}
       <div className="flex justify-center mt-8">
         <ul className="flex gap-2">
           {Array.from({ length: totalPages }).map((_, idx) => (
@@ -123,9 +116,7 @@ const SearchList = () => {
               key={idx}
               onClick={() => handlePageChange(idx + 1)}
               className={`cursor-pointer px-3 py-1 rounded ${
-                currentPage === idx + 1
-                  ? "text-orange-600 font-bold"
-                  : "hover:bg-gray-100"
+                currentPage === idx + 1 ? 'text-orange-600 font-bold' : 'hover:bg-gray-100'
               }`}
             >
               {idx + 1}
@@ -134,7 +125,7 @@ const SearchList = () => {
         </ul>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default SearchList
+export default SearchList;

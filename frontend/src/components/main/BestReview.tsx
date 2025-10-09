@@ -14,7 +14,6 @@ const BestReview = () => {
   // ✅ userId가 있을 때만 훅을 호출하도록 수정 (hooks는 조건부로 호출하면 안 되므로,
   //    userId를 인자로 넘겨주고 훅 내부에서 유효성을 검사하는 것이 올바른 패턴입니다)
   const { nickname } = useUserNickname(userId);
-  console.log(reviews)
 
   // 로딩, 에러, 데이터 없음 상태 처리
   if (isLoadingReviews) {
@@ -41,7 +40,7 @@ const BestReview = () => {
             >
             <div className="flex gap-4">
               <img
-                className='rounded-lg max-w-fit min-h-[320px]'
+                className='rounded-lg max-w-fit'
                 src={reviews[0].book.thumbnail} // ✅ 훅에서 가져온 책 이미지 사용
                 alt={reviews[0].book.title} // ✅ 훅에서 가져온 책 제목 사용
               />
@@ -57,18 +56,17 @@ const BestReview = () => {
           <div className='flex flex-col gap-4 md:flex-row md:justify-between'>
             {reviews.slice(1, 3).map((review, index) => (
               <Link key={review.reviewId}
-                to={`/review/${reviews[index].reviewId}`}
-                state={{ reviewData: reviews[index] }}
+                to={`/review/${reviews[index+1].reviewId}`}
+                state={{ reviewData: reviews[index+1] }}
+                className='md:w-[calc(50%-6px)]'
               >
-                <div className="card card-side w-full md:w-[calc(50%-6px)] bg-gray-200 h-20">
-                  <figure>
-                    <img
-                      src={review.book.thumbnail} // ✅ 책 이미지 사용
-                      alt={review.book.title} /> {/* ✅ 책 제목 사용 */}
-                  </figure>
-                  <div className='p-2 text-overflow'>
-                    <h4>{review.book.title}</h4> {/* ✅ 책 제목 사용 */}
-                    <p>{review.content}</p> {/* ✅ 리뷰 내용 사용 */}
+                <div className="flex w-full bg-gray-200 h-30 rounded-xl">
+                  <img
+                    src={review.book.thumbnail} // ✅ 책 이미지 사용
+                    alt={review.book.title} className='h-[120px]' /> {/* ✅ 책 제목 사용 */}
+                  <div className='p-2'>
+                    <h4 className='mb-2'>{review.book.title}</h4> {/* ✅ 책 제목 사용 */}
+                    <p className='text-overflow'>{review.content}</p> {/* ✅ 리뷰 내용 사용 */}
                   </div>
                 </div>
               </Link>

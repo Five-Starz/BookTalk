@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { Link, Outlet, useNavigate, useOutletContext } from 'react-router-dom'
+import { useEffect, useState } from 'react';
+import { Link, Outlet, useNavigate, useOutletContext } from 'react-router-dom';
 import { NicknameForm, PasswordForm } from '../components/ui/Form';
 import { CancelButton, ResignButton, UpdateButton } from '../components/ui/Button';
 import axios from 'axios';
@@ -10,37 +10,37 @@ import { z } from 'zod';
 import { useUserStore } from '../store/userStore';
 import { useAuthStore } from '../store/authStore';
 
-const emojiOptions = [
-  '😁', '🤣', '😎', '😍', '😴'
-]
+const emojiOptions = ['😁', '🤣', '😎', '😍', '😴'];
 
 const MyPage = () => {
   const [selectedEmoji, setSelectedEmoji] = useState<string | null>(null);
   const [showSelector, setShowSelector] = useState(false);
 
   // const [ nickname, setNickname ] = useState<string>('');
-  const nickname = useUserStore(state => state.nickname);
-  const setUser = useUserStore(state => state.setUser);
+  const nickname = useUserStore((state) => state.nickname);
+  const setUser = useUserStore((state) => state.setUser);
 
   // const [ userId, setUserId ] = useState<number | null>(null);
-  const userId = useUserStore(state => state.userId);
+  const userId = useUserStore((state) => state.userId);
 
-  const [ reviewCount, setReviewCount ] = useState(0);
-  const [ bookmarkCount, setBookmarkCount ] = useState(0);
+  const [reviewCount, setReviewCount] = useState(0);
+  const [bookmarkCount, setBookmarkCount] = useState(0);
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        // 1. 유저 인증 정보 가져오기
-        const authRes = await axios.get('http://35.216.79.174:3000/auth/protected', {
-          headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
+        // 1. 유저 인증 정보 가져오기.
+        const authRes = await axios.get('https://booktalk-server.onrender.com/auth/protected', {
+          headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` },
         });
         const { userId } = authRes.data.user;
 
         // 2. 최신 프로필(닉네임 등)은 별도 fetch
-        const profileRes = await axios.get(`http://35.216.79.174:3000/auth/${userId}`);
+        const profileRes = await axios.get(`https://booktalk-server.onrender.com/auth/${userId}`);
         // profileRes.data.comments[0] 구조라면...
-        const profile = Array.isArray(profileRes.data.comments) ? profileRes.data.comments[0] : profileRes.data;
+        const profile = Array.isArray(profileRes.data.comments)
+          ? profileRes.data.comments[0]
+          : profileRes.data;
         const { nickname } = profile;
 
         setUser({ userId, nickname }); // zustand에 최신값 저장
@@ -52,28 +52,32 @@ const MyPage = () => {
         setUser({ userId, nickname }); // zustand에 저장
 
         // 2. 리뷰 수 가져오기
-        const reviews = await axios.get(`http://35.216.79.174:3000/reviews/count/${userId}`);
+        const reviews = await axios.get(
+          `https://booktalk-server.onrender.com/reviews/count/${userId}`
+        );
         setReviewCount(reviews.data);
 
         // 3. 보고싶어요 수 가져오기
-        const bookmarks = await axios.get(`http://35.216.79.174:3000/bookmarks/${userId}`);
+        const bookmarks = await axios.get(
+          `https://booktalk-server.onrender.com/bookmarks/${userId}`
+        );
         setBookmarkCount(Array.isArray(bookmarks.data) ? bookmarks.data.length : 0);
       } catch {
         return;
       }
-    }
+    };
 
     fetchUserData();
   }, [setUser]);
 
   const handleProfileClick = () => {
     setShowSelector((prev) => !prev);
-  }
+  };
 
   const handleEmojiSelect = (emoji: string) => {
     setSelectedEmoji(emoji);
     setShowSelector(false);
-  }
+  };
 
   return (
     <>
@@ -81,29 +85,27 @@ const MyPage = () => {
         {/* ✅ 유저 정보 카드 */}
         <div className="w-full max-w-4xl bg-gray-100 rounded-lg shadow overflow-hidden p-6 flex flex-col items-center">
           {/* 프로필 이미지 */}
-          <div className='relative mb-4'>
+          <div className="relative mb-4">
             <div
               onClick={handleProfileClick}
               className="w-24 h-24 rounded-full bg-gray-400 flex items-center justify-center text-white text-5xl cursor-pointer"
             >
-              { selectedEmoji ?? '👤' }
+              {selectedEmoji ?? '👤'}
             </div>
             {
               // 이모지 선택창
               showSelector && (
                 <div className="absolute top-28 left-1/2 -translate-x-1/2 bg-white shadow-md p-4 rounded-lg z-20 sm:w-[288px] w-[95vw] max-w-xs">
                   <div className="grid grid-cols-5 gap-3">
-                    {
-                      emojiOptions.map((emoji, idx) => (
-                        <button
-                          key={idx}
-                          className="w-12 h-12 rounded-full text-2xl flex items-center justify-center hover:bg-gray-200 transition cursor-pointer"
-                          onClick={() => handleEmojiSelect(emoji)}
-                        >
-                          { emoji }
-                        </button>
-                      ))
-                    }
+                    {emojiOptions.map((emoji, idx) => (
+                      <button
+                        key={idx}
+                        className="w-12 h-12 rounded-full text-2xl flex items-center justify-center hover:bg-gray-200 transition cursor-pointer"
+                        onClick={() => handleEmojiSelect(emoji)}
+                      >
+                        {emoji}
+                      </button>
+                    ))}
                   </div>
                 </div>
               )
@@ -111,7 +113,7 @@ const MyPage = () => {
           </div>
 
           {/* 유저 이름 */}
-          <p className="text-xl font-bold mb-1">{ nickname }</p>
+          <p className="text-xl font-bold mb-1">{nickname}</p>
 
           {/* 회원 정보 수정 버튼 (선택사항) */}
           <Link to="/mypage/settings" className="text-sm text-gray-500 mb-4 hover:text-black">
@@ -120,13 +122,19 @@ const MyPage = () => {
 
           {/* 리뷰 수 + 보고싶어요 수 (가로 정렬) */}
           <div className="flex gap-12">
-            <Link to="/mypage/reviews" className="text-center cursor-pointer hover:scale-105 transition">
-              <p className="text-xl font-semibold">{ reviewCount }</p>
+            <Link
+              to="/mypage/reviews"
+              className="text-center cursor-pointer hover:scale-105 transition"
+            >
+              <p className="text-xl font-semibold">{reviewCount}</p>
               <p className="text-sm text-gray-600">리뷰</p>
             </Link>
 
-            <Link to="/mypage/wants" className="text-center cursor-pointer hover:scale-105 transition">
-              <p className="text-xl font-semibold">{ bookmarkCount }</p>
+            <Link
+              to="/mypage/wants"
+              className="text-center cursor-pointer hover:scale-105 transition"
+            >
+              <p className="text-xl font-semibold">{bookmarkCount}</p>
               <p className="text-sm text-gray-600">보고싶어요</p>
             </Link>
           </div>
@@ -138,8 +146,8 @@ const MyPage = () => {
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
 // 💖 리뷰 모아보기
 export const ReviewCollection = () => {
@@ -158,16 +166,19 @@ export const ReviewCollection = () => {
     commentCount?: number;
   };
 
-  type OutletContextType = { userId: number | null; setReviewCount: React.Dispatch<React.SetStateAction<number>> }
+  type OutletContextType = {
+    userId: number | null;
+    setReviewCount: React.Dispatch<React.SetStateAction<number>>;
+  };
 
   const { userId, setReviewCount } = useOutletContext<OutletContextType>();
-  const [ reviews, setReviews ] = useState<Review[]>([]);
+  const [reviews, setReviews] = useState<Review[]>([]);
 
   // 정렬 상태
   const [sortType, setSortType] = useState<'latest' | 'likes' | 'comments'>('latest');
 
   // 로딩 상태
-  const [ isLoading, setIsLoading ] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   // 페이지 처리
   const [currentPage, setCurrentPage] = useState(1);
@@ -186,7 +197,7 @@ export const ReviewCollection = () => {
       setIsLoading(true);
       try {
         // 1. 리뷰 목록 불러오기
-        const res = await axios.get(`http://35.216.79.174:3000/reviews/user/${userId}`);
+        const res = await axios.get(`https://booktalk-server.onrender.com/reviews/user/${userId}`);
         const reviews = res.data;
 
         // 2. 각 리뷰에 필요한 추가 데이터
@@ -196,7 +207,9 @@ export const ReviewCollection = () => {
             let bookTitle = '';
             try {
               // 실제 API 경로/응답에 맞게 수정!
-              const bookRes = await axios.get(`http://35.216.79.174:3000/books/search?query=${review.isbn}`);
+              const bookRes = await axios.get(
+                `https://booktalk-server.onrender.com/books/search?query=${review.isbn}`
+              );
               if (Array.isArray(bookRes.data) && bookRes.data.length > 0) {
                 bookTitle = bookRes.data[0].title || '제목없음';
               } else {
@@ -209,7 +222,9 @@ export const ReviewCollection = () => {
             // 좋아요 수
             let likeCount = 0;
             try {
-              const likeRes = await axios.post(`http://35.216.79.174:3000/likes/count`, { reviewId: review.reviewId });
+              const likeRes = await axios.post(`https://booktalk-server.onrender.com/likes/count`, {
+                reviewId: review.reviewId,
+              });
               likeCount = likeRes.data || 0;
             } catch {
               likeCount = 0;
@@ -218,7 +233,9 @@ export const ReviewCollection = () => {
             // 댓글 수
             let commentCount = 0;
             try {
-              const commentRes = await axios.get(`http://35.216.79.174:3000/comment/review/count/${review.reviewId}`);
+              const commentRes = await axios.get(
+                `https://booktalk-server.onrender.com/comment/review/count/${review.reviewId}`
+              );
               commentCount = Number(commentRes.data) || 0;
             } catch {
               commentCount = 0;
@@ -235,7 +252,6 @@ export const ReviewCollection = () => {
         );
 
         setReviews(reviewWithExtras.filter(Boolean)); // 혹시 undefined 방지
-
       } catch {
         setReviews([]);
       } finally {
@@ -243,7 +259,7 @@ export const ReviewCollection = () => {
       }
     };
 
-  fetchReviewData();
+    fetchReviewData();
   }, [userId]);
 
   // 삭제 버튼 클릭 시 모달 오픈
@@ -262,10 +278,10 @@ export const ReviewCollection = () => {
   const handleConfirmDelete = async () => {
     if (!targetReviewId) return;
     try {
-      await axios.delete(`http://35.216.79.174:3000/reviews/${targetReviewId}`, {
+      await axios.delete(`https://booktalk-server.onrender.com/reviews/${targetReviewId}`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('accessToken')}`
-        }
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
       });
       setReviews((prev) => prev.filter((r) => r.reviewId !== targetReviewId));
       setReviewCount((prev) => prev - 1);
@@ -308,17 +324,25 @@ export const ReviewCollection = () => {
   // 페이지 이동
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: "smooth" }); // 페이지 바뀔 때 맨 위로 스크롤 (선택)
+    window.scrollTo({ top: 0, behavior: 'smooth' }); // 페이지 바뀔 때 맨 위로 스크롤 (선택)
   };
 
   // 로딩 상태 처리
   if (isLoading) {
-    return <div className="p-4 text-gray-500 flex justify-center items-center h-40">리뷰를 불러오는 중입니다...</div>
+    return (
+      <div className="p-4 text-gray-500 flex justify-center items-center h-40">
+        리뷰를 불러오는 중입니다...
+      </div>
+    );
   }
 
   // 리뷰가 없을 경우
   if (reviews.length === 0) {
-    return <div className="p-4 text-gray-500 flex justify-center items-center h-40">작성한 리뷰가 없습니다.</div>
+    return (
+      <div className="p-4 text-gray-500 flex justify-center items-center h-40">
+        작성한 리뷰가 없습니다.
+      </div>
+    );
   }
 
   return (
@@ -326,66 +350,73 @@ export const ReviewCollection = () => {
       {/* 리뷰 리스트 */}
       <div className="space-y-2">
         {/* 🔽 정렬 셀렉트 */}
-        {
-          reviews.length === 0 ? null : (
-            <div className="flex justify-end mt-2">
-              <select
-                value={sortType}
-                onChange={ (e) => setSortType(e.target.value as 'latest' | 'likes' | 'comments') }
-                className="border px-3 py-1 rounded text-sm"
-              >
-                <option value="latest">최신순</option>
-                <option value="likes">좋아요순</option>
-                <option value="comments">댓글순</option>
-              </select>
-            </div>
-          )
-        }
+        {reviews.length === 0 ? null : (
+          <div className="flex justify-end mt-2">
+            <select
+              value={sortType}
+              onChange={(e) => setSortType(e.target.value as 'latest' | 'likes' | 'comments')}
+              className="border px-3 py-1 rounded text-sm"
+            >
+              <option value="latest">최신순</option>
+              <option value="likes">좋아요순</option>
+              <option value="comments">댓글순</option>
+            </select>
+          </div>
+        )}
         {/* 리뷰 목록 */}
-        {
-          reviews.length === 0 && (
-            <div className="p-4 text-gray-500 flex justify-center items-center h-40">작성한 리뷰가 없습니다.</div>
-          )
-        }
-        {
-          pagedReviews.map((review) => (
-            <div key={review.reviewId} className="bg-white rounded-lg border shadow p-5 mb-4 flex flex-col justify-between">
+        {reviews.length === 0 && (
+          <div className="p-4 text-gray-500 flex justify-center items-center h-40">
+            작성한 리뷰가 없습니다.
+          </div>
+        )}
+        {pagedReviews.map((review) => (
+          <div
+            key={review.reviewId}
+            className="bg-white rounded-lg border shadow p-5 mb-4 flex flex-col justify-between"
+          >
             {/* 책 제목 */}
-              <div className="flex items-center mb-1">
-                <h3 className="font-semibold text-lg cursor-pointer" onClick={() => navigate(`/review/${review.reviewId}`)}>{review.bookTitle || '책 제목 불러오기'}</h3>
-              </div>
+            <div className="flex items-center mb-1">
+              <h3
+                className="font-semibold text-lg cursor-pointer"
+                onClick={() => navigate(`/review/${review.reviewId}`)}
+              >
+                {review.bookTitle || '책 제목 불러오기'}
+              </h3>
+            </div>
 
-              {/* 리뷰 내용 */}
-              <div className="text-gray-700 mt-2 line-clamp-4 flex-1 cursor-pointer" onClick={() => navigate(`/review/${review.reviewId}`)}>
-                {review.content}
-              </div>
+            {/* 리뷰 내용 */}
+            <div
+              className="text-gray-700 mt-2 line-clamp-4 flex-1 cursor-pointer"
+              onClick={() => navigate(`/review/${review.reviewId}`)}
+            >
+              {review.content}
+            </div>
 
-              {/* 하단: 좋아요, 댓글 + 버튼 */}
-              <div className="flex items-center justify-between mt-4">
-                {/* 왼쪽: 좋아요, 댓글 */}
-                <div className="flex items-center text-sm text-gray-500 gap-6">
-                  <span>좋아요 {review.likeCount ?? 0}</span>
-                  <span>댓글 {review.commentCount ?? 0}</span>
-                </div>
-                {/* 오른쪽: 수정/삭제 */}
-                <div className="flex gap-2">
-                  <button
-                    className="px-2 py-1 rounded text-sm border border-gray-300 hover:bg-gray-100"
-                    onClick={() => navigate(`/edit/${review.reviewId}`)}
-                  >
-                    수정
-                  </button>
-                  <button
-                    className="px-2 py-1 rounded text-sm border border-red-400 text-red-500 hover:bg-red-50"
-                    onClick={() => openDeleteModal(review.reviewId)}
-                  >
-                    삭제
-                  </button>
-                </div>
+            {/* 하단: 좋아요, 댓글 + 버튼 */}
+            <div className="flex items-center justify-between mt-4">
+              {/* 왼쪽: 좋아요, 댓글 */}
+              <div className="flex items-center text-sm text-gray-500 gap-6">
+                <span>좋아요 {review.likeCount ?? 0}</span>
+                <span>댓글 {review.commentCount ?? 0}</span>
+              </div>
+              {/* 오른쪽: 수정/삭제 */}
+              <div className="flex gap-2">
+                <button
+                  className="px-2 py-1 rounded text-sm border border-gray-300 hover:bg-gray-100"
+                  onClick={() => navigate(`/edit/${review.reviewId}`)}
+                >
+                  수정
+                </button>
+                <button
+                  className="px-2 py-1 rounded text-sm border border-red-400 text-red-500 hover:bg-red-50"
+                  onClick={() => openDeleteModal(review.reviewId)}
+                >
+                  삭제
+                </button>
               </div>
             </div>
-          ))
-        }
+          </div>
+        ))}
         {/* 페이징 */}
         <div className="flex justify-center mt-8">
           <ul className="flex gap-2">
@@ -393,7 +424,9 @@ export const ReviewCollection = () => {
               <li
                 key={idx}
                 onClick={() => handlePageChange(idx + 1)}
-                className={`cursor-pointer px-2 ${currentPage === idx + 1 ? 'text-orange-500 font-bold' : 'hover:bg-gray-100'}`}
+                className={`cursor-pointer px-2 ${
+                  currentPage === idx + 1 ? 'text-orange-500 font-bold' : 'hover:bg-gray-100'
+                }`}
               >
                 {idx + 1}
               </li>
@@ -403,39 +436,37 @@ export const ReviewCollection = () => {
       </div>
 
       {/* 모달은 컴포넌트 return 가장 하단에 한 번만 작성 (리스트 반복 X) */}
-      {
-        modalOpen && (
+      {modalOpen && (
+        <div
+          className="fixed inset-0 bg-black/30 flex items-center justify-center z-40"
+          onClick={handleCancelDelete}
+        >
           <div
-            className="fixed inset-0 bg-black/30 flex items-center justify-center z-40"
-            onClick={handleCancelDelete}
+            className="bg-white p-6 rounded-lg shadow-lg min-w-[300px] max-w-sm"
+            onClick={(e) => e.stopPropagation()} // 모달 내용 클릭시 닫힘 방지
           >
-            <div
-              className="bg-white p-6 rounded-lg shadow-lg min-w-[300px] max-w-sm"
-              onClick={e => e.stopPropagation()} // 모달 내용 클릭시 닫힘 방지
-            >
-              <h2 className="text-lg font-bold mb-3">리뷰 삭제</h2>
-              <div className="mb-6">정말 이 리뷰를 삭제하시겠습니까?</div>
-              <div className="flex justify-end gap-2">
-                <button
-                  className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
-                  onClick={handleCancelDelete}
-                >
-                  취소
-                </button>
-                <button
-                  className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
-                  onClick={handleConfirmDelete}
-                >
-                  삭제
-                </button>
-              </div>
+            <h2 className="text-lg font-bold mb-3">리뷰 삭제</h2>
+            <div className="mb-6">정말 이 리뷰를 삭제하시겠습니까?</div>
+            <div className="flex justify-end gap-2">
+              <button
+                className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
+                onClick={handleCancelDelete}
+              >
+                취소
+              </button>
+              <button
+                className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+                onClick={handleConfirmDelete}
+              >
+                삭제
+              </button>
             </div>
           </div>
-        )
-      }
+        </div>
+      )}
     </>
-  )
-}
+  );
+};
 
 // 💖 보고싶어요
 export const WantReadList = () => {
@@ -448,11 +479,11 @@ export const WantReadList = () => {
     thumbnail?: string;
   };
 
-  type OutletContextType = { userId: number | null }
+  type OutletContextType = { userId: number | null };
   const { userId } = useOutletContext<OutletContextType>();
 
-  const [ bookmarks, setBookmarks ] = useState<BookItem[]>([]);
-  const [ isLoading, setIsLoading ] = useState(true);
+  const [bookmarks, setBookmarks] = useState<BookItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   // 페이지 상태 관리
   const [currentPage, setCurrentPage] = useState(1);
@@ -467,7 +498,7 @@ export const WantReadList = () => {
     const fetchBookmarkData = async () => {
       try {
         // 1. 북마크(보고싶어요) 리스트 호출
-        const res = await axios.get(`http://35.216.79.174:3000/bookmarks/${userId}`);
+        const res = await axios.get(`https://booktalk-server.onrender.com/bookmarks/${userId}`);
         const bookmarkList = Array.isArray(res.data) ? res.data : [];
 
         // 2. 각 책의 상세정보(제목, 저자, 썸네일 등) 가져오기
@@ -475,27 +506,31 @@ export const WantReadList = () => {
           bookmarkList.map(async (item: BookItem) => {
             try {
               // Book API로 도서 정보 조회
-              const bookRes = await axios.get(`http://35.216.79.174:3000/books/search?query=${item.isbn}`);
+              const bookRes = await axios.get(
+                `https://booktalk-server.onrender.com/books/search?query=${item.isbn}`
+              );
               const bookInfo = Array.isArray(bookRes.data) ? bookRes.data[0] : bookRes.data;
               return {
                 ...item,
-                title: bookInfo?.title || "",
-                authors: bookInfo?.authors || "",
-                thumbnail: bookInfo?.thumbnail || "",
+                title: bookInfo?.title || '',
+                authors: bookInfo?.authors || '',
+                thumbnail: bookInfo?.thumbnail || '',
               };
             } catch {
-              return { ...item, title: "", authors: "", thumbnail: "" }
+              return { ...item, title: '', authors: '', thumbnail: '' };
             }
           })
         );
-        bookDetails.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+        bookDetails.sort(
+          (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
         setBookmarks(bookDetails);
       } catch {
         setBookmarks([]);
       } finally {
         setIsLoading(false);
       }
-    }
+    };
     fetchBookmarkData();
   }, [userId]);
 
@@ -506,10 +541,10 @@ export const WantReadList = () => {
     currentPage * itemsPerPage
   );
 
-   // 페이지 변경 핸들러
+  // 페이지 변경 핸들러
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: "smooth" }); // 페이지 바뀔 때 맨 위로 스크롤 (선택)
+    window.scrollTo({ top: 0, behavior: 'smooth' }); // 페이지 바뀔 때 맨 위로 스크롤 (선택)
   };
 
   if (isLoading) {
@@ -517,28 +552,26 @@ export const WantReadList = () => {
   }
 
   if (!bookmarks.length) {
-    return <div className="p-6 text-gray-400 text-center">보고싶어요를 누른 책이 없습니다.</div>
+    return <div className="p-6 text-gray-400 text-center">보고싶어요를 누른 책이 없습니다.</div>;
   }
 
   return (
     <>
       {/* 보고싶어요 */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {
-          pagedBookmarks.map((book, idx) => (
-            <Link
-              to={`/book/${book.isbn}`}
-              key={book.isbn + idx}
-              className='bg-white border rounded shadow overflow-hidden'
-            >
-              <img src={ book.thumbnail } alt={ book.title } className='w-full h-[180px] object-cover'/>
-              <div className="p-2">
-                <h3 className="font-semibold text-sm truncate">{book.title || "제목없음"}</h3>
-                <p className="text-xs text-gray-500 truncate">{book.authors}</p>
-              </div>
-            </Link>
-          ))
-        }
+        {pagedBookmarks.map((book, idx) => (
+          <Link
+            to={`/book/${book.isbn}`}
+            key={book.isbn + idx}
+            className="bg-white border rounded shadow overflow-hidden"
+          >
+            <img src={book.thumbnail} alt={book.title} className="w-full h-[180px] object-cover" />
+            <div className="p-2">
+              <h3 className="font-semibold text-sm truncate">{book.title || '제목없음'}</h3>
+              <p className="text-xs text-gray-500 truncate">{book.authors}</p>
+            </div>
+          </Link>
+        ))}
       </div>
 
       {/* ✅ 페이지네이션 */}
@@ -549,9 +582,7 @@ export const WantReadList = () => {
               key={idx}
               onClick={() => handlePageChange(idx + 1)}
               className={`cursor-pointer px-3 py-1 rounded ${
-                currentPage === idx + 1
-                  ? "text-orange-600 font-bold"
-                  : "hover:bg-gray-100"
+                currentPage === idx + 1 ? 'text-orange-600 font-bold' : 'hover:bg-gray-100'
               }`}
             >
               {idx + 1}
@@ -560,65 +591,67 @@ export const WantReadList = () => {
         </ul>
       </div>
     </>
-  )
-}
+  );
+};
 
 // 💖 유저 정보 수정
 export const Settings = () => {
-  const updateSchema = z.object({
-    nickname: z
-      .string()
-      .min(2, "닉네임은 2자 이상이어야 합니다.")
-      .max(10, "닉네임은 10자 이하여야 합니다.")
-      .regex(/^[가-힣a-zA-Z0-9]+$/, "닉네임은 한글, 영어, 숫자만 사용할 수 있습니다.")
-      .refine(val => !/\s/.test(val), "닉네임에 공백을 포함할 수 없습니다.")
-      .optional()
-      .or(z.literal("")), // 빈 문자열 허용
+  const updateSchema = z
+    .object({
+      nickname: z
+        .string()
+        .min(2, '닉네임은 2자 이상이어야 합니다.')
+        .max(10, '닉네임은 10자 이하여야 합니다.')
+        .regex(/^[가-힣a-zA-Z0-9]+$/, '닉네임은 한글, 영어, 숫자만 사용할 수 있습니다.')
+        .refine((val) => !/\s/.test(val), '닉네임에 공백을 포함할 수 없습니다.')
+        .optional()
+        .or(z.literal('')), // 빈 문자열 허용
 
-    password: z
-      .string()
-      .min(8, "비밀번호는 8자 이상이어야 합니다.")
-      .max(20, "비밀번호는 20자 이하여야 합니다.")
-      .refine(val => !/\s/.test(val), "비밀번호에 공백을 포함할 수 없습니다.")
-      .optional()
-      .or(z.literal("")), // 빈 문자열 허용
+      password: z
+        .string()
+        .min(8, '비밀번호는 8자 이상이어야 합니다.')
+        .max(20, '비밀번호는 20자 이하여야 합니다.')
+        .refine((val) => !/\s/.test(val), '비밀번호에 공백을 포함할 수 없습니다.')
+        .optional()
+        .or(z.literal('')), // 빈 문자열 허용
 
-    currentPassword: z.string().min(1, "현재 비밀번호를 입력해주세요."),
+      currentPassword: z.string().min(1, '현재 비밀번호를 입력해주세요.'),
 
-    newPassword: z
-      .string()
-      .min(8, "비밀번호는 8자 이상이어야 합니다.")
-      .max(20, "비밀번호는 20자 이하여야 합니다.")
-      .refine(val => !/\s/.test(val), "비밀번호에 공백을 포함할 수 없습니다.")
-      .optional()
-      .or(z.literal("")), // 빈 문자열 허용
+      newPassword: z
+        .string()
+        .min(8, '비밀번호는 8자 이상이어야 합니다.')
+        .max(20, '비밀번호는 20자 이하여야 합니다.')
+        .refine((val) => !/\s/.test(val), '비밀번호에 공백을 포함할 수 없습니다.')
+        .optional()
+        .or(z.literal('')), // 빈 문자열 허용
 
-    confirmPassword: z.string().optional().or(z.literal("")),
-  })
-  .refine(data => data.nickname || data.password, {
-    message: "닉네임 또는 비밀번호 중 하나 이상 입력해주세요.",
-  }).refine(data => data.newPassword === data.confirmPassword, {
-    message: "새 비밀번호와 확인이 일치하지 않습니다.",
-    path: ["confirmPassword"],
-  });
+      confirmPassword: z.string().optional().or(z.literal('')),
+    })
+    .refine((data) => data.nickname || data.password, {
+      message: '닉네임 또는 비밀번호 중 하나 이상 입력해주세요.',
+    })
+    .refine((data) => data.newPassword === data.confirmPassword, {
+      message: '새 비밀번호와 확인이 일치하지 않습니다.',
+      path: ['confirmPassword'],
+    });
 
   type UpdateFormData = z.infer<typeof updateSchema>;
 
   const { nickname, userId, clearUser, setUser } = useUserStore(); // setNickname
   const { accessToken, clearTokens } = useAuthStore();
 
-  const [ msg, setMsg ] = useState('');
-  const [ errMsg, setErrMsg ] = useState('');
+  const [msg, setMsg] = useState('');
+  const [errMsg, setErrMsg] = useState('');
 
   // 회원 탈퇴 문구
   const [resignText, setResignText] = useState('');
   const [resignError, setResignError] = useState('');
 
   // 탈퇴 모달
-  const [ resignModalOpen, setResignModalOpen ] = useState(false);
+  const [resignModalOpen, setResignModalOpen] = useState(false);
 
   // RHF 셋업
-    const {
+  const {
     register,
     handleSubmit,
     reset,
@@ -636,15 +669,14 @@ export const Settings = () => {
 
   // 수정 요청
   const onValid = async (data: UpdateFormData) => {
-    setMsg("");
+    setMsg('');
     setErrMsg('');
     try {
-
       const isNicknameChanged = data.nickname && data.nickname !== nickname;
       const isPasswordChanged = data.newPassword && data.newPassword.length > 0;
 
       if (!isNicknameChanged && !isPasswordChanged) {
-        setErrMsg("변경사항이 없습니다.");
+        setErrMsg('변경사항이 없습니다.');
         return;
       }
 
@@ -657,30 +689,30 @@ export const Settings = () => {
       if (isNicknameChanged) sendData.nickname = data.nickname;
       if (isPasswordChanged) sendData.password = data.newPassword;
 
-      await axios.post(
-        "http://35.216.79.174:3000/auth/passupdate",
-        sendData,
-        { headers: { Authorization: `Bearer ${accessToken}` } }
-      );
+      await axios.post('https://booktalk-server.onrender.com/auth/passupdate', sendData, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
 
       if (sendData.nickname) {
         // [1] 닉네임만 zustand에서 바꾸지 말고,
         // [2] 서버에서 최신 정보 받아오기!
         // 토큰에서 userId만 가져옴
-        const authRes = await axios.get('http://35.216.79.174:3000/auth/protected', {
-          headers: { Authorization: `Bearer ${accessToken}` }
+        const authRes = await axios.get('https://booktalk-server.onrender.com/auth/protected', {
+          headers: { Authorization: `Bearer ${accessToken}` },
         });
         const { userId } = authRes.data.user;
 
         // 최신 프로필 fetch
-        const profileRes = await axios.get(`http://35.216.79.174:3000/auth/${userId}`, {
-          headers: { Authorization: `Bearer ${accessToken}` }
+        const profileRes = await axios.get(`https://booktalk-server.onrender.com/auth/${userId}`, {
+          headers: { Authorization: `Bearer ${accessToken}` },
         });
-        const profile = Array.isArray(profileRes.data.comments) ? profileRes.data.comments[0] : profileRes.data;
+        const profile = Array.isArray(profileRes.data.comments)
+          ? profileRes.data.comments[0]
+          : profileRes.data;
         setUser({ userId, nickname: profile.nickname });
       }
 
-      setMsg("회원 정보가 수정되었습니다.");
+      setMsg('회원 정보가 수정되었습니다.');
       setErrMsg('');
       reset({
         currentPassword: '',
@@ -713,7 +745,7 @@ export const Settings = () => {
     setResignModalOpen(false);
     setResignText('');
     setResignError('');
-  }
+  };
 
   const handleConfirmResign = async () => {
     if (resignText.trim() !== '지금 탈퇴') {
@@ -722,12 +754,12 @@ export const Settings = () => {
     }
 
     try {
-      await axios.delete(`http://35.216.79.174:3000/auth/del/${userId}`, {
+      await axios.delete(`https://booktalk-server.onrender.com/auth/del/${userId}`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
       clearTokens();
       clearUser();
-      window.location.href = "/";
+      window.location.href = '/';
     } catch {
       setResignError('탈퇴 중 오류가 발생했습니다.');
     }
@@ -737,91 +769,83 @@ export const Settings = () => {
     <>
       {/* 유저 정보 수정 */}
       <div className="space-y-8">
-        <form onSubmit={ handleSubmit(onValid) }>
+        <form onSubmit={handleSubmit(onValid)}>
           <h2 className="font-semibold text-lg mb-2">회원 정보 수정</h2>
           <PasswordForm
             label="현재 비밀번호"
-            {...register("currentPassword")}
+            {...register('currentPassword')}
             error={errors.currentPassword?.message}
           />
-          <NicknameForm { ...register("nickname") } error={errors.nickname?.message}/>
+          <NicknameForm {...register('nickname')} error={errors.nickname?.message} />
           <PasswordForm
             label="새 비밀번호"
-            {...register("newPassword")}
+            {...register('newPassword')}
             error={errors.newPassword?.message}
           />
           <PasswordForm
             label="새 비밀번호 확인"
-            {...register("confirmPassword")}
+            {...register('confirmPassword')}
             error={errors.confirmPassword?.message}
           />
           <UpdateButton />
-          <CancelButton onClick={ handleCancel } />
-          {
-            msg
-              ? <div className="mt-2 text-center text-green-600 text-sm">{ msg }</div>
-              : errMsg
-                ? <div className="mt-2 text-center text-red-500 text-sm">{ errMsg }</div>
-                : null
-          }
+          <CancelButton onClick={handleCancel} />
+          {msg ? (
+            <div className="mt-2 text-center text-green-600 text-sm">{msg}</div>
+          ) : errMsg ? (
+            <div className="mt-2 text-center text-red-500 text-sm">{errMsg}</div>
+          ) : null}
         </form>
 
         <div>
           <h2 className="font-semibold text-lg mb-2">회원 탈퇴</h2>
-          <ResignButton onClick={() => setResignModalOpen(true)}/>
+          <ResignButton onClick={() => setResignModalOpen(true)} />
         </div>
       </div>
       {/* 탈퇴 모달 */}
-      {
-        resignModalOpen && (
+      {resignModalOpen && (
+        <div
+          className="fixed inset-0 bg-black/30 flex items-center justify-center z-40"
+          onClick={handleCancelResign}
+        >
           <div
-            className="fixed inset-0 bg-black/30 flex items-center justify-center z-40"
-            onClick={handleCancelResign}
+            className="bg-white p-6 rounded-lg shadow-lg min-w-[300px] max-w-sm"
+            onClick={(e) => e.stopPropagation()} // 모달 내용 클릭시 닫힘 방지
           >
-            <div
-              className="bg-white p-6 rounded-lg shadow-lg min-w-[300px] max-w-sm"
-              onClick={e => e.stopPropagation()} // 모달 내용 클릭시 닫힘 방지
-            >
-              <h2 className="text-lg font-bold mb-3">회원 탈퇴</h2>
-              <p className="mb-2 text-sm text-gray-700">
-                정말 탈퇴하시려면 아래에 <strong>"지금 탈퇴"</strong>라고 입력해주세요.
-              </p>
-              {/* <div className="mb-6">정말로 탈퇴하시겠습니까?</div> */}
-              <input
-                type="text"
-                value={resignText}
-                onChange={(e) => {
-                  setResignText(e.target.value);
-                  setResignError('');
-                }}
-                placeholder="지금 탈퇴"
-                className="w-full border rounded px-3 py-2 text-sm mb-1 mb-4"
-              />
-              {
-                resignError && (
-                  <p className="text-red-500 text-sm mb-2">{resignError}</p>
-                )
-              }
-              <div className="flex justify-end gap-2">
-                <button
-                  className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
-                  onClick={handleCancelResign}
-                >
-                  취소
-                </button>
-                <button
-                  className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
-                  onClick={handleConfirmResign}
-                >
-                  탈퇴
-                </button>
-              </div>
+            <h2 className="text-lg font-bold mb-3">회원 탈퇴</h2>
+            <p className="mb-2 text-sm text-gray-700">
+              정말 탈퇴하시려면 아래에 <strong>"지금 탈퇴"</strong>라고 입력해주세요.
+            </p>
+            {/* <div className="mb-6">정말로 탈퇴하시겠습니까?</div> */}
+            <input
+              type="text"
+              value={resignText}
+              onChange={(e) => {
+                setResignText(e.target.value);
+                setResignError('');
+              }}
+              placeholder="지금 탈퇴"
+              className="w-full border rounded px-3 py-2 text-sm mb-1 mb-4"
+            />
+            {resignError && <p className="text-red-500 text-sm mb-2">{resignError}</p>}
+            <div className="flex justify-end gap-2">
+              <button
+                className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
+                onClick={handleCancelResign}
+              >
+                취소
+              </button>
+              <button
+                className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+                onClick={handleConfirmResign}
+              >
+                탈퇴
+              </button>
             </div>
           </div>
-        )
-      }
+        </div>
+      )}
     </>
-  )
-}
+  );
+};
 
-export default MyPage
+export default MyPage;

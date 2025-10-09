@@ -13,7 +13,9 @@ export const useMainReviews = (listType: string): UseReviewsResult => {
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const response = await axios.get(`http://35.216.79.174:3000/main/reviews/${listType}`);
+        const response = await axios.get(
+          `https://booktalk-server.onrender.com/main/reviews/${listType}`
+        );
         setIsLoadingReviews(true);
         const reviewData = response.data.reviews;
         const fetchedReviews = Array.isArray(reviewData) ? reviewData : [reviewData];
@@ -21,10 +23,12 @@ export const useMainReviews = (listType: string): UseReviewsResult => {
         if (fetchedReviews.length > 0) {
           const bookOfReview = await Promise.all(
             fetchedReviews.map(async (review) => {
-              const bookResponse = await axios.get<BookDetail>(`http://35.216.79.174:3000/books/info/${review.isbn}`);
+              const bookResponse = await axios.get<BookDetail>(
+                `https://booktalk-server.onrender.com/books/info/${review.isbn}`
+              );
               return {
                 ...review,
-                book: bookResponse.data
+                book: bookResponse.data,
               };
             })
           );
@@ -46,7 +50,7 @@ export const useMainReviews = (listType: string): UseReviewsResult => {
           setErrorReviews('리뷰를 불러오는 중 알 수 없는 오류가 발생했습니다.');
         }
       } finally {
-          setIsLoadingReviews(false);
+        setIsLoadingReviews(false);
       }
     };
 
@@ -65,23 +69,27 @@ export const use10List = (listType: string) => {
     const fetchData = async () => {
       try {
         setIsLoading(true);
-        const response = await axios.get<BookApiResponse>(`http://35.216.79.174:3000/main/books/${listType}`);
+        const response = await axios.get<BookApiResponse>(
+          `https://booktalk-server.onrender.com/main/books/${listType}`
+        );
         const rawBooks = response.data.books;
 
         // ✅ 배열의 각 책 정보를 순회하며 필요한 필드를 디코딩
-        const decodedBooks = rawBooks.map(book => ({
-            ...book,
-            title: `${decodeHtml(book.title)}`,
-            description: `${decodeHtml(book.description)}`,
+        const decodedBooks = rawBooks.map((book) => ({
+          ...book,
+          title: `${decodeHtml(book.title)}`,
+          description: `${decodeHtml(book.description)}`,
         }));
 
         // ✅ 디코딩된 데이터로 상태 업데이트
         setApiData({ books: decodedBooks });
       } catch (err) {
-        switch(listType){
-          case 'want': setError('북마크 조회 중 오류 발생');
+        switch (listType) {
+          case 'want':
+            setError('북마크 조회 중 오류 발생');
             break;
-          case 'good': setError('평점순 조회 중 오류 발생');
+          case 'good':
+            setError('평점순 조회 중 오류 발생');
             break;
         }
         console.error(`${listType} API 에러:`, err);
@@ -94,4 +102,4 @@ export const use10List = (listType: string) => {
   }, [listType]);
 
   return { apiData, isLoading, error };
-}
+};
