@@ -17,7 +17,7 @@ export const useBookDetails = (isbn: string | undefined): UseBookDetailsResult =
 
   useEffect(() => {
     if (!isbn) {
-      setError('책 정보를 불러올 ISBN이 없습니다.');
+      setError("책 정보를 불러올 ISBN이 없습니다.");
       setIsLoading(false);
       return;
     }
@@ -25,38 +25,27 @@ export const useBookDetails = (isbn: string | undefined): UseBookDetailsResult =
     const fetchBookDetails = async () => {
       let averageRating = 0;
       try {
-        setIsLoading(true);
+        setIsLoading(true)
         setError(null);
-        const bookmarkcount = await axios.post(
-          `https://booktalk-server.onrender.com/bookmarks/count`,
-          {
-            isbn: isbn,
-          }
-        );
-        const bookrating = `https://booktalk-server.onrender.com/books/averageRating/${isbn}`;
+        const bookmarkcount = await axios.post(`https://booktalk-server.shop/bookmarks/count`, {
+          isbn: isbn
+        });
+        const bookrating = `https://booktalk-server.shop/books/averageRating/${isbn}`;
 
         try {
-          const responseRating = await axios.get(bookrating);
-          averageRating = parseInt(responseRating.data.avgRating, 10);
+          const responseRating=await axios.get(bookrating);
+          averageRating=parseInt(responseRating.data.avgRating, 10);
         } catch (ratingError) {
           // axios 에러인지 확인
           if (axios.isAxiosError(ratingError) && ratingError.response) {
             // 백엔드가 400 상태 코드와 특정 메시지를 보낼 경우
-            if (
-              ratingError.response.status === 400 &&
-              ratingError.response.data?.message ===
-                '평점을 계산하기 위해서는 더 많은 리뷰가 필요합니다.'
-            ) {
-              console.warn(
-                `[useBookDetails] ${isbn} 책에 대한 평점 부족 에러 감지. 평점을 0으로 설정합니다.`
-              );
+            if (ratingError.response.status === 400 &&
+                ratingError.response.data?.message === '평점을 계산하기 위해서는 더 많은 리뷰가 필요합니다.') {
+              console.warn(`[useBookDetails] ${isbn} 책에 대한 평점 부족 에러 감지. 평점을 0으로 설정합니다.`);
               averageRating = 0; // 에러 발생 시 0으로 설정
             } else {
               // 다른 종류의 400 에러이거나 다른 HTTP 에러일 경우
-              console.error(
-                `[useBookDetails] 평점 API 호출 중 예상치 못한 에러:`,
-                ratingError.response
-              );
+              console.error(`[useBookDetails] 평점 API 호출 중 예상치 못한 에러:`, ratingError.response);
               // 이 에러는 여기서 잡지만, 전체 프로세스를 중단시키지 않고 default 0을 사용
               averageRating = 0; // 또는 -1 등 다른 기본값
             }
@@ -68,7 +57,7 @@ export const useBookDetails = (isbn: string | undefined): UseBookDetailsResult =
         }
 
         // ✅ API 요청 URL을 /books/search?query={isbn}으로 변경
-        const requestUrl = `https://booktalk-server.onrender.com/books/search?query=${isbn}`;
+        const requestUrl = `https://booktalk-server.shop/books/search?query=${isbn}`;
 
         // ✅ 응답이 배열 형태임을 가정하고 제네릭 타입 설정
         const response = await axios.get<BookDetail[]>(requestUrl);
@@ -82,13 +71,11 @@ export const useBookDetails = (isbn: string | undefined): UseBookDetailsResult =
             ...rawBook,
             title: `${decodeHtml(rawBook.title)}`,
             description: `${decodeHtml(rawBook.description)}`,
-            authors: `${
-              Array.isArray(rawBook.authors)
-                ? rawBook.authors.map((author) => decodeHtml(author))
-                : decodeHtml(rawBook.authors)
-            }`,
-            bookmarkCount: bookmarkcount.data,
-            total_rating: averageRating,
+            authors: `${Array.isArray(rawBook.authors)
+              ? rawBook.authors.map(author => decodeHtml(author))
+              : decodeHtml(rawBook.authors)}`,
+            bookmarkCount:bookmarkcount.data,
+            total_rating:averageRating,
           };
 
           setBookData(decodedBook);
@@ -97,15 +84,12 @@ export const useBookDetails = (isbn: string | undefined): UseBookDetailsResult =
           setBookData(null);
           setError('요청하신 ISBN에 해당하는 책을 찾을 수 없습니다.');
         }
+
       } catch (err) {
         console.error('useBookDetails.ts: API 요청 에러 발생:', err);
         if (axios.isAxiosError(err)) {
           console.error('useBookDetails.ts: Axios 에러 응답:', err.response);
-          setError(
-            `책 정보를 불러오는 데 실패했습니다: ${err.response?.status} - ${
-              err.response?.data?.message || '알 수 없는 오류'
-            }`
-          );
+          setError(`책 정보를 불러오는 데 실패했습니다: ${err.response?.status} - ${err.response?.data?.message || '알 수 없는 오류'}`);
         } else {
           setError('책 정보를 불러오는 중 알 수 없는 오류가 발생했습니다.');
         }
@@ -128,7 +112,7 @@ export const useBookDetailsInMyPage = (isbn: string | undefined): UseBookDetails
   useEffect(() => {
     if (!isbn) {
       // ISBN이 없으면 에러 처리 후 함수 종료
-      setError('책 정보를 불러올 ISBN이 없습니다.');
+      setError("책 정보를 불러올 ISBN이 없습니다.");
       setIsLoading(false);
       return;
     }
@@ -139,9 +123,7 @@ export const useBookDetailsInMyPage = (isbn: string | undefined): UseBookDetails
       setBookData(null);
 
       try {
-        const response = await axios.get<BookDetail>(
-          `https://booktalk-server.onrender.com/books/info/${isbn}`
-        );
+        const response = await axios.get<BookDetail>(`https://booktalk-server.shop/books/info/${isbn}`);
 
         if (response.data) {
           const book = response.data;
@@ -150,11 +132,9 @@ export const useBookDetailsInMyPage = (isbn: string | undefined): UseBookDetails
             ...book,
             title: `${decodeHtml(book.title)}`,
             description: `${decodeHtml(book.description)}`,
-            authors: `${
-              Array.isArray(book.authors)
-                ? book.authors.map((author) => decodeHtml(author))
-                : decodeHtml(book.authors)
-            }`,
+            authors: `${Array.isArray(book.authors)
+              ? book.authors.map(author => decodeHtml(author))
+              : decodeHtml(book.authors)}`,
             // 기존 API 응답에 없는 값은 기본값으로 설정
             bookmarkCount: 0,
             total_rating: 0,
@@ -167,6 +147,7 @@ export const useBookDetailsInMyPage = (isbn: string | undefined): UseBookDetails
           setError('요청하신 ISBN에 해당하는 책을 찾을 수 없습니다.');
           setIsLoading(false);
         }
+
       } catch (err) {
         console.error('useBookDetailsInMyPage.ts: API 요청 에러 발생:', err);
         setError('책 정보를 불러오는 중 알 수 없는 오류가 발생했습니다.');
@@ -207,9 +188,7 @@ export const useRecommendList = (isbn: string | undefined): UseRecommendListResu
 
         // axios.get의 제네릭 타입을 명시하여 응답 데이터의 타입을 명확히 합니다.
         // 백엔드가 BookDetail[]을 직접 반환한다고 가정합니다.
-        const response = await axios.get<BookDetail[]>(
-          `https://booktalk-server.onrender.com/books/random`
-        );
+        const response = await axios.get<BookDetail[]>(`https://booktalk-server.shop/books/random`);
 
         setRecommendList(response.data);
       } catch (err) {
@@ -218,11 +197,7 @@ export const useRecommendList = (isbn: string | undefined): UseRecommendListResu
           // 서버에서 보낸 에러 응답 데이터를 콘솔에 출력
           console.error('검색 결과 불러오기 실패 (Axios 에러):', err.response?.data || err.message);
           // 사용자에게 더 친절한 에러 메시지
-          setError(
-            `검색 결과를 불러오는 데 실패했습니다: ${err.response?.status} ${
-              err.response?.statusText || ''
-            } - ${err.response?.data?.message || '알 수 없는 서버 오류'}`
-          );
+          setError(`검색 결과를 불러오는 데 실패했습니다: ${err.response?.status} ${err.response?.statusText || ''} - ${err.response?.data?.message || '알 수 없는 서버 오류'}`);
         } else {
           console.error('검색 결과 불러오기 실패 (알 수 없는 에러):', err);
           setError('검색 결과를 불러오는 중 알 수 없는 오류가 발생했습니다.');
@@ -238,6 +213,9 @@ export const useRecommendList = (isbn: string | undefined): UseRecommendListResu
   return { recommendList, isLoadingRecommended, errorRecommended };
 };
 
+
+
+
 export interface UseReviewsResult {
   reviews: ReviewDetail[] | null;
   isLoadingReviews: boolean;
@@ -250,7 +228,7 @@ export const useReviews = (isbn: string | undefined): UseReviewsResult => {
   const [errorReviews, setErrorReviews] = useState<string | null>(null);
   useEffect(() => {
     if (!isbn) {
-      setErrorReviews('리뷰를 불러올 ISBN이 없습니다.');
+      setErrorReviews("리뷰를 불러올 ISBN이 없습니다.");
       setIsLoadingReviews(false);
       return;
     }
@@ -259,11 +237,11 @@ export const useReviews = (isbn: string | undefined): UseReviewsResult => {
       try {
         setErrorReviews(null);
 
-        const requestUrl4 = `https://booktalk-server.onrender.com/reviews/search2/{isbn}?isbn=${isbn}`;
+        const requestUrl4 = `https://booktalk-server.shop/reviews/search2/{isbn}?isbn=${isbn}`;
         const response4 = await axios.get(requestUrl4);
         setIsLoadingReviews(true);
         setReviews(response4.data);
-        // const requestUrl = `https://booktalk-server.onrender.com/reviews/search/{isbn}?isbn=${isbn}`;
+        // const requestUrl = `https://booktalk-server.shop/reviews/search/{isbn}?isbn=${isbn}`;
         // const response = await axios.get(requestUrl);
         // setIsLoadingReviews(true);
 
@@ -271,15 +249,16 @@ export const useReviews = (isbn: string | undefined): UseReviewsResult => {
         // let requestUrl2:string
         // let responseComment:AxiosResponse<number>
         // for(let i=0;i<response.data.length;i++){
-        //   responseCount = await axios.post(`https://booktalk-server.onrender.com/likes/count`, {
+        //   responseCount = await axios.post(`https://booktalk-server.shop/likes/count`, {
         //    reviewId: `${response.data[i].reviewId}`
         //   });
         //   response.data[i].likeCount=responseCount.data;
-        //   requestUrl2=`https://booktalk-server.onrender.com/comment/review/count/${response.data[i].reviewId}`;
+        //   requestUrl2=`https://booktalk-server.shop/comment/review/count/${response.data[i].reviewId}`;
         //   responseComment=await axios.get(requestUrl2);
         //   response.data[i].commentCount=responseComment.data;
         // }
         // setReviews(response.data);
+
       } catch (err) {
         console.error('리뷰 데이터 불러오기 에러 (useReviews):', err);
         if (axios.isAxiosError(err)) {
@@ -287,9 +266,7 @@ export const useReviews = (isbn: string | undefined): UseReviewsResult => {
           console.error('useReviews: Axios 에러 응답:', err.response);
           // 400 에러 처리 추가
           if (err.response?.status === 400) {
-            setErrorReviews(
-              `리뷰 요청이 유효하지 않습니다: ${err.response?.data?.message || '잘못된 요청'}`
-            );
+            setErrorReviews(`리뷰 요청이 유효하지 않습니다: ${err.response?.data?.message || '잘못된 요청'}`);
           } else if (err.response?.status === 404) {
             // 이 경우 404 에러 메시지가 잘 나올 것입니다.
             setErrorReviews('해당 책에 대한 리뷰를 찾을 수 없습니다.');

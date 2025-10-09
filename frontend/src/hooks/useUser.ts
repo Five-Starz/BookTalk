@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 
 export const useUserNickname = (userId: number | undefined) => {
-  const [nickname, setNickname] = useState('');
+  const [ nickname, setNickname ] = useState('');
 
   useEffect(() => {
     // ✅ userId가 유효할 때만 API 요청
@@ -14,7 +14,7 @@ export const useUserNickname = (userId: number | undefined) => {
     const fetchUserInfo = async () => {
       try {
         // 유저 정보
-        const res = await axios.get(`https://booktalk-server.onrender.com/auth/${userId}`);
+        const res = await axios.get(`https://booktalk-server.shop/auth/${userId}`);
         setNickname(res.data.nickname);
       } catch {
         setNickname('');

@@ -33,7 +33,7 @@ function App() {
       if (accessToken) {
         try {
           // 토큰을 사용하여 보호된 엔드포인트에 요청
-          const response = await axios.get('https://booktalk-server.onrender.com/auth/protected', {
+          const response = await axios.get('https://booktalk-server.shop/auth/protected', {
             // gcp vm 외부IP
             headers: { Authorization: `Bearer ${accessToken}` },
           });
