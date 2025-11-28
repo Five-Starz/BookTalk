@@ -74,7 +74,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
           'https://booktalk-server.onrender.com/auth/refresh',
           {}, // body 필요 없을 때는 빈 객체
           {
-            headers: { Authorization: `Bearer ${refreshToken}` },
+            // headers: { Authorization: `Bearer ${refreshToken}` },
             withCredentials: true,
           }
         );
