@@ -334,10 +334,10 @@ export const useReviewDetails = (reviewId: number | undefined): UseReviewDetails
         );
         setReviewData(response2.data);
         // ✅ 리뷰 상세 정보를 가져오는 API 엔드포인트에 맞게 수정
-        // const response = await axios.get<ReviewDetail>(`https://booktalk-server.onrender.com/reviews/${reviewId}`);
-        // const requestUrl=`https://booktalk-server.onrender.com/comment/review/count/${reviewId}`;
+        // const response = await axios.get<ReviewDetail>(`http://35.216.79.174:3000/reviews/${reviewId}`);
+        // const requestUrl=`http://35.216.79.174:3000/comment/review/count/${reviewId}`;
         // const responseComment=await axios.get(requestUrl);
-        // const responseLikeCount = await axios.post(`https://booktalk-server.onrender.com/likes/count`, {
+        // const responseLikeCount = await axios.post(`http://35.216.79.174:3000/likes/count`, {
         //    reviewId: `${reviewId}`
         //   });
         //   response.data.likeCount=responseLikeCount.data;

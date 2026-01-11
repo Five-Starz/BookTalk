@@ -68,7 +68,7 @@ export const useBookDetails = (isbn: string | undefined): UseBookDetailsResult =
         }
 
         // ✅ API 요청 URL을 /books/search?query={isbn}으로 변경
-        const requestUrl = `https://booktalk-server.onrender.com/books/search?query=${isbn}`;
+        const requestUrl = `http://35.216.79.174:3000/books/search?query=${isbn}`;
 
         // ✅ 응답이 배열 형태임을 가정하고 제네릭 타입 설정
         const response = await axios.get<BookDetail[]>(requestUrl);
@@ -263,7 +263,7 @@ export const useReviews = (isbn: string | undefined): UseReviewsResult => {
         const response4 = await axios.get(requestUrl4);
         setIsLoadingReviews(true);
         setReviews(response4.data);
-        // const requestUrl = `https://booktalk-server.onrender.com/reviews/search/{isbn}?isbn=${isbn}`;
+        // const requestUrl = `http://35.216.79.174:3000/reviews/search/{isbn}?isbn=${isbn}`;
         // const response = await axios.get(requestUrl);
         // setIsLoadingReviews(true);
 
@@ -271,11 +271,11 @@ export const useReviews = (isbn: string | undefined): UseReviewsResult => {
         // let requestUrl2:string
         // let responseComment:AxiosResponse<number>
         // for(let i=0;i<response.data.length;i++){
-        //   responseCount = await axios.post(`https://booktalk-server.onrender.com/likes/count`, {
+        //   responseCount = await axios.post(`http://35.216.79.174:3000/likes/count`, {
         //    reviewId: `${response.data[i].reviewId}`
         //   });
         //   response.data[i].likeCount=responseCount.data;
-        //   requestUrl2=`https://booktalk-server.onrender.com/comment/review/count/${response.data[i].reviewId}`;
+        //   requestUrl2=`http://35.216.79.174:3000/comment/review/count/${response.data[i].reviewId}`;
         //   responseComment=await axios.get(requestUrl2);
         //   response.data[i].commentCount=responseComment.data;
         // }
