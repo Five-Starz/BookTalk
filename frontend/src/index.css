@@ -85,7 +85,7 @@ h3 {
   left: var(--swiper-navigation-sides-offset, -3%);
 }
 .mySwiper2-wrap .swiper-button-next {
-  right: var(--swiper-navigation-sides-offset, -3%);
+  right: var(--swiper-navigation-sides-offset, 29.5%);
 }
 
 @media (min-width: 1281px) {
