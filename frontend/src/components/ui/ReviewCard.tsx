@@ -25,7 +25,7 @@ const ReviewCard = ({ review }: ReviewCardProps) => {
   useEffect(() => {
     const checkLiked = async () => {
       if (!userId) return;
-      const res = await fetch('https://booktalk-server.onrender.com/likes/find', {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/likes/find`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: `userId=${userId}&reviewId=${review.reviewId}`,
@@ -44,7 +44,7 @@ const ReviewCard = ({ review }: ReviewCardProps) => {
     }
     if (isLiked) {
       // 해제
-      await fetch('https://booktalk-server.onrender.com/likes/del', {
+      await fetch(`${import.meta.env.VITE_API_BASE_URL}/likes/del`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -56,7 +56,7 @@ const ReviewCard = ({ review }: ReviewCardProps) => {
       setLikeCount((prev) => Math.max(0, prev - 1));
     } else {
       // 등록
-      await fetch('https://booktalk-server.onrender.com/likes', {
+      await fetch(`${import.meta.env.VITE_API_BASE_URL}/likes`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,

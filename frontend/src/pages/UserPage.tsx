@@ -16,7 +16,7 @@ const UserPage = () => {
         const token = localStorage.getItem('accessToken');
         if (!token) return;
 
-        const res = await axios.get('https://booktalk-server.onrender.com/auth/protected', {
+        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/auth/protected`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const myUserId = res.data.user.userId;
@@ -39,18 +39,18 @@ const UserPage = () => {
     const fetchUserInfo = async () => {
       try {
         // 유저 정보
-        const res = await axios.get(`https://booktalk-server.onrender.com/auth/${userId}`);
+        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/auth/${userId}`);
         setNickname(res.data.nickname);
 
         // 리뷰 수
         const reviews = await axios.get(
-          `https://booktalk-server.onrender.com/reviews/count/${userId}`
+          `${import.meta.env.VITE_API_BASE_URL}/reviews/count/${userId}`
         );
         setReviewCount(reviews.data);
 
         // 보고싶어요 수
         const bookmarks = await axios.get(
-          `https://booktalk-server.onrender.com/bookmarks/${userId}`
+          `${import.meta.env.VITE_API_BASE_URL}/bookmarks/${userId}`
         );
         setBookmarkCount(Array.isArray(bookmarks.data) ? bookmarks.data.length : 0);
       } catch {
@@ -144,7 +144,7 @@ export const UserReviewCollection = () => {
       setIsLoading(true);
       try {
         // 1. 리뷰 목록 불러오기
-        const res = await axios.get(`https://booktalk-server.onrender.com/reviews/user/${userId}`);
+        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/reviews/user/${userId}`);
         const reviews = res.data;
 
         // 2. 각 리뷰에 필요한 추가 데이터
@@ -155,7 +155,7 @@ export const UserReviewCollection = () => {
             try {
               // 실제 API 경로/응답에 맞게 수정!
               const bookRes = await axios.get(
-                `https://booktalk-server.onrender.com/books/search?query=${review.isbn}`
+                `${import.meta.env.VITE_API_BASE_URL}/books/search?query=${review.isbn}`
               );
               if (Array.isArray(bookRes.data) && bookRes.data.length > 0) {
                 bookTitle = bookRes.data[0].title || '제목없음';
@@ -169,7 +169,7 @@ export const UserReviewCollection = () => {
             // 좋아요 수
             let likeCount = 0;
             try {
-              const likeRes = await axios.post(`https://booktalk-server.onrender.com/likes/count`, {
+              const likeRes = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/likes/count`, {
                 reviewId: review.reviewId,
               });
               likeCount = likeRes.data || 0;
@@ -181,7 +181,7 @@ export const UserReviewCollection = () => {
             let commentCount = 0;
             try {
               const commentRes = await axios.get(
-                `https://booktalk-server.onrender.com/comment/review/count/${review.reviewId}`
+                `${import.meta.env.VITE_API_BASE_URL}/comment/review/count/${review.reviewId}`
               );
               commentCount = Number(commentRes.data) || 0;
             } catch {
@@ -361,7 +361,7 @@ export const UserWantReadList = () => {
       setIsLoading(true);
       try {
         // 1. 유저의 북마크 리스트 호출
-        const res = await axios.get(`https://booktalk-server.onrender.com/bookmarks/${userId}`);
+        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/bookmarks/${userId}`);
         const BookmarkList = Array.isArray(res.data) ? res.data : res.data.comments || [];
 
         // 2. 각 도서 정보 추가 조회
@@ -369,7 +369,7 @@ export const UserWantReadList = () => {
           BookmarkList.map(async (item: BookItem) => {
             try {
               const bookRes = await axios.get(
-                `https://booktalk-server.onrender.com/books/search?query=${item.isbn}`
+                `${import.meta.env.VITE_API_BASE_URL}/books/search?query=${item.isbn}`
               );
               const bookInfo = Array.isArray(bookRes.data) ? bookRes.data[0] : bookRes.data;
               return {

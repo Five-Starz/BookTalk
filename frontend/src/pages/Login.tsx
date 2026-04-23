@@ -62,7 +62,7 @@ const Login = () => {
   const onValid = async (data: LoginFormData) => {
     try {
       const res = await axios.post(
-        'https://booktalk-server.onrender.com/auth/login',
+        `${import.meta.env.VITE_API_BASE_URL}/auth/login`,
         {
           email: data.email,
           password: data.password,

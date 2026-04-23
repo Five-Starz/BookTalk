@@ -31,7 +31,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
       // 3. accessToken으로 서버 인증 시도
       try {
-        await axios.get('https://booktalk-server.onrender.com/auth/protected', {
+        await axios.get(`${import.meta.env.VITE_API_BASE_URL}/auth/protected`, {
           headers: { Authorization: `Bearer ${accessToken}` },
         });
         if (isMounted) {
@@ -69,7 +69,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
       // 6. refreshToken으로 accessToken 재발급 시도
       try {
         const res = await axios.post(
-          'https://booktalk-server.onrender.com/auth/refresh',
+          `${import.meta.env.VITE_API_BASE_URL}/auth/refresh`,
           {}, // body 필요 없을 때는 빈 객체
           {
             // headers: { Authorization: `Bearer ${refreshToken}` },
@@ -81,7 +81,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
         // 7. 재발급 받은 accessToken으로 다시 인증 시도
         try {
-          await axios.get('https://booktalk-server.onrender.com/auth/protected', {
+          await axios.get(`${import.meta.env.VITE_API_BASE_URL}/auth/protected`, {
             headers: { Authorization: `Bearer ${res.data.accessToken}` },
           });
           // 인증 성공: 보호 페이지 진입 허용

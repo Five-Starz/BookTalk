@@ -28,12 +28,12 @@ export const useBookDetails = (isbn: string | undefined): UseBookDetailsResult =
         setIsLoading(true);
         setError(null);
         const bookmarkcount = await axios.post(
-          `https://booktalk-server.onrender.com/bookmarks/count`,
+          `${import.meta.env.VITE_API_BASE_URL}/bookmarks/count`,
           {
             isbn: isbn,
           }
         );
-        const bookrating = `https://booktalk-server.onrender.com/books/averageRating/${isbn}`;
+        const bookrating = `${import.meta.env.VITE_API_BASE_URL}/books/averageRating/${isbn}`;
 
         try {
           const responseRating = await axios.get(bookrating);
@@ -68,7 +68,7 @@ export const useBookDetails = (isbn: string | undefined): UseBookDetailsResult =
         }
 
         // ✅ API 요청 URL을 /books/search?query={isbn}으로 변경
-        const requestUrl = `https://booktalk-server.onrender.com/books/search?query=${isbn}`;
+        const requestUrl = `${import.meta.env.VITE_API_BASE_URL}/books/search?query=${isbn}`;
 
         // ✅ 응답이 배열 형태임을 가정하고 제네릭 타입 설정
         const response = await axios.get<BookDetail[]>(requestUrl);
@@ -140,7 +140,7 @@ export const useBookDetailsInMyPage = (isbn: string | undefined): UseBookDetails
 
       try {
         const response = await axios.get<BookDetail>(
-          `https://booktalk-server.onrender.com/books/info/${isbn}`
+          `${import.meta.env.VITE_API_BASE_URL}/books/info/${isbn}`
         );
 
         if (response.data) {
@@ -208,7 +208,7 @@ export const useRecommendList = (isbn: string | undefined): UseRecommendListResu
         // axios.get의 제네릭 타입을 명시하여 응답 데이터의 타입을 명확히 합니다.
         // 백엔드가 BookDetail[]을 직접 반환한다고 가정합니다.
         const response = await axios.get<BookDetail[]>(
-          `https://booktalk-server.onrender.com/books/random`
+          `${import.meta.env.VITE_API_BASE_URL}/books/random`
         );
 
         setRecommendList(response.data);
@@ -259,11 +259,11 @@ export const useReviews = (isbn: string | undefined): UseReviewsResult => {
       try {
         setErrorReviews(null);
 
-        const requestUrl4 = `https://booktalk-server.onrender.com/reviews/search2/{isbn}?isbn=${isbn}`;
+        const requestUrl4 = `${import.meta.env.VITE_API_BASE_URL}/reviews/search2/{isbn}?isbn=${isbn}`;
         const response4 = await axios.get(requestUrl4);
         setIsLoadingReviews(true);
         setReviews(response4.data);
-        // const requestUrl = `https://booktalk-server.onrender.com/reviews/search/{isbn}?isbn=${isbn}`;
+        // const requestUrl = `${import.meta.env.VITE_API_BASE_URL}/reviews/search/{isbn}?isbn=${isbn}`;
         // const response = await axios.get(requestUrl);
         // setIsLoadingReviews(true);
 
@@ -271,11 +271,11 @@ export const useReviews = (isbn: string | undefined): UseReviewsResult => {
         // let requestUrl2:string
         // let responseComment:AxiosResponse<number>
         // for(let i=0;i<response.data.length;i++){
-        //   responseCount = await axios.post(`https://booktalk-server.onrender.com/likes/count`, {
+        //   responseCount = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/likes/count`, {
         //    reviewId: `${response.data[i].reviewId}`
         //   });
         //   response.data[i].likeCount=responseCount.data;
-        //   requestUrl2=`https://booktalk-server.onrender.com/comment/review/count/${response.data[i].reviewId}`;
+        //   requestUrl2=`${import.meta.env.VITE_API_BASE_URL}/comment/review/count/${response.data[i].reviewId}`;
         //   responseComment=await axios.get(requestUrl2);
         //   response.data[i].commentCount=responseComment.data;
         // }

@@ -14,7 +14,7 @@ export const useMainReviews = (listType: string): UseReviewsResult => {
     const fetchReviews = async () => {
       try {
         const response = await axios.get(
-          `https://booktalk-server.onrender.com/main/reviews/${listType}`
+          `${import.meta.env.VITE_API_BASE_URL}/main/reviews/${listType}`
         );
         setIsLoadingReviews(true);
         const reviewData = response.data.reviews;
@@ -24,7 +24,7 @@ export const useMainReviews = (listType: string): UseReviewsResult => {
           const bookOfReview = await Promise.all(
             fetchedReviews.map(async (review) => {
               const bookResponse = await axios.get<BookDetail>(
-                `https://booktalk-server.onrender.com/books/info/${review.isbn}`
+                `${import.meta.env.VITE_API_BASE_URL}/books/info/${review.isbn}`
               );
               return {
                 ...review,
@@ -70,7 +70,7 @@ export const use10List = (listType: string) => {
       try {
         setIsLoading(true);
         const response = await axios.get<BookApiResponse>(
-          `https://booktalk-server.onrender.com/main/books/${listType}`
+          `${import.meta.env.VITE_API_BASE_URL}/main/books/${listType}`
         );
         const rawBooks = response.data.books;
 

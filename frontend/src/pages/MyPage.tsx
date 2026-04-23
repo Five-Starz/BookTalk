@@ -30,13 +30,13 @@ const MyPage = () => {
     const fetchUserData = async () => {
       try {
         // 1. 유저 인증 정보 가져오기.
-        const authRes = await axios.get('https://booktalk-server.onrender.com/auth/protected', {
+        const authRes = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/auth/protected`, {
           headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` },
         });
         const { userId } = authRes.data.user;
 
         // 2. 최신 프로필(닉네임 등)은 별도 fetch
-        const profileRes = await axios.get(`https://booktalk-server.onrender.com/auth/${userId}`);
+        const profileRes = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/auth/${userId}`);
         // profileRes.data.comments[0] 구조라면...
         const profile = Array.isArray(profileRes.data.comments)
           ? profileRes.data.comments[0]
@@ -53,13 +53,13 @@ const MyPage = () => {
 
         // 2. 리뷰 수 가져오기
         const reviews = await axios.get(
-          `https://booktalk-server.onrender.com/reviews/count/${userId}`
+          `${import.meta.env.VITE_API_BASE_URL}/reviews/count/${userId}`
         );
         setReviewCount(reviews.data);
 
         // 3. 보고싶어요 수 가져오기
         const bookmarks = await axios.get(
-          `https://booktalk-server.onrender.com/bookmarks/${userId}`
+          `${import.meta.env.VITE_API_BASE_URL}/bookmarks/${userId}`
         );
         setBookmarkCount(Array.isArray(bookmarks.data) ? bookmarks.data.length : 0);
       } catch {
@@ -197,7 +197,7 @@ export const ReviewCollection = () => {
       setIsLoading(true);
       try {
         // 1. 리뷰 목록 불러오기
-        const res = await axios.get(`https://booktalk-server.onrender.com/reviews/user/${userId}`);
+        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/reviews/user/${userId}`);
         const reviews = res.data;
 
         // 2. 각 리뷰에 필요한 추가 데이터
@@ -208,7 +208,7 @@ export const ReviewCollection = () => {
             try {
               // 실제 API 경로/응답에 맞게 수정!
               const bookRes = await axios.get(
-                `https://booktalk-server.onrender.com/books/search?query=${review.isbn}`
+                `${import.meta.env.VITE_API_BASE_URL}/books/search?query=${review.isbn}`
               );
               if (Array.isArray(bookRes.data) && bookRes.data.length > 0) {
                 bookTitle = bookRes.data[0].title || '제목없음';
@@ -222,7 +222,7 @@ export const ReviewCollection = () => {
             // 좋아요 수
             let likeCount = 0;
             try {
-              const likeRes = await axios.post(`https://booktalk-server.onrender.com/likes/count`, {
+              const likeRes = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/likes/count`, {
                 reviewId: review.reviewId,
               });
               likeCount = likeRes.data || 0;
@@ -234,7 +234,7 @@ export const ReviewCollection = () => {
             let commentCount = 0;
             try {
               const commentRes = await axios.get(
-                `https://booktalk-server.onrender.com/comment/review/count/${review.reviewId}`
+                `${import.meta.env.VITE_API_BASE_URL}/comment/review/count/${review.reviewId}`
               );
               commentCount = Number(commentRes.data) || 0;
             } catch {
@@ -278,7 +278,7 @@ export const ReviewCollection = () => {
   const handleConfirmDelete = async () => {
     if (!targetReviewId) return;
     try {
-      await axios.delete(`https://booktalk-server.onrender.com/reviews/${targetReviewId}`, {
+      await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/reviews/${targetReviewId}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
         },
@@ -498,7 +498,7 @@ export const WantReadList = () => {
     const fetchBookmarkData = async () => {
       try {
         // 1. 북마크(보고싶어요) 리스트 호출
-        const res = await axios.get(`https://booktalk-server.onrender.com/bookmarks/${userId}`);
+        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/bookmarks/${userId}`);
         const bookmarkList = Array.isArray(res.data) ? res.data : [];
 
         // 2. 각 책의 상세정보(제목, 저자, 썸네일 등) 가져오기
@@ -507,7 +507,7 @@ export const WantReadList = () => {
             try {
               // Book API로 도서 정보 조회
               const bookRes = await axios.get(
-                `https://booktalk-server.onrender.com/books/search?query=${item.isbn}`
+                `${import.meta.env.VITE_API_BASE_URL}/books/search?query=${item.isbn}`
               );
               const bookInfo = Array.isArray(bookRes.data) ? bookRes.data[0] : bookRes.data;
               return {
@@ -689,7 +689,7 @@ export const Settings = () => {
       if (isNicknameChanged) sendData.nickname = data.nickname;
       if (isPasswordChanged) sendData.password = data.newPassword;
 
-      await axios.post('https://booktalk-server.onrender.com/auth/passupdate', sendData, {
+      await axios.post(`${import.meta.env.VITE_API_BASE_URL}/auth/passupdate`, sendData, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
 
@@ -697,13 +697,13 @@ export const Settings = () => {
         // [1] 닉네임만 zustand에서 바꾸지 말고,
         // [2] 서버에서 최신 정보 받아오기!
         // 토큰에서 userId만 가져옴
-        const authRes = await axios.get('https://booktalk-server.onrender.com/auth/protected', {
+        const authRes = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/auth/protected`, {
           headers: { Authorization: `Bearer ${accessToken}` },
         });
         const { userId } = authRes.data.user;
 
         // 최신 프로필 fetch
-        const profileRes = await axios.get(`https://booktalk-server.onrender.com/auth/${userId}`, {
+        const profileRes = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/auth/${userId}`, {
           headers: { Authorization: `Bearer ${accessToken}` },
         });
         const profile = Array.isArray(profileRes.data.comments)
@@ -754,7 +754,7 @@ export const Settings = () => {
     }
 
     try {
-      await axios.delete(`https://booktalk-server.onrender.com/auth/del/${userId}`, {
+      await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/auth/del/${userId}`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
       clearTokens();

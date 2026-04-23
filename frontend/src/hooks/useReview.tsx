@@ -173,7 +173,7 @@ export const useReviewForm = ({
           }
         : {};
 
-      await axios.post('https://booktalk-server.onrender.com/reviews', formData, {
+      await axios.post(`${import.meta.env.VITE_API_BASE_URL}/reviews`, formData, {
         // const response =
         headers: headers,
       });
@@ -273,7 +273,7 @@ export const useEditReviewForm = ({
       // ✅ axios.put으로 리뷰 수정 API 호출
       // 백엔드 API 엔드포인트에 맞게 수정: reviews/{reviewId}
       await axios.patch(
-        `https://booktalk-server.onrender.com/reviews/${existingReview.reviewId}`,
+        `${import.meta.env.VITE_API_BASE_URL}/reviews/${existingReview.reviewId}`,
         updateData,
         {
           // const response =
@@ -331,14 +331,14 @@ export const useReviewDetails = (reviewId: number | undefined): UseReviewDetails
 
       try {
         const response2 = await axios.get<ReviewDetail>(
-          `https://booktalk-server.onrender.com/reviews/search3/${reviewId}`
+          `${import.meta.env.VITE_API_BASE_URL}/reviews/search3/${reviewId}`
         );
         setReviewData(response2.data);
         // ✅ 리뷰 상세 정보를 가져오는 API 엔드포인트에 맞게 수정
-        // const response = await axios.get<ReviewDetail>(`https://booktalk-server.onrender.com/reviews/${reviewId}`);
-        // const requestUrl=`https://booktalk-server.onrender.com/comment/review/count/${reviewId}`;
+        // const response = await axios.get<ReviewDetail>(`${import.meta.env.VITE_API_BASE_URL}/reviews/${reviewId}`);
+        // const requestUrl=`${import.meta.env.VITE_API_BASE_URL}/comment/review/count/${reviewId}`;
         // const responseComment=await axios.get(requestUrl);
-        // const responseLikeCount = await axios.post(`https://booktalk-server.onrender.com/likes/count`, {
+        // const responseLikeCount = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/likes/count`, {
         //    reviewId: `${reviewId}`
         //   });
         //   response.data.likeCount=responseLikeCount.data;
@@ -425,7 +425,7 @@ export const useRevCommentForm = ({
       // creatComment(userId:number, reviewId:number, content:string, parentId?:number|null)
       await axios.post(
         // const response =
-        `https://booktalk-server.onrender.com/comment/add`, // ✅ 기존 URL 유지
+        `${import.meta.env.VITE_API_BASE_URL}/comment/add`, // ✅ 기존 URL 유지
         {
           userId: formData.userId,
           reviewId: formData.reviewId,
@@ -533,10 +533,10 @@ export const useComments = (reviewId: number): UseCommentsResult => {
     try {
       setIsLoadingComments(true);
       const response = await axios.get(
-        `https://booktalk-server.onrender.com/comment/review/${reviewId}`
+        `${import.meta.env.VITE_API_BASE_URL}/comment/review/${reviewId}`
       );
       const responseComment = await axios.get(
-        `https://booktalk-server.onrender.com/comment/review/count/${reviewId}`
+        `${import.meta.env.VITE_API_BASE_URL}/comment/review/count/${reviewId}`
       );
       setCommentCount(responseComment.data);
       const nestedComments = nestComments(response.data);

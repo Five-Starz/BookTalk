@@ -14,7 +14,7 @@ export const useUserNickname = (userId: number | undefined) => {
     const fetchUserInfo = async () => {
       try {
         // 유저 정보
-        const res = await axios.get(`https://booktalk-server.onrender.com/auth/${userId}`);
+        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/auth/${userId}`);
         setNickname(res.data.nickname);
       } catch {
         setNickname('');
