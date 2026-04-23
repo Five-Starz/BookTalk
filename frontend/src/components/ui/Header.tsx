@@ -1,15 +1,15 @@
-import { Link, useNavigate } from 'react-router-dom'
-import { useAuthStore } from '../../store/authStore';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuthStore, useIsLoggedIn } from '../../store/authStore';
 import { useUserStore } from '../../store/userStore';
 import { useState } from 'react';
 
 const Header = () => {
   // Zustand에서 로그인 상태 및 토큰 삭제 액션 가져오기
-  const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
+  const isLoggedIn = useIsLoggedIn();
   const removeTokens = useAuthStore((state) => state.clearTokens);
   const { clearUser } = useUserStore();
 
-  const [ searchQuery, setSearchQuery ] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
 
   // useNavigate 훅을 사용하여 페이지 이동
   const navigate = useNavigate();
@@ -18,7 +18,7 @@ const Header = () => {
   const handleLogout = () => {
     removeTokens(); // Zustand 상태(및 localStorage)에서 토큰 제거 및 isLoggedIn false로
     clearUser();
-    navigate('/');  // 홈으로 이동
+    navigate('/'); // 홈으로 이동
   };
 
   // 검색 버튼을 클릭하면 검색화면으로 이동
@@ -36,10 +36,7 @@ const Header = () => {
         {/* bg-white px-4 sm:px-8 py-4 shadow-sm */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
           {/* 왼쪽 로고 */}
-          <Link
-            to="/"
-            onClick={ () => setSearchQuery('') }
-          >
+          <Link to="/" onClick={() => setSearchQuery('')}>
             <h1>
               BOOK
               <span className="text-orange-500">T</span>
@@ -52,15 +49,15 @@ const Header = () => {
             {/* 검색창 */}
             <div className="flex items-center px-4 py-2 w-full sm:w-72">
               <form
-                onSubmit={ handleSearch }
+                onSubmit={handleSearch}
                 className="flex items-center border border-gray-300 rounded-full px-4 py-2 w-full sm:w-72"
               >
                 <input
                   type="text"
                   placeholder="Search..."
-                  value={ searchQuery }
+                  value={searchQuery}
                   className="outline-none border-none w-full text-sm text-gray-700 placeholder-gray-400"
-                  onChange={ e => setSearchQuery(e.target.value) }
+                  onChange={(e) => setSearchQuery(e.target.value)}
                 />
                 <button
                   type="submit"
@@ -72,7 +69,8 @@ const Header = () => {
                     className="h-5 w-5"
                     fill="none"
                     viewBox="0 0 24 24"
-                    stroke="currentColor">
+                    stroke="currentColor"
+                  >
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -85,51 +83,49 @@ const Header = () => {
             </div>
 
             {/* 로그인 여부에 따른 조건부 렌더링 */}
-            {
-              isLoggedIn ? (
-                <>
-                  {/* 마이페이지 */}
-                  <Link
-                    to="/mypage"
-                    className="text-sm text-gray-700 hover:text-black whitespace-nowrap"
-                  >
-                    마이페이지
-                  </Link>
-                  {/* 로그아웃 버튼 */}
-                  <button
-                    onClick={handleLogout}
-                    className="bg-black hover:bg-neutral-800 text-white rounded-md px-4 py-2 text-sm cursor-pointer transition"
-                  >
-                    로그아웃
-                  </button>
-                </>
-              ) : (
-                // 로그인 및 회원가입 링크
-                <>
-                  {/* 로그인 버튼 : 버튼이라기 보다는 로그인 링크 */}
-                  <Link
-                    to="/login"
-                    className="bg-neutral text-white px-4 py-2 rounded-md text-sm hover:bg-gray-700 transition whitespace-nowrap"
-                  >
-                    로그인
-                  </Link>
-                  {/* 회원가입 버튼 : 버튼이라기 보다는 회원가입 링크 */}
-                  <Link
-                    to="/signup"
-                    className="bg-neutral text-white px-4 py-2 rounded-md text-sm hover:bg-gray-700 transition whitespace-nowrap"
-                  >
-                    회원가입
-                  </Link>
-                </>
-              )
-            }
+            {isLoggedIn ? (
+              <>
+                {/* 마이페이지 */}
+                <Link
+                  to="/mypage"
+                  className="text-sm text-gray-700 hover:text-black whitespace-nowrap"
+                >
+                  마이페이지
+                </Link>
+                {/* 로그아웃 버튼 */}
+                <button
+                  onClick={handleLogout}
+                  className="bg-black hover:bg-neutral-800 text-white rounded-md px-4 py-2 text-sm cursor-pointer transition"
+                >
+                  로그아웃
+                </button>
+              </>
+            ) : (
+              // 로그인 및 회원가입 링크
+              <>
+                {/* 로그인 버튼 : 버튼이라기 보다는 로그인 링크 */}
+                <Link
+                  to="/login"
+                  className="bg-neutral text-white px-4 py-2 rounded-md text-sm hover:bg-gray-700 transition whitespace-nowrap"
+                >
+                  로그인
+                </Link>
+                {/* 회원가입 버튼 : 버튼이라기 보다는 회원가입 링크 */}
+                <Link
+                  to="/signup"
+                  className="bg-neutral text-white px-4 py-2 rounded-md text-sm hover:bg-gray-700 transition whitespace-nowrap"
+                >
+                  회원가입
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </header>
       {/* header fixed로 인해서 wrapper div 추가 */}
       <div className="h-[105px]" />
     </>
-  )
-}
+  );
+};
 
-export default Header
+export default Header;

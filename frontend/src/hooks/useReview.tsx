@@ -23,6 +23,7 @@ import { getPrimaryIsbn } from '../utils/getPrimaryIsbn';
 // import { decodeHtml } from '../utils/decodeHtml';
 
 import '../index.css';
+import { useAuthStore } from '../store/authStore';
 
 interface RatingStarProps {
   // `ratingIndex`는 현재 선택된(저장된) 평점 점수를 나타냅니다.
@@ -100,6 +101,7 @@ export const useReviewForm = ({
   userId,
 }: UseReviewFormProps): UseReviewFormResult => {
   const navigate = useNavigate();
+  const { accessToken } = useAuthStore();
 
   const [formData, setFormData] = useState<ReviewSubmitData>({
     isbn: initialIsbn || '',
@@ -165,7 +167,6 @@ export const useReviewForm = ({
     setSubmitSuccess(false);
 
     try {
-      const accessToken = localStorage.getItem('accessToken');
       const headers = accessToken
         ? {
             Authorization: `Bearer ${accessToken}`,
@@ -208,6 +209,7 @@ export const useEditReviewForm = ({
   existingReview,
 }: UseEditReviewFormProps): UseEditReviewFormResult => {
   const navigate = useNavigate();
+  const { accessToken } = useAuthStore();
 
   // 폼 초기 상태: 기존 리뷰 데이터로 채워 넣기
   const [formData, setFormData] = useState<{ rating: number; content: string }>({
@@ -260,7 +262,6 @@ export const useEditReviewForm = ({
     setSubmitSuccess(false);
 
     try {
-      const accessToken = localStorage.getItem('accessToken');
       const headers = accessToken ? { Authorization: `Bearer ${accessToken}` } : {};
 
       const updateData: ReviewEditedData = {
@@ -373,6 +374,7 @@ export const useRevCommentForm = ({
     userId: userId, // ✅ userId는 prop으로 받은 그대로 사용
     content: '',
   });
+  const { accessToken } = useAuthStore();
 
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -413,7 +415,6 @@ export const useRevCommentForm = ({
     setIsSubmitting(true);
 
     try {
-      const accessToken = localStorage.getItem('accessToken');
       const headers = accessToken
         ? {
             Authorization: `Bearer ${accessToken}`,

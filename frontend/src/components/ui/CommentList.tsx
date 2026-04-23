@@ -2,7 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import { useState } from 'react';
 import { useComments, useRevCommentForm } from '../../hooks/useReview';
-import { useAuthStore } from '../../store/authStore';
+import { useAuthStore, useIsLoggedIn } from '../../store/authStore';
 import { useUserStore } from '../../store/userStore';
 import User from './User';
 import CommentCard from './CommentCard';
@@ -15,7 +15,8 @@ const CommentList: React.FC<CommentListProps> = ({ reviewId }) => {
   const { comments, isLoadingComments, commentCount, refetch } = useComments(reviewId);
 
   // Zustand 스토어에서 전역 상태 가져오기
-  const { isLoggedIn, accessToken } = useAuthStore();
+  const { accessToken } = useAuthStore();
+  const isLoggedIn = useIsLoggedIn();
   const { userId, nickname } = useUserStore();
 
   // 댓글 폼 훅 사용

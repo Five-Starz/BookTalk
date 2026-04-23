@@ -10,7 +10,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useEffect, useState } from 'react';
 
-import { useAuthStore } from '../store/authStore';
+import { useAuthStore, useIsLoggedIn } from '../store/authStore';
 import { useUserStore } from '../store/userStore';
 
 const Login = () => {
@@ -20,7 +20,7 @@ const Login = () => {
   const navigate = useNavigate();
 
   // Zustand에서 로그인 상태 가져오기!
-  const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
+  const isLoggedIn = useIsLoggedIn();
   const setTokens = useAuthStore((state) => state.setTokens);
   const setUser = useUserStore((state) => state.setUser);
 

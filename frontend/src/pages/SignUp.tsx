@@ -8,7 +8,7 @@ import { z } from 'zod';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { useAuthStore } from '../store/authStore';
+import { useIsLoggedIn } from '../store/authStore';
 
 const SignUp = () => {
   // 모달 상태 관리
@@ -17,7 +17,7 @@ const SignUp = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
-  const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
+  const isLoggedIn = useIsLoggedIn();
   // const setTokens = useAuthStore((state) => state.setTokens); // 회원가입 후 로그인 된 상태로 메인으로 이동할 거면 사용
 
   // useNavigate 훅을 사용하여 페이지 이동

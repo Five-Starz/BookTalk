@@ -13,14 +13,12 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   // 인증 성공 여부
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
+  const { accessToken, refreshToken } = useAuthStore();
+
   useEffect(() => {
     let isMounted = true;
 
     const checkAuth = async () => {
-      // 1. 로컬스토리지에서 토큰 꺼내오기
-      const accessToken = localStorage.getItem('accessToken');
-      const refreshToken = localStorage.getItem('refreshToken');
-
       // 2. accessToken이 없으면 → 비로그인 상태 → 즉시 인증 실패 처리 & 종료
       if (!accessToken) {
         if (isMounted) {
