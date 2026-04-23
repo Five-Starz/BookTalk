@@ -25,7 +25,7 @@ const app = express();
 app.use(
   cors(
     {
-      origin: ['https://5booktalk.netlify.app', 'http://localhost:3000'],
+      origin: ['https://5booktalk.netlify.app', 'http://localhost:3000', 'http://localhost:5173'],
       credentials: true, // ✅ 쿠키 허용
     }
     // [],   // ✅ React 앱 주소 정확히 명시
