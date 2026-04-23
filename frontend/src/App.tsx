@@ -42,11 +42,8 @@ function App() {
           // (서버 응답 구조에 맞게 수정 필요)
           const { userId, nickname } = response.data.user;
 
-          // ✅ 1. 토큰이 유효하면 Zustand 유저 스토어 업데이트
+          // 토큰이 유효하면 Zustand 유저 스토어 업데이트
           userStore.setUser({ userId, nickname });
-
-          // ✅ 2. Auth 스토어도 최신 상태로 동기화 (선택사항, 하지만 권장)
-          authStore.checkLogin();
         } catch (error) {
           // 토큰이 만료되었거나 유효하지 않은 경우
           console.error('로그인 정보 동기화 실패:', error);
