@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-dotenv.config({ path: '/home/doyclub/Booktalk/backend/.env' });
+dotenv.config();
 
 import https from 'https';
 import fs from 'fs';
