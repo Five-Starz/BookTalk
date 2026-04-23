@@ -1,28 +1,34 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 @plugin "daisyui";
 
-*{
-  font-family: "Noto sans KR";
+* {
+  font-family: 'Noto sans KR';
   letter-spacing: -1px;
 }
-main{
+main {
   margin: auto;
 }
-h1,h2,h3,h4,h5,h6{
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-weight: bold;
   line-height: 1.2;
 }
-h1{
+h1 {
   font-size: 3rem;
 }
-h2{
+h2 {
   font-size: 2rem;
 }
-h3{
+h3 {
   font-size: 1.5rem;
 }
 
-.author, .year {
+.author,
+.year {
   color: #555;
 }
 
@@ -36,52 +42,59 @@ h3{
   -webkit-box-orient: vertical;
 }
 
-.rating-stars path{
-    fill: rgb(216, 216, 216);
+.rating-stars path {
+  fill: rgb(216, 216, 216);
 }
 
-.rating-star-over path{
-    cursor: pointer;
-    fill: gold;
+.rating-star-over path {
+  cursor: pointer;
+  fill: gold;
 }
 
-.rating-star-out path{
-    cursor: pointer;
-    fill: rgb(216, 216, 216);
+.rating-star-out path {
+  cursor: pointer;
+  fill: rgb(216, 216, 216);
 }
 
-.swiper-button-prev, .swiper-button-next{
-  --swiper-navigation-color: '#000'
+.swiper-button-prev,
+.swiper-button-next {
+  --swiper-navigation-color: '#000';
 }
-.swiper-button-prev:after, .swiper-button-next:after {
+.swiper-button-prev:after,
+.swiper-button-next:after {
   --swiper-navigation-size: 1rem;
 }
-.mySwiper-wrap .swiper-button-prev, .mySwiper-wrap .swiper-button-next{
+.mySwiper-wrap .swiper-button-prev,
+.mySwiper-wrap .swiper-button-next {
   top: var(--swiper-navigation-top-offset, 40%);
 }
-.mySwiper2-wrap .swiper-button-prev, .mySwiper2-wrap .swiper-button-next {
+.mySwiper2-wrap .swiper-button-prev,
+.mySwiper2-wrap .swiper-button-next {
   border: 1px solid #bbb;
   border-radius: 100%;
   width: 2.5rem !important;
   height: 2.5rem !important;
 }
-.mySwiper-wrap .swiper-button-prev{
-  left: var(--swiper-navigation-sides-offset, -5%);
+.mySwiper-wrap .swiper-button-prev {
+  left: var(--swiper-navigation-sides-offset, -3%);
 }
 .mySwiper-wrap .swiper-button-next {
-  right: var(--swiper-navigation-sides-offset, -5%);
+  right: var(--swiper-navigation-sides-offset, -3%);
 }
-.mySwiper2-wrap .swiper-button-prev{
-  left: var(--swiper-navigation-sides-offset, -5%);
+.mySwiper2-wrap .swiper-button-prev {
+  left: var(--swiper-navigation-sides-offset, -3%);
+}
+.mySwiper2-wrap .swiper-button-next {
+  right: var(--swiper-navigation-sides-offset, -3%);
 }
 
 @media (min-width: 1281px) {
-  main{
+  main {
     width: 1280px;
   }
 }
 @media (max-width: 1280px) {
-  main{
+  main {
     width: 80%;
   }
   .mySwiper2-wrap .swiper-button-next {
@@ -94,48 +107,54 @@ h3{
   }
 }
 @media (max-width: 768px) {
-  *{
+  * {
     font-size: 0.95rem;
   }
-  h1,h1 span{
+  h1,
+  h1 span {
     font-size: 2.4rem;
   }
-  h2{
+  h2 {
     font-size: 1.6rem;
   }
-  h3{
+  h3 {
     font-size: 1rem;
   }
-  main{
+  main {
     margin: 3rem auto 5.5rem;
   }
   .text-overflow {
     -webkit-line-clamp: 8;
   }
-  .mySwiper-wrap .swiper-button-prev, .mySwiper2-wrap .swiper-button-prev{
+  .mySwiper-wrap .swiper-button-prev,
+  .mySwiper2-wrap .swiper-button-prev {
     left: var(--swiper-navigation-sides-offset, -10%);
   }
-  .mySwiper-wrap .swiper-button-next, .mySwiper2-wrap .swiper-button-next{
+  .mySwiper-wrap .swiper-button-next,
+  .mySwiper2-wrap .swiper-button-next {
     right: var(--swiper-navigation-sides-offset, -10%);
   }
 }
-@media (max-width: 500px){
-  .mySwiper2-wrap .swiper-button-prev:after, .mySwiper2-wrap .swiper-button-next:after {
+@media (max-width: 500px) {
+  .mySwiper2-wrap .swiper-button-prev:after,
+  .mySwiper2-wrap .swiper-button-next:after {
     --swiper-navigation-size: 0.8rem;
   }
-  .mySwiper2-wrap .swiper-button-prev, .mySwiper2-wrap .swiper-button-next {
+  .mySwiper2-wrap .swiper-button-prev,
+  .mySwiper2-wrap .swiper-button-next {
     width: 1.8rem !important;
     height: 1.8rem !important;
   }
 }
-@media (max-width: 375px){
-  h1,h1 span{
+@media (max-width: 375px) {
+  h1,
+  h1 span {
     font-size: 2rem;
   }
-  h2{
+  h2 {
     font-size: 1.3rem;
   }
-  h3{
+  h3 {
     font-size: 1rem;
   }
 }

@@ -77,40 +77,41 @@ export const Hot10 = () => {
               index // Book 인터페이스를 사용하여 타입 안전성 확보
             ) => (
               <SwiperSlide>
-                {' '}
-                {/* key는 고유한 값으로 설정 (isbn이 적합) */}
-                <Link key={book.isbn} to={`/book/${book.isbn}`}>
-                  <div className="relative flex flex-col gap-4 items-center md:flex-row md:gap-0 md:justify-between">
-                    {/* 순위 추가 */}
-                    {index + 1 === 1 ? (
-                      <h3 className="absolute top-[-5px] left-[-5px] flex justify-center items-center bg-orange-600 rounded-full w-[2.5rem] h-[2.5rem] text-white z-10">
-                        {index + 1}
-                      </h3>
-                    ) : (
-                      <h4 className="absolute top-[-5px] left-[-5px] flex justify-center items-center bg-gray-200 rounded-full w-[2rem] h-[2rem] z-10">
-                        {index + 1}
-                      </h4>
-                    )}
-                    <img
-                      className="h-[200px] md:min-h-[300px] rounded-xl"
-                      src={book.thumbnail}
-                      alt={book.title}
-                    />
-                    <div className="bg-orange-200 w-full md:w-[calc(100%-230px)] rounded-xl rounded-bl-none p-6">
-                      <h2 className="mb-4">{book.title}</h2>
-                      {/* authors가 string[]이므로 join으로 문자열로 변환 */}
-                      <p className="author text-sm mb-10">
-                        {Array.isArray(book.authors) ? book.authors.join(', ') : book.authors}
-                      </p>
-                      {/* TODO: 여기에 실제 리뷰 내용이나 요약 등을 추가할 수 있습니다. */}
-                      <p>
-                        {book.description.substring(0, 100)}
-                        {book.description.length > 100 ? '...' : null}
-                      </p>{' '}
-                      {/* 예시: contents 일부 표시 */}
+                <div className="relative pt-3 pl-3">
+                  {/* key는 고유한 값으로 설정 (isbn이 적합) */}
+                  <Link key={book.isbn} to={`/book/${book.isbn}`}>
+                    <div className="relative flex flex-col gap-4 items-center md:flex-row md:gap-0 md:justify-between">
+                      {/* 순위 추가 */}
+                      {index + 1 === 1 ? (
+                        <h3 className="absolute top-[-10px] left-[-10px] flex justify-center items-center bg-orange-600 rounded-full w-[2.5rem] h-[2.5rem] text-white z-10">
+                          {index + 1}
+                        </h3>
+                      ) : (
+                        <h4 className="absolute top-[-10px] left-[-10px] flex justify-center items-center bg-gray-200 rounded-full w-[2rem] h-[2rem] z-10">
+                          {index + 1}
+                        </h4>
+                      )}
+                      <img
+                        className="h-[200px] md:min-h-[300px] rounded-xl"
+                        src={book.thumbnail}
+                        alt={book.title}
+                      />
+                      <div className="bg-orange-200 w-full md:w-[calc(100%-230px)] rounded-xl rounded-bl-none p-6">
+                        <h2 className="mb-4">{book.title}</h2>
+                        {/* authors가 string[]이므로 join으로 문자열로 변환 */}
+                        <p className="author text-sm mb-10">
+                          {Array.isArray(book.authors) ? book.authors.join(', ') : book.authors}
+                        </p>
+                        {/* TODO: 여기에 실제 리뷰 내용이나 요약 등을 추가할 수 있습니다. */}
+                        <p>
+                          {book.description.substring(0, 100)}
+                          {book.description.length > 100 ? '...' : null}
+                        </p>{' '}
+                        {/* 예시: contents 일부 표시 */}
+                      </div>
                     </div>
-                  </div>
-                </Link>
+                  </Link>
+                </div>
               </SwiperSlide>
             )
           )}
@@ -173,7 +174,8 @@ export const Good10 = () => {
   if (!apiData || !apiData.books || apiData.books.length === 0) {
     return <div className="p-4 text-center">평점이 좋은 책 데이터를 찾을 수 없습니다.</div>;
   }
-  const wantBooks = apiData.books;
+
+  const goodBooks = [...apiData.books].sort((a, b) => a.rank - b.rank);
 
   return (
     <div className="slider-container w-full">
@@ -207,33 +209,35 @@ export const Good10 = () => {
           modules={[Navigation]}
           className="mySwiper"
         >
-          {wantBooks.map((book: BookDetail) => {
+          {goodBooks.map((book: BookDetail) => {
             // Book 인터페이스를 사용하여 타입 안전성 확보
             return (
               <SwiperSlide key={book.rank}>
                 <Link key={book.isbn} to={`/book/${book.isbn}`}>
-                  {/* 순위 추가 */}
-                  {book.rank === 1 ? (
-                    <h3 className="absolute top-[-5px] left-[-5px] flex items-center justify-center bg-orange-300 rounded-full w-[2.5rem] h-[2.5rem] p-1 z-10">
-                      {book.rank}
-                    </h3>
-                  ) : (
-                    <h4 className="absolute top-[-5px] left-[-5px] flex items-center justify-center bg-white rounded-full w-[2rem] h-[2rem] p-1 z-10">
-                      {book.rank}
+                  <div className="relative pt-5 pl-5">
+                    {/* 순위 추가 */}
+                    {book.rank === 1 ? (
+                      <h3 className="absolute top-0 left-0 flex items-center justify-center bg-orange-300 rounded-full w-[2.5rem] h-[2.5rem] p-1 z-10">
+                        {book.rank}
+                      </h3>
+                    ) : (
+                      <h4 className="absolute top-5 left-[-0px] flex items-center justify-center bg-orange-100 rounded-full w-[2rem] h-[2rem] p-1 z-10">
+                        {book.rank}
+                      </h4>
+                    )}
+                    <img
+                      className="relative object-cover max-h-[200px] md:min-h-[280px] rounded-xl mb-4"
+                      src={book.thumbnail}
+                      alt={book.title}
+                    />
+                    <h4 className="mb-4">
+                      {book.title.length > 18 ? book.title.slice(0, 18) + '...' : book.title}
                     </h4>
-                  )}
-                  <img
-                    className="relative object-cover max-h-[200px] md:min-h-[280px] rounded-xl mb-4"
-                    src={book.thumbnail}
-                    alt={book.title}
-                  />
-                  <h4 className="mb-4">
-                    {book.title.length > 18 ? book.title.slice(0, 18) + '...' : book.title}
-                  </h4>
-                  {/* authors가 string[]이므로 join으로 문자열로 변환 */}
-                  <p className="text-sm mb-10">
-                    {Array.isArray(book.authors) ? book.authors.join(', ') : book.authors}
-                  </p>
+                    {/* authors가 string[]이므로 join으로 문자열로 변환 */}
+                    <p className="text-sm mb-10">
+                      {Array.isArray(book.authors) ? book.authors.join(', ') : book.authors}
+                    </p>
+                  </div>
                 </Link>
               </SwiperSlide>
             );
@@ -275,7 +279,7 @@ export const Want10 = () => {
       <div className="p-4 text-center">보고 싶어요 수가 많은 책 데이터를 찾을 수 없습니다.</div>
     );
   }
-  const wantBooks = apiData.books;
+  const wantBooks = [...apiData.books].sort((a, b) => a.rank - b.rank);
 
   return (
     <div className="slider-container w-full">
@@ -314,28 +318,30 @@ export const Want10 = () => {
             return (
               <SwiperSlide key={book.rank}>
                 <Link key={book.isbn} to={`/book/${book.isbn}`}>
-                  {/* 순위 추가 */}
-                  {book.rank === 1 ? (
-                    <h3 className="absolute top-[-5px] left-[-5px] flex items-center justify-center bg-orange-300 rounded-full w-[2.5rem] h-[2.5rem] p-1 z-10">
-                      {book.rank}
-                    </h3>
-                  ) : (
-                    <h4 className="absolute top-[-5px] left-[-5px] flex items-center justify-center bg-white rounded-full w-[2rem] h-[2rem] p-1 z-10">
-                      {book.rank}
+                  <div className="relative pt-5 pl-5">
+                    {/* 순위 추가 */}
+                    {book.rank === 1 ? (
+                      <h3 className="absolute top-0 left-0 flex items-center justify-center bg-orange-400 rounded-full w-[2.5rem] h-[2.5rem] p-1 z-10">
+                        {book.rank}
+                      </h3>
+                    ) : (
+                      <h4 className="absolute top-[5px] left-[-0px] flex items-center justify-center bg-orange-100 rounded-full w-[2rem] h-[2rem] p-1 z-10">
+                        {book.rank}
+                      </h4>
+                    )}
+                    <img
+                      className="relative object-cover max-h-[200px] md:min-h-[280px] rounded-xl mb-4"
+                      src={book.thumbnail}
+                      alt={book.title}
+                    />
+                    <h4 className="mb-4">
+                      {book.title.length > 18 ? book.title.slice(0, 18) + '...' : book.title}
                     </h4>
-                  )}
-                  <img
-                    className="relative object-cover max-h-[200px] md:min-h-[280px] rounded-xl mb-4"
-                    src={book.thumbnail}
-                    alt={book.title}
-                  />
-                  <h4 className="mb-4">
-                    {book.title.length > 18 ? book.title.slice(0, 18) + '...' : book.title}
-                  </h4>
-                  {/* authors가 string[]이므로 join으로 문자열로 변환 */}
-                  <p className="text-sm mb-10">
-                    {Array.isArray(book.authors) ? book.authors.join(', ') : book.authors}
-                  </p>
+                    {/* authors가 string[]이므로 join으로 문자열로 변환 */}
+                    <p className="text-sm mb-10">
+                      {Array.isArray(book.authors) ? book.authors.join(', ') : book.authors}
+                    </p>
+                  </div>
                 </Link>
               </SwiperSlide>
             );
